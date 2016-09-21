@@ -1,0 +1,52 @@
+{
+  "name": "assetgraph-i18n",
+  "description": "i18n plugin for assetgraph-builder",
+  "repository": "git://github.com/One-com/assetgraph-builder.git",
+  "version": "0.0.0",
+  "keywords": [
+    "assetgraph",
+    "localization",
+    "internationalization",
+    "i18n",
+    "l10n"
+  ],
+  "maintainers": [
+    {
+      "name": "Andreas Lind",
+      "email": "andreas@one.com"
+    }
+  ],
+  "license": "BSD-3-Clause",
+  "files": [
+    "lib",
+    "bin"
+  ],
+  "dependencies": {
+    "memoizesync": "0.5.0",
+    "plurals-cldr": "^1.0.2"
+  },
+  "devDependencies": {
+    "assetgraph": "^3.0.0-12",
+    "coveralls": "^2.11.12",
+    "eslint": "^3.2.0",
+    "eslint-config-onelint": "^1.0.2",
+    "mocha": "^3.0.0",
+    "nyc": "^8.3.0",
+    "systemjs-builder": "0.15.31",
+    "temp": "0.8.3",
+    "unexpected": "^10.8.1"
+  },
+  "directories": {
+    "lib": "./lib",
+    "bin": "./bin"
+  },
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
+  },
+  "scripts": {
+    "lint": "eslint . bin/*",
+    "test": "npm run lint && mocha",
+    "travis": "npm run lint && npm run coverage",
+    "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- mocha && echo google-chrome coverage/lcov-report/index.html"
+  }
+}
