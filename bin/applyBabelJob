@@ -5,7 +5,6 @@ var path = require('path'),
     fs = require('fs'),
     util = require('util'),
     _ = require('lodash'),
-    extend = require('extend'),
     AssetGraph = require('assetgraph'),
     i18nTools = require('../lib/i18nTools'),
     pluralsCldr = require('plurals-cldr'),
@@ -246,7 +245,7 @@ new AssetGraph({root: commandLineOptions.root})
 
                 if (isArrayOrObject(existingTranslation) && isArrayOrObject(existingTranslation)) {
                     // Do a 'deep extend' to update existing complex value:
-                    setMergedTranslation(extend(true, existingTranslation, newTranslation));
+                    setMergedTranslation(_.merge(existingTranslation, newTranslation));
                 } else if (typeof existingTranslation === 'undefined' ||
                            isArrayOrObject(existingTranslation) !== isArrayOrObject(newTranslation) ||
                            existingTranslation !== newTranslation) {

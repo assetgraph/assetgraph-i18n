@@ -99,7 +99,7 @@ new AssetGraph({root: rootUrl})
             }
         )
     })
-    .checkLanguageKeys({
+    .queue(require('../lib/transforms/checkLanguageKeys')({
         supportedLocaleIds: localeIds,
         defaultLocaleId: defaultLocaleId,
         ignoreMessageTypes: ignoreMessageTypes,
@@ -107,7 +107,7 @@ new AssetGraph({root: rootUrl})
         removeUnused: commandLineOptions.removeunused,
         includeAttributeNames: includeAttributeNames,
         excludeAttributeNames: excludeAttributeNames
-    })
+    }))
     .if(commandLineOptions.removeunused)
         .prettyPrintAssets({type: ['I18n'], isDirty: true})
         .writeAssetsToDisc({type: ['I18n'], isDirty: true})

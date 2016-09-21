@@ -3,6 +3,7 @@
   "description": "i18n plugin for assetgraph-builder",
   "repository": "git://github.com/One-com/assetgraph-builder.git",
   "version": "0.0.0",
+  "main": "lib/index.js",
   "keywords": [
     "assetgraph",
     "localization",
@@ -22,9 +23,15 @@
     "bin"
   ],
   "dependencies": {
+    "esanimate": "^1.1.0",
+    "escodegen": "^1.8.0",
+    "esmangle": "^1.0.1",
+    "estraverse": "^4.2.0",
     "lodash": "^4.16.1",
     "memoizesync": "0.5.0",
-    "plurals-cldr": "^1.0.2"
+    "optimist": "0.6.1",
+    "plurals-cldr": "^1.0.2",
+    "urltools": "^0.2.1"
   },
   "devDependencies": {
     "assetgraph": "^3.0.0-12",
@@ -49,5 +56,11 @@
     "test": "npm run lint && mocha",
     "travis": "npm run lint && npm run coverage",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- mocha && echo google-chrome coverage/lcov-report/index.html"
+  },
+  "nyc": {
+    "include": [
+      "lib/**",
+      "bin/**"
+    ]
   }
 }
