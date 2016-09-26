@@ -35,13 +35,13 @@
     "urltools": "^0.2.1"
   },
   "devDependencies": {
-    "assetgraph": "^3.0.0-12",
+    "assetgraph": "^3.0.0-13",
     "coveralls": "^2.11.12",
     "eslint": "^3.2.0",
     "eslint-config-onelint": "^1.0.2",
     "mocha": "^3.0.0",
     "nyc": "^8.3.0",
-    "systemjs-builder": "0.15.31",
+    "systemjs-builder": "0.15.32",
     "temp": "0.8.3",
     "unexpected": "^10.8.1"
   },

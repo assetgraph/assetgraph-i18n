@@ -53,8 +53,10 @@ function createTr(localeData) {
         return localeData[key] || defaultValue || '[!' + key + '!]';
     };
 
+    var tr = TR; // Avoid triggering "i18nTools.eachTrInAst: Invalid TR key name syntax: TR(key, defaultPattern)"
+
     TR.PAT = function (key, defaultPattern) {
-        var pattern = TR(key, defaultPattern), tokens = tokenizePattern(pattern);
+        var pattern = tr(key, defaultPattern), tokens = tokenizePattern(pattern);
         return function () {
             // placeHolderValue, ...
             var placeHolderValues = arguments, renderedString = '';
