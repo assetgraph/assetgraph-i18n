@@ -74,7 +74,7 @@ function createTr(localeData) {
     TR.HTML = function (htmlString) {
         var div = document.createElement('div');
         div.innerHTML = htmlString;
-        require('./lib/eachI18nTagInHtmlDocument')(div, require('./lib/createI18nTagReplacer')({
+        require('i18n/lib/eachI18nTagInHtmlDocument')(div, require('i18n/lib/createI18nTagReplacer')({
             allKeysForLocale: localeData,
             keepI18nAttributes: true,
             keepSpans: true
