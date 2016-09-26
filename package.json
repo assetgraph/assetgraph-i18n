@@ -19,6 +19,7 @@
   ],
   "license": "BSD-3-Clause",
   "files": [
+    "i18n.js",
     "lib",
     "bin"
   ],
