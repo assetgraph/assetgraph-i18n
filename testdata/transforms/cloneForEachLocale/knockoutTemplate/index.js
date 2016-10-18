@@ -1,4 +1,4 @@
 'index.i18n'.toString('url');
 
-var templateWithoutI18n = GETTEXT('templateWithoutI18n.ko'),
-    templateWithI18n = GETTEXT('templateWithI18n.ko');
+'templateWithoutI18n.ko'.toString('url');
+'templateWithI18n.ko'.toString('url');

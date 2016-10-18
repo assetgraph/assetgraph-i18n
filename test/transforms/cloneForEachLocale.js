@@ -105,7 +105,7 @@ describe('cloneForEachLocale', function () {
 
                 danishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/index\.da\.html$/}})[0].to;
                 expect(
-                    assetGraph.findRelations({from: danishJavaScript, type: 'JavaScriptGetText'})[1].to.parseTree.firstChild.innerHTML,
+                    assetGraph.findRelations({from: danishJavaScript, type: 'JavaScriptStaticUrl'})[2].to.parseTree.firstChild.innerHTML,
                     'to equal',
                     '\n' +
                     '    <div>Min sprognøgle</div>\n' +
@@ -117,7 +117,7 @@ describe('cloneForEachLocale', function () {
 
                 americanEnglishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/index\.en_us\.html$/}})[0].to;
                 expect(
-                    assetGraph.findRelations({from: americanEnglishJavaScript, type: 'JavaScriptGetText'})[1].to.parseTree.firstChild.innerHTML,
+                    assetGraph.findRelations({from: americanEnglishJavaScript, type: 'JavaScriptStaticUrl'})[2].to.parseTree.firstChild.innerHTML,
                     'to equal',
                      '\n' +
                      '    <div>My language key</div>\n' +
@@ -207,70 +207,8 @@ describe('cloneForEachLocale', function () {
 
                 var danishHtml = assetGraph.findAssets({url: /\/index\.da\.html$/})[0],
                     danishJavaScript = assetGraph.findRelations({from: danishHtml, type: 'HtmlScript'})[0].to,
-                    danishKnockoutJsTemplate = assetGraph.findRelations({from: danishJavaScript, type: 'JavaScriptGetText'})[0].to;
+                    danishKnockoutJsTemplate = assetGraph.findRelations({from: danishJavaScript, type: 'JavaScriptStaticUrl'})[0].to;
                 expect(danishKnockoutJsTemplate.text, 'to match', /Min sprognøgle/);
-            })
-            .run(done);
-    });
-
-    it('should handle a TRHTML expression', function (done) {
-        new AssetGraph({root: __dirname + '/../../testdata/transforms/cloneForEachLocale/JavaScriptTrHtml/'})
-            .loadAssets('index.html')
-            .populate()
-            .queue(function (assetGraph) {
-                expect(assetGraph, 'to contain assets', {}, 4);
-                expect(assetGraph, 'to contain assets', 'Html', 2);
-                expect(assetGraph, 'to contain asset', 'JavaScript');
-                expect(assetGraph, 'to contain asset', 'I18n');
-                expect(assetGraph, 'to contain relation', 'JavaScriptTrHtml');
-            })
-            .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html', url: /\/index\.html$/}, {localeIds: ['en_US', 'da']}))
-            .queue(function (assetGraph) {
-                expect(assetGraph, 'to contain assets', {}, 7);
-                expect(assetGraph, 'to contain assets', 'Html', 4);
-                expect(assetGraph, 'to contain assets', 'JavaScript', 2);
-                expect(assetGraph, 'to contain asset', 'I18n');
-            })
-            .inlineRelations({type: 'JavaScriptTrHtml'})
-            .queue(function (assetGraph) {
-                var danishHtml = assetGraph.findAssets({url: /\/index\.da\.html$/})[0];
-                expect(assetGraph.findRelations({from: danishHtml, type: 'HtmlScript'})[0].to.text, 'to match', /var myHtmlString\s*=\s*TRHTML\((['"])Den danske værdi\1\)/);
-            })
-            .run(done);
-    });
-
-    it('should handle a TRHTML(GETTEXT(...)) expression', function (done) {
-        new AssetGraph({root: __dirname + '/../../testdata/transforms/cloneForEachLocale/JavaScriptTrHtmlAndJavaScriptGetText/'})
-            .loadAssets('index.html')
-            .populate()
-            .queue(function (assetGraph) {
-                expect(assetGraph, 'to contain assets', {}, 4);
-                expect(assetGraph, 'to contain assets', 'Html', 2);
-                expect(assetGraph, 'to contain asset', 'JavaScript');
-                expect(assetGraph, 'to contain asset', 'I18n');
-                expect(assetGraph, 'to contain relations', 'JavaScriptTrHtml');
-                expect(assetGraph, 'to contain no relations', 'JavaScriptGetText');
-            })
-            .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html', url: /\/index\.html$/}, {localeIds: ['en_US', 'da']}))
-            .queue(function (assetGraph) {
-                expect(assetGraph, 'to contain assets', {}, 7);
-                expect(assetGraph, 'to contain assets', 'Html', 4);
-                expect(assetGraph, 'to contain assets', 'JavaScript', 2);
-                expect(assetGraph, 'to contain asset', 'I18n');
-            })
-            .inlineRelations({type: 'JavaScriptTrHtml'})
-            .queue(function (assetGraph) {
-                var danishHtml = assetGraph.findAssets({url: /\/index\.da\.html$/})[0];
-                expect(assetGraph.findRelations({from: danishHtml, type: 'HtmlScript'})[0].to.text, 'to match', /var myHtmlString\s*=\s*TRHTML\((['"])Den danske værdi\\n\1\)/);
-
-                assetGraph.findRelations({type: 'JavaScriptTrHtml'}).forEach(function (javaScriptTrHtml) {
-                    var htmlAsset = javaScriptTrHtml.to,
-                        document = htmlAsset.parseTree;
-                    document.appendChild(document.createElement('div')).appendChild(document.createTextNode('foo'));
-                    htmlAsset.markDirty();
-                });
-
-                expect(assetGraph.findRelations({from: danishHtml, type: 'HtmlScript'})[0].to.text, 'to match', /var myHtmlString\s*=\s*TRHTML\((['"])Den danske værdi\\n<div>foo<\/div>\1\)/);
             })
             .run(done);
     });

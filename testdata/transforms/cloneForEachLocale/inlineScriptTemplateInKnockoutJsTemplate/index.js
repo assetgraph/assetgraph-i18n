@@ -1,3 +1,3 @@
 'index.i18n'.toString('url');
 
-var template = GETTEXT('template.ko');
+'template.ko'.toString('url');
