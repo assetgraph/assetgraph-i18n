@@ -24,6 +24,7 @@
     "bin"
   ],
   "dependencies": {
+    "assetgraph": "^3.0.0-33",
     "esanimate": "^1.1.0",
     "escodegen": "^1.8.0",
     "esmangle": "^1.0.1",
@@ -35,7 +36,6 @@
     "urltools": "^0.2.1"
   },
   "devDependencies": {
-    "assetgraph": "3.0.0-15",
     "coveralls": "^2.11.12",
     "eslint": "^3.2.0",
     "eslint-config-onelint": "^1.0.2",
