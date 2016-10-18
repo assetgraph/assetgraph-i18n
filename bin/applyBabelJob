@@ -60,6 +60,7 @@ new AssetGraph({root: commandLineOptions.root})
     .populate({from: {type: 'Html'}, followRelations: {type: 'HtmlScript', to: {url: /^file:/}}})
     .bundleSystemJs({ sourceMaps: true, conditions: { 'locale.js': defaultLocaleId, 'locale': defaultLocaleId } })
     .bundleRequireJs({ sourceMaps: true })
+    .populate({startAssets: {type: 'JavaScript'}, followRelations: { to: { url: /^file:\// } } })
     .serializeSourceMaps()
     .populate({ startAssets: { type: 'SourceMap' }, followRelations: { to: { url: /^file:\// } } })
     .populate({
@@ -172,7 +173,8 @@ new AssetGraph({root: commandLineOptions.root})
             });
         }
         var secondaryI18nAssets = assetGraph.findAssets({
-            type: 'I18n'
+            type: 'I18n',
+            isLoaded: true
         }).filter(function (asset) {
             return asset !== i18nAssetForAllKeys;
         });
