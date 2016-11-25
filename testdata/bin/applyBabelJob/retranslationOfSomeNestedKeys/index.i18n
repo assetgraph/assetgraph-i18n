@@ -1,0 +1,12 @@
+{
+    "MyObject": {
+        "en": {
+            "foo": "English foo",
+            "bar": "English bar"
+        },
+        "cs": {
+            "foo": "Czech foo",
+            "bar": "Czech bar"
+        }
+    }
+}

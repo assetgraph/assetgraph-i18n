@@ -243,11 +243,12 @@ new AssetGraph({root: commandLineOptions.root})
                 function setMergedTranslation(mergedTranslation) {
                     i18nAsset.parseTree[key][localeId] = mergedTranslation;
                     i18nAsset.markDirty();
+                    translationsByKeyAndLocaleId[key][localeId] = mergedTranslation;
                 }
 
-                if (isArrayOrObject(existingTranslation) && isArrayOrObject(existingTranslation)) {
+                if (isArrayOrObject(existingTranslation) && isArrayOrObject(newTranslation)) {
                     // Do a 'deep extend' to update existing complex value:
-                    setMergedTranslation(_.merge(existingTranslation, newTranslation));
+                    setMergedTranslation(_.merge(Array.isArray(newTranslation) ? [] : {}, existingTranslation, newTranslation));
                 } else if (typeof existingTranslation === 'undefined' ||
                            isArrayOrObject(existingTranslation) !== isArrayOrObject(newTranslation) ||
                            existingTranslation !== newTranslation) {
