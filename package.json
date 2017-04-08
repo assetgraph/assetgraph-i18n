@@ -24,7 +24,7 @@
     "bin"
   ],
   "dependencies": {
-    "assetgraph": "assetgraph/assetgraph#a95a076ce9b027e7cc935c1d6d387b0d3c139942",
+    "assetgraph": "assetgraph/assetgraph#ac9433c054397cd89b66a89f9258675a7dffbfa0",
     "esanimate": "^1.1.0",
     "escodegen": "^1.8.0",
     "esmangle": "^1.0.1",
