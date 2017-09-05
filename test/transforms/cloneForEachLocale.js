@@ -356,4 +356,48 @@ describe('cloneForEachLocale', function () {
                     .and('to contain', '/script.en_us.js');
             });
     });
+
+    describe('with keepSpans:false', function () {
+        it('should remove a <span> that was translated and had no attributes other than data-i18n', function () {
+            return new AssetGraph({root: __dirname + '/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nAndNoOtherAttributes/'})
+                .loadAssets('index.html')
+                .populate()
+                .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {keepSpans: false, localeIds: ['en_US', 'da']}))
+                .queue(function (assetGraph) {
+                    expect(assetGraph.findAssets({fileName: 'templateWithI18n.da.ko'})[0].text, 'to contain', '<div>Min sprognøgle</div>');
+                });
+        });
+
+        it('should leave a <span> that was translated and had another attribute besides data-i18n', function () {
+            return new AssetGraph({root: __dirname + '/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nOtherAttribute/'})
+                .loadAssets('index.html')
+                .populate()
+                .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {keepSpans: false, localeIds: ['en_US', 'da']}))
+                .queue(function (assetGraph) {
+                    expect(assetGraph.findAssets({fileName: 'templateWithI18n.da.ko'})[0].text, 'to contain', '<div><span data-foo="bar">Min sprognøgle</span></div>');
+                });
+        });
+
+        it('should not remove a span with data-i18=""', function () {
+            return new AssetGraph({root: __dirname + '/../../testdata/transforms/cloneForEachLocale/spanWithEmptyDataI18n/'})
+                .loadAssets('index.html')
+                .populate()
+                .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {keepSpans: false, localeIds: ['en_US', 'da']}))
+                .queue(function (assetGraph) {
+                    expect(assetGraph.findAssets({fileName: 'templateWithI18n.da.ko'})[0].text, 'to contain', '<span>bar</span>');
+                });
+        });
+    });
+
+    describe('with keepSpans:true', function () {
+        it('should leave a <span> that was translated and had no attributes other than data-i18n', function () {
+            return new AssetGraph({root: __dirname + '/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nAndNoOtherAttributes/'})
+                .loadAssets('index.html')
+                .populate()
+                .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {keepSpans: true, localeIds: ['en_US', 'da']}))
+                .queue(function (assetGraph) {
+                    expect(assetGraph.findAssets({fileName: 'templateWithI18n.da.ko'})[0].text, 'to contain', '<div><span>Min sprognøgle</span></div>');
+                });
+        });
+    });
 });

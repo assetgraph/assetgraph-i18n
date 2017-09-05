@@ -1,0 +1,4 @@
+<div>
+    <div data-i18n="MyLanguageKey">foo</div>
+    <span data-i18n="">bar</span>
+</div>
