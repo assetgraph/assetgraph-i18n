@@ -25,9 +25,9 @@ describe('cloneForEachLocale', function () {
                 expect(assetGraph, 'to contain relations', {type: 'HtmlStyle', to: {url: /\/style\.css$/}}, 2);
                 expect(assetGraph, 'to contain relation', 'CssImage');
 
-                expect(assetGraph.findAssets({url: /\/index\.en_us\.html$/})[0].text, 'to match', /<html[^>]+lang=([\'\"])en_us\1/);
-                expect(assetGraph.findAssets({url: /\/index\.en_us\.html$/})[0].text, 'to match', /var localizedString\s*=\s*([\'\"])The American English text\1/);
-                expect(assetGraph.findAssets({url: /\/index\.da\.html$/})[0].text, 'to match', /var localizedString\s*=\s*([\'\"])The Danish text\1/);
+                expect(assetGraph.findAssets({url: /\/en_us\/index\.html$/})[0].text, 'to match', /<html[^>]+lang=([\'\"])en_us\1/);
+                expect(assetGraph.findAssets({url: /\/en_us\/index\.html$/})[0].text, 'to match', /var localizedString\s*=\s*([\'\"])The American English text\1/);
+                expect(assetGraph.findAssets({url: /\/da\/index\.html$/})[0].text, 'to match', /var localizedString\s*=\s*([\'\"])The Danish text\1/);
             })
             .run(done);
     });
@@ -49,15 +49,15 @@ describe('cloneForEachLocale', function () {
                 expect(assetGraph, 'to contain assets', 'Html', 3);
                 expect(assetGraph, 'to contain assets', 'JavaScript', 3);
 
-                var paragraphs = assetGraph.findAssets({url: /\/index\.da\.html$/})[0].parseTree.getElementsByTagName('p');
+                var paragraphs = assetGraph.findAssets({url: /\/da\/index\.html$/})[0].parseTree.getElementsByTagName('p');
                 expect(paragraphs[0].firstChild.nodeValue, 'to equal', 'Kropstekst');
                 expect(paragraphs[1].innerHTML, 'to equal', 'En <span>beautiful</span> tekst med <span>lovely</span> pladsholdere i sig');
 
-                paragraphs = assetGraph.findAssets({url: /\/index\.en_gb\.html$/})[0].parseTree.getElementsByTagName('p');
+                paragraphs = assetGraph.findAssets({url: /\/en_gb\/index\.html$/})[0].parseTree.getElementsByTagName('p');
                 expect(paragraphs[0].firstChild.nodeValue, 'to equal', 'Some text in body');
                 expect(paragraphs[1].innerHTML, 'to equal', 'A <span>beautiful</span> text with oh so <span>lovely</span> placeholders in it');
 
-                paragraphs = assetGraph.findAssets({url: /\/index\.en_us\.html$/})[0].parseTree.getElementsByTagName('p');
+                paragraphs = assetGraph.findAssets({url: /\/en_us\/index\.html$/})[0].parseTree.getElementsByTagName('p');
                 expect(paragraphs[0].firstChild.nodeValue, 'to equal', 'Some text in body');
                 expect(paragraphs[1].innerHTML, 'to equal', 'A <span>beautiful</span> text with <span>lovely</span> placeholders in it');
             });
@@ -72,8 +72,8 @@ describe('cloneForEachLocale', function () {
             .inlineCssImagesWithLegacyFallback({type: 'Html'})
             .queue(function (assetGraph) {
                 expect(assetGraph, 'to contain assets', {type: 'Html', isInline: false}, 2);
-                expect(assetGraph, 'to contain relation', {from: {url: /\/index\.en_us\.html$/}, type: 'HtmlConditionalComment'});
-                expect(assetGraph, 'to contain relation', {from: {url: /\/index\.da\.html$/}, type: 'HtmlConditionalComment'});
+                expect(assetGraph, 'to contain relation', {from: {url: /\/en_us\/index\.html$/}, type: 'HtmlConditionalComment'});
+                expect(assetGraph, 'to contain relation', {from: {url: /\/da\/index\.html$/}, type: 'HtmlConditionalComment'});
             })
             .run(done);
     });
@@ -97,13 +97,13 @@ describe('cloneForEachLocale', function () {
                 expect(assetGraph, 'to contain asset', 'I18n');
                 expect(assetGraph, 'to contain assets', {type: 'Html', isFragment: true}, 3);
 
-                var danishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/index\.da\.html$/}})[0].to,
-                    americanEnglishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/index\.en_us\.html$/}})[0].to;
+                var danishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/da\/index\.html$/}})[0].to,
+                    americanEnglishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/en_us\/index\.html$/}})[0].to;
                 expect(danishJavaScript, 'to be truthy');
                 expect(americanEnglishJavaScript, 'to be truthy');
                 expect(assetGraph.findRelations({from: danishJavaScript})[0].to, 'to equal', assetGraph.findRelations({from: americanEnglishJavaScript})[0].to);
 
-                danishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/index\.da\.html$/}})[0].to;
+                danishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/da\/index\.html$/}})[0].to;
                 expect(
                     assetGraph.findRelations({from: danishJavaScript, type: 'JavaScriptStaticUrl'})[2].to.parseTree.firstChild.innerHTML,
                     'to equal',
@@ -115,7 +115,7 @@ describe('cloneForEachLocale', function () {
                     '    Her er en rar dyb i18n-struktur på dansk\n'
                 );
 
-                americanEnglishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/index\.en_us\.html$/}})[0].to;
+                americanEnglishJavaScript = assetGraph.findRelations({type: 'HtmlScript', from: {url: /\/en_us\/index\.html$/}})[0].to;
                 expect(
                     assetGraph.findRelations({from: americanEnglishJavaScript, type: 'JavaScriptStaticUrl'})[2].to.parseTree.firstChild.innerHTML,
                     'to equal',
@@ -137,7 +137,7 @@ describe('cloneForEachLocale', function () {
             .populate()
             .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {localeIds: ['en_US', 'da']}))
             .queue(function (assetGraph) {
-                expect(assetGraph.findAssets({url: /\/index\.da\.html$/})[0].text, 'to match', /Den danske værdi/);
+                expect(assetGraph.findAssets({url: /\/da\/index\.html$/})[0].text, 'to match', /Den danske værdi/);
             })
             .run(done);
     });
@@ -150,7 +150,7 @@ describe('cloneForEachLocale', function () {
             .queue(function (assetGraph) {
                 expect(assetGraph, 'to contain assets', 'JavaScript', 2);
 
-                var danishJavaScript = assetGraph.findAssets({type: 'JavaScript', incoming: {type: 'HtmlScript', from: {url: /\/index\.da\.html$/}}})[0];
+                var danishJavaScript = assetGraph.findAssets({type: 'JavaScript', incoming: {type: 'HtmlScript', from: {url: /\/da\/index\.html$/}}})[0];
                 expect(danishJavaScript.text, 'to equal',
                     'alert(\'da\');\n' +
                     'alert(\'en_us\');\n' +
@@ -181,7 +181,7 @@ describe('cloneForEachLocale', function () {
                 expect(assetGraph, 'to contain assets', 'Html', 4);
                 expect(assetGraph, 'to contain assets', 'JavaScript', 2);
                 expect(assetGraph, 'to contain asset', 'I18n');
-                expect(assetGraph.findAssets({url: /\/index\.da\.html$/})[0].text, 'to match', /Min sprognøgle/);
+                expect(assetGraph.findAssets({url: /\/da\/index\.html$/})[0].text, 'to match', /Min sprognøgle/);
             })
             .run(done);
     });
@@ -205,7 +205,7 @@ describe('cloneForEachLocale', function () {
                 expect(assetGraph, 'to contain assets', {type: 'Html', isFragment: true}, 4);
                 expect(assetGraph, 'to contain asset', 'I18n');
 
-                var danishHtml = assetGraph.findAssets({url: /\/index\.da\.html$/})[0],
+                var danishHtml = assetGraph.findAssets({url: /\/da\/index\.html$/})[0],
                     danishJavaScript = assetGraph.findRelations({from: danishHtml, type: 'HtmlScript'})[0].to,
                     danishKnockoutJsTemplate = assetGraph.findRelations({from: danishJavaScript, type: 'JavaScriptStaticUrl'})[0].to;
                 expect(danishKnockoutJsTemplate.text, 'to match', /Min sprognøgle/);
@@ -222,16 +222,16 @@ describe('cloneForEachLocale', function () {
                 expect(assetGraph, 'to contain assets', {type: 'Css'}, 5);
                 expect(assetGraph, 'to contain assets', {type: 'Png'}, 3);
 
-                var danishCss = assetGraph.findAssets({url: /\/needsLocalization\.da\.css$/})[0],
+                var danishCss = assetGraph.findAssets({url: /\/da\/needsLocalization\.css$/})[0],
                     cssRules = danishCss.parseTree.nodes;
                 expect(cssRules, 'to have length', 3);
                 expect(cssRules[0].selector, 'to equal', 'body');
                 expect(cssRules[1].selector, 'to equal', 'html .theThing');
                 var outgoingRelations = assetGraph.findRelations({from: danishCss});
                 expect(outgoingRelations, 'to have length', 1);
-                expect(outgoingRelations[0].href, 'to equal',  'foo.png');
+                expect(outgoingRelations[0].href, 'to equal',  '../foo.png');
 
-                var germanCss = assetGraph.findAssets({url: /\/needsLocalization\.de\.css$/})[0];
+                var germanCss = assetGraph.findAssets({url: /\/de\/needsLocalization\.css$/})[0];
                 expect(germanCss.parseTree.nodes, 'to have length', 3);
                 expect(germanCss.parseTree.nodes[0].selector, 'to equal', 'body');
                 expect(germanCss.parseTree.nodes[1].selector, 'to equal', 'html.anotherClassOnHtml .theGermanThing');
@@ -240,13 +240,13 @@ describe('cloneForEachLocale', function () {
                 expect(outgoingRelations, 'to have length', 1);
                 expect(outgoingRelations[0].to, 'to have property', 'isImage', true);
 
-                var englishCss = assetGraph.findAssets({url: /\/needsLocalization\.en\.css$/})[0];
+                var englishCss = assetGraph.findAssets({url: /\/en\/needsLocalization\.css$/})[0];
                 expect(englishCss.parseTree.nodes, 'to have length', 2);
                 expect(englishCss.parseTree.nodes[0].selector, 'to equal', 'body');
 
                 expect(englishCss.parseTree.nodes[1].selector, 'to equal', '.foobar');
 
-                var czechCss = assetGraph.findAssets({url: /\/needsLocalization\.cs\.css$/})[0];
+                var czechCss = assetGraph.findAssets({url: /\/cs\/needsLocalization\.css$/})[0];
                 expect(czechCss.parseTree.nodes, 'to have length', 2);
                 expect(czechCss.parseTree.nodes[0].selector, 'to equal', 'body');
 
@@ -256,9 +256,9 @@ describe('cloneForEachLocale', function () {
 
                 expect(assetGraph, 'to contain no relations', {to: {url: /\/bar\.png$/}});
 
-                expect(assetGraph, 'to contain relation', {from: {url: /\/needsLocalization\.de\.css$/}, to: {isInline: true, isImage: true}});
+                expect(assetGraph, 'to contain relation', {from: {url: /\/de\/needsLocalization\.css$/}, to: {isInline: true, isImage: true}});
 
-                expect(assetGraph, 'to contain no relations', {from: {url: /\/needsLocalization\.da\.css$/}, to: {isInline: true, isImage: true}});
+                expect(assetGraph, 'to contain no relations', {from: {url: /\/da\/needsLocalization\.css$/}, to: {isInline: true, isImage: true}});
             })
             .run(done);
     });
@@ -270,17 +270,17 @@ describe('cloneForEachLocale', function () {
             .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {localeIds: ['en', 'da']}))
             .queue(function (assetGraph) {
                 expect(_.map(assetGraph.findAssets({type: 'Html'}), 'url').sort(), 'to equal', [
-                    assetGraph.root + '1.da.html',
-                    assetGraph.root + '1.en.html',
-                    assetGraph.root + '2.da.html',
-                    assetGraph.root + '2.en.html'
+                    assetGraph.root + 'da/1.html',
+                    assetGraph.root + 'da/2.html',
+                    assetGraph.root + 'en/1.html',
+                    assetGraph.root + 'en/2.html'
                 ]);
 
                 expect(_.map(assetGraph.findAssets({type: 'JavaScript'}), 'url').sort(), 'to equal', [
-                    assetGraph.root + 'doesNotNeedLocalization.da.js',
-                    assetGraph.root + 'doesNotNeedLocalization.en.js',
-                    assetGraph.root + 'needsLocalization.da.js',
-                    assetGraph.root + 'needsLocalization.en.js'
+                    assetGraph.root + 'da/doesNotNeedLocalization.js',
+                    assetGraph.root + 'da/needsLocalization.js',
+                    assetGraph.root + 'en/doesNotNeedLocalization.js',
+                    assetGraph.root + 'en/needsLocalization.js'
                 ]);
             })
             .run(done);
@@ -292,7 +292,7 @@ describe('cloneForEachLocale', function () {
             .populate()
             .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {localeIds: ['en', 'da']}))
             .queue(function (assetGraph) {
-                expect(assetGraph.findAssets({url: /\/index\.da\.html$/})[0].parseTree.body.innerHTML, 'to equal', '\n    <div>Some <span>foo</span> <span>foo</span> thing</div>\n    <script>\'index.i18n\'.toString(\'url\');</script>\n\n\n');
+                expect(assetGraph.findAssets({url: /\/da\/index\.html$/})[0].parseTree.body.innerHTML, 'to equal', '\n    <div>Some <span>foo</span> <span>foo</span> thing</div>\n    <script>\'../index.i18n\'.toString(\'url\');</script>\n\n\n');
             });
     });
 
@@ -302,8 +302,8 @@ describe('cloneForEachLocale', function () {
             .populate()
             .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {localeIds: ['en', 'da']}))
             .queue(function (assetGraph) {
-                expect(assetGraph, 'to contain relation', {type: 'HtmlImage', from: {url: /\/index\.en\.html$/}});
-                expect(assetGraph, 'to contain relations', {type: 'HtmlImage', from: {url: /\/index\.da\.html$/}}, 2);
+                expect(assetGraph, 'to contain relation', {type: 'HtmlImage', from: {url: /\/en\/index\.html$/}});
+                expect(assetGraph, 'to contain relations', {type: 'HtmlImage', from: {url: /\/da\/index\.html$/}}, 2);
             })
             .run(done);
     });
@@ -320,8 +320,8 @@ describe('cloneForEachLocale', function () {
             .queue(function (assetGraph) {
                 expect(assetGraph, 'to contain assets', 'Html', 2);
                 expect(assetGraph, 'to contain assets', 'Svg', 2);
-                expect(assetGraph.findRelations({type: 'HtmlImage', from: {url: /\/index\.da\.html$/}})[0].to.text, 'to match', /Dansk nøgle/);
-                expect(assetGraph.findRelations({type: 'HtmlImage', from: {url: /\/index\.en_us\.html$/}})[0].to.text, 'to match', /English key/);
+                expect(assetGraph.findRelations({type: 'HtmlImage', from: {url: /\/da\/index\.html$/}})[0].to.text, 'to match', /Dansk nøgle/);
+                expect(assetGraph.findRelations({type: 'HtmlImage', from: {url: /\/en_us\/index\.html$/}})[0].to.text, 'to match', /English key/);
             })
             .run(done);
     });
@@ -349,11 +349,11 @@ describe('cloneForEachLocale', function () {
             .populate()
             .queue(require('../../lib/transforms/cloneForEachLocale')({type: 'Html'}, {localeIds: ['en_us', 'da']}))
             .queue(function (assetGraph) {
-                expect(assetGraph.findAssets({fileName: 'index.da.html'})[0].text, 'to contain', '/style.da.css')
-                    .and('to contain', '/script.da.js');
+                expect(assetGraph.findAssets({url: /\/da\/index\.html$/})[0].text, 'to contain', '/da/style.css')
+                    .and('to contain', '/da/script.js');
 
-                expect(assetGraph.findAssets({fileName: 'index.en_us.html'})[0].text, 'to contain', '/style.en_us.css')
-                    .and('to contain', '/script.en_us.js');
+                expect(assetGraph.findAssets({url: /\/en_us\/index\.html$/})[0].text, 'to contain', '/en_us/style.css')
+                    .and('to contain', '/en_us/script.js');
             });
     });
 
