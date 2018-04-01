@@ -24,7 +24,6 @@
     "bin"
   ],
   "dependencies": {
-    "assetgraph": "^4.1.0",
     "esanimate": "^1.1.0",
     "escodegen": "^1.8.0",
     "esmangle": "^1.0.1",
@@ -36,6 +35,7 @@
     "urltools": "^0.2.1"
   },
   "devDependencies": {
+    "assetgraph": "^4.3.1",
     "coveralls": "^2.11.12",
     "eslint": "^3.2.0",
     "eslint-config-onelint": "^1.0.2",
@@ -44,6 +44,9 @@
     "systemjs-builder": "0.15.32",
     "temp": "0.8.3",
     "unexpected": "^10.8.1"
+  },
+  "peerDependencies": {
+    "assetgraph": "^4.0.0"
   },
   "directories": {
     "lib": "./lib",
