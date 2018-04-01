@@ -42,7 +42,6 @@ if (commandLineOptions.h) {
 var _ = require('lodash'),
     AssetGraph = require('assetgraph'),
     i18nTools = require('../lib/i18nTools'),
-    query = AssetGraph.query,
     urlTools = require('urltools'),
     rootUrl = commandLineOptions.root && urlTools.urlOrFsPathToUrl(commandLineOptions.root, true),
     localeIds = commandLineOptions.locales && _.flatten(_.flatten([commandLineOptions.locales]).map(function (localeId) {
@@ -90,15 +89,17 @@ new AssetGraph({root: rootUrl})
     .bundleSystemJs({ sourceMaps: true, conditions: { locale: localeIds } })
     .bundleRequireJs({ sourceMaps: true })
     .populate({
-        followRelations: query.or(
-            {
-                to: {type: 'I18n'}
-            },
-            {
-                type: query.not(['HtmlAnchor', 'HtmlMetaRefresh', 'SvgAnchor', 'JavaScriptSourceMappingUrl', 'JavaScriptSourceUrl']),
-                to: {url: query.not(/^https?:/)}
-            }
-        )
+        followRelations: {
+            $or: [
+                {
+                    to: {type: 'I18n'}
+                },
+                {
+                    type: {$nin: ['HtmlAnchor', 'HtmlMetaRefresh', 'SvgAnchor', 'JavaScriptSourceMappingUrl', 'JavaScriptSourceUrl']},
+                    to: {protocol: {$nin: ['http:', 'https:']}}
+                }
+            ]
+        }
     })
     .queue(require('../lib/transforms/checkLanguageKeys')({
         supportedLocaleIds: localeIds,

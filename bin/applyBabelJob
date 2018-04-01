@@ -65,8 +65,8 @@ new AssetGraph({root: commandLineOptions.root})
     .populate({ startAssets: { type: 'SourceMap' }, followRelations: { to: { url: /^file:\// } } })
     .populate({
         followRelations: {
-            type: AssetGraph.query.not(['HtmlAnchor', 'HtmlMetaRefresh']),
-            to: {url: AssetGraph.query.not(/^https?:/)}
+            type: {$nin: ['HtmlAnchor', 'HtmlMetaRefresh']},
+            to: {protocol: {$nin: ['https:', 'http:']}}
         }
     })
     .queue(function importLanguageKeys(assetGraph) {
