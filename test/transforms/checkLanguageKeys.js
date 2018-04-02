@@ -7,7 +7,7 @@ describe('checkLanguageKeys', function() {
   it('should handle a combo test case', function() {
     const infos = [];
     return new AssetGraph({
-      root: __dirname + '/../../testdata/transforms/checkLanguageKeys/combo/'
+      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/combo/`
     })
       .on('info', function(err) {
         infos.push(err);
@@ -39,8 +39,7 @@ describe('checkLanguageKeys', function() {
     const infos = [];
     return new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/checkLanguageKeys/neverEndingSpaceLoop/'
+        `${__dirname}/../../testdata/transforms/checkLanguageKeys/neverEndingSpaceLoop/`
     })
       .on('info', function(err) {
         infos.push(err);
@@ -62,7 +61,7 @@ describe('checkLanguageKeys', function() {
     const infos = [];
     return new AssetGraph({
       root:
-        __dirname + '/../../testdata/transforms/checkLanguageKeys/pluralRule/'
+        `${__dirname}/../../testdata/transforms/checkLanguageKeys/pluralRule/`
     })
       .on('info', function(err) {
         infos.push(err);
@@ -97,8 +96,7 @@ describe('checkLanguageKeys', function() {
     const infos = [];
     return new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/checkLanguageKeys/duplicateLanguageKeys/'
+        `${__dirname}/../../testdata/transforms/checkLanguageKeys/duplicateLanguageKeys/`
     })
       .on('info', function(err) {
         infos.push(err);

@@ -12,22 +12,19 @@ describe('makeBabelJob', function() {
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand =
-      "cp '" +
-      __dirname +
-      "/../../testdata/bin'/makeBabelJob/complex/* " +
-      tmpTestCaseCopyDir;
+      `cp '${__dirname}/../../testdata/bin'/makeBabelJob/complex/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
           new Error(
-            copyCommand + ' failed: STDERR:' + stderr + '\nSTDOUT:' + stdout
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
           )
         );
       }
 
       const makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
+          `${__dirname}/../../bin/makeBabelJob`,
           [
             '--babeldir',
             babelDir,
@@ -57,11 +54,7 @@ describe('makeBabelJob', function() {
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
-              '\n' +
-              streamName.toUpperCase() +
-              ': ' +
-              Buffer.concat(buffersByStreamName[streamName]).toString('utf-8') +
-              '\n';
+              `\n${streamName.toUpperCase()}: ${Buffer.concat(buffersByStreamName[streamName]).toString('utf-8')}\n`;
           }
         });
         return outputText;
@@ -71,9 +64,7 @@ describe('makeBabelJob', function() {
         if (exitCode) {
           return done(
             new Error(
-              'The makeBabelJob process ended with a non-zero exit code: ' +
-                exitCode +
-                getStreamOutputText()
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
             )
           );
         }
@@ -275,22 +266,19 @@ describe('makeBabelJob', function() {
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand =
-      "cp '" +
-      __dirname +
-      "/../../testdata/bin'/makeBabelJob/noTranslationsNecessary/* " +
-      tmpTestCaseCopyDir;
+      `cp '${__dirname}/../../testdata/bin'/makeBabelJob/noTranslationsNecessary/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
           new Error(
-            copyCommand + ' failed: STDERR:' + stderr + '\nSTDOUT:' + stdout
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
           )
         );
       }
 
       const makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
+          `${__dirname}/../../bin/makeBabelJob`,
           [
             '--babeldir',
             babelDir,
@@ -319,11 +307,7 @@ describe('makeBabelJob', function() {
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
-              '\n' +
-              streamName.toUpperCase() +
-              ': ' +
-              Buffer.concat(buffersByStreamName[streamName]).toString('utf-8') +
-              '\n';
+              `\n${streamName.toUpperCase()}: ${Buffer.concat(buffersByStreamName[streamName]).toString('utf-8')}\n`;
           }
         });
         return outputText;
@@ -333,9 +317,7 @@ describe('makeBabelJob', function() {
         if (exitCode) {
           return done(
             new Error(
-              'The makeBabelJob process ended with a non-zero exit code: ' +
-                exitCode +
-                getStreamOutputText()
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
             )
           );
         }
@@ -351,22 +333,19 @@ describe('makeBabelJob', function() {
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand =
-      "cp '" +
-      __dirname +
-      "/../../testdata/bin'/makeBabelJob/includeAllFlattened/* " +
-      tmpTestCaseCopyDir;
+      `cp '${__dirname}/../../testdata/bin'/makeBabelJob/includeAllFlattened/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
           new Error(
-            copyCommand + ' failed: STDERR:' + stderr + '\nSTDOUT:' + stdout
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
           )
         );
       }
 
       const makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
+          `${__dirname}/../../bin/makeBabelJob`,
           [
             '--babeldir',
             babelDir,
@@ -395,11 +374,7 @@ describe('makeBabelJob', function() {
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
-              '\n' +
-              streamName.toUpperCase() +
-              ': ' +
-              Buffer.concat(buffersByStreamName[streamName]).toString('utf-8') +
-              '\n';
+              `\n${streamName.toUpperCase()}: ${Buffer.concat(buffersByStreamName[streamName]).toString('utf-8')}\n`;
           }
         });
         return outputText;
@@ -409,9 +384,7 @@ describe('makeBabelJob', function() {
         if (exitCode) {
           return done(
             new Error(
-              'The makeBabelJob process ended with a non-zero exit code: ' +
-                exitCode +
-                getStreamOutputText()
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
             )
           );
         }
@@ -464,22 +437,19 @@ describe('makeBabelJob', function() {
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand =
-      "cp '" +
-      __dirname +
-      "/../../testdata/bin'/makeBabelJob/systemJs/* " +
-      tmpTestCaseCopyDir;
+      `cp '${__dirname}/../../testdata/bin'/makeBabelJob/systemJs/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
           new Error(
-            copyCommand + ' failed: STDERR:' + stderr + '\nSTDOUT:' + stdout
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
           )
         );
       }
 
       const makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
+          `${__dirname}/../../bin/makeBabelJob`,
           [
             '--babeldir',
             babelDir,
@@ -508,11 +478,7 @@ describe('makeBabelJob', function() {
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
-              '\n' +
-              streamName.toUpperCase() +
-              ': ' +
-              Buffer.concat(buffersByStreamName[streamName]).toString('utf-8') +
-              '\n';
+              `\n${streamName.toUpperCase()}: ${Buffer.concat(buffersByStreamName[streamName]).toString('utf-8')}\n`;
           }
         });
         return outputText;
@@ -522,9 +488,7 @@ describe('makeBabelJob', function() {
         if (exitCode) {
           return done(
             new Error(
-              'The makeBabelJob process ended with a non-zero exit code: ' +
-                exitCode +
-                getStreamOutputText()
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
             )
           );
         }

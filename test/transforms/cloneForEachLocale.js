@@ -7,7 +7,7 @@ const AssetGraph = require('assetgraph');
 describe('cloneForEachLocale', function() {
   it('should make a clone of each Html file for each language', function(done) {
     new AssetGraph({
-      root: __dirname + '/../../testdata/transforms/cloneForEachLocale/simple/'
+      root: `${__dirname}/../../testdata/transforms/cloneForEachLocale/simple/`
     })
       .loadAssets('index.html')
       .populate()
@@ -63,8 +63,7 @@ describe('cloneForEachLocale', function() {
   it('should handle multiple locales', function() {
     return new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/multipleLocales/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/multipleLocales/`
     })
       .loadAssets('index.html')
       .populate()
@@ -134,8 +133,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a test case with an externalized inline HtmlStyle and inlineCssImagesWithLegacyFallback', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/inlineCssCombo/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/inlineCssCombo/`
     })
       .loadAssets('index.html')
       .populate()
@@ -169,8 +167,7 @@ describe('cloneForEachLocale', function() {
   it('should handle Knockout.js templates', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/knockoutTemplate/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/knockoutTemplate/`
     })
       .loadAssets('index.html')
       .populate()
@@ -264,8 +261,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a TR in a data-bind attribute', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/trInHtmlDataBindAttribute/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/trInHtmlDataBindAttribute/`
     })
       .loadAssets('index.html')
       .populate()
@@ -288,8 +284,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a JavaScript asset that uses LOCALEID, DEFAULTLOCALE, LOCALECOOKIENAME, and SUPPORTEDLOCALEIDS', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/globalVarUsageInJavaScript/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/globalVarUsageInJavaScript/`
     })
       .loadAssets('index.html')
       .populate()
@@ -334,8 +329,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a template in an inline script', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/inlineScriptTemplate/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/inlineScriptTemplate/`
     })
       .loadAssets('index.html')
       .populate()
@@ -368,8 +362,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a template in an inline script in a Knockout.js template', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/inlineScriptTemplateInKnockoutJsTemplate/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/inlineScriptTemplateInKnockoutJsTemplate/`
     })
       .loadAssets('index.html')
       .populate()
@@ -424,7 +417,7 @@ describe('cloneForEachLocale', function() {
 
   it('should handle a Css asset that needs localization', function(done) {
     new AssetGraph({
-      root: __dirname + '/../../testdata/transforms/cloneForEachLocale/css/'
+      root: `${__dirname}/../../testdata/transforms/cloneForEachLocale/css/`
     })
       .loadAssets('index.html')
       .populate()
@@ -507,8 +500,7 @@ describe('cloneForEachLocale', function() {
   it('should handle two Html assets that include references to the same JavaScripts', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/multipleHtmls/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/multipleHtmls/`
     })
       .loadAssets('1.html', '2.html')
       .populate()
@@ -523,10 +515,10 @@ describe('cloneForEachLocale', function() {
           _.map(assetGraph.findAssets({ type: 'Html' }), 'url').sort(),
           'to equal',
           [
-            assetGraph.root + '1.da.html',
-            assetGraph.root + '1.en.html',
-            assetGraph.root + '2.da.html',
-            assetGraph.root + '2.en.html'
+            `${assetGraph.root}1.da.html`,
+            `${assetGraph.root}1.en.html`,
+            `${assetGraph.root}2.da.html`,
+            `${assetGraph.root}2.en.html`
           ]
         );
 
@@ -534,10 +526,10 @@ describe('cloneForEachLocale', function() {
           _.map(assetGraph.findAssets({ type: 'JavaScript' }), 'url').sort(),
           'to equal',
           [
-            assetGraph.root + 'doesNotNeedLocalization.da.js',
-            assetGraph.root + 'doesNotNeedLocalization.en.js',
-            assetGraph.root + 'needsLocalization.da.js',
-            assetGraph.root + 'needsLocalization.en.js'
+            `${assetGraph.root}doesNotNeedLocalization.da.js`,
+            `${assetGraph.root}doesNotNeedLocalization.en.js`,
+            `${assetGraph.root}needsLocalization.da.js`,
+            `${assetGraph.root}needsLocalization.en.js`
           ]
         );
       })
@@ -547,8 +539,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a language key that uses the same placeholder twice in the Danish translation', function() {
     return new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/reusePlaceHolder/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/reusePlaceHolder/`
     })
       .loadAssets('index.html')
       .populate()
@@ -571,8 +562,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a language key that uses the same placeholder twice in the Danish translation when the placeholder in the Html has a relation in it', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/relationInPlaceHolder/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/relationInPlaceHolder/`
     })
       .loadAssets('index.html')
       .populate()
@@ -599,7 +589,7 @@ describe('cloneForEachLocale', function() {
 
   it('should localize Svg assets', function(done) {
     new AssetGraph({
-      root: __dirname + '/../../testdata/transforms/cloneForEachLocale/svg/'
+      root: `${__dirname}/../../testdata/transforms/cloneForEachLocale/svg/`
     })
       .loadAssets('index.html')
       .populate()
@@ -638,8 +628,7 @@ describe('cloneForEachLocale', function() {
   it('should handle a JavaScript asset that contains only LOCALECOOKIENAME', function(done) {
     new AssetGraph({
       root:
-        __dirname +
-        '/../../testdata/transforms/cloneForEachLocale/localeCookieName/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/localeCookieName/`
     })
       .loadAssets('index.html')
       .populate()
@@ -671,7 +660,7 @@ describe('cloneForEachLocale', function() {
   it('should preserve the hrefType of an asset being cloned', function() {
     return new AssetGraph({
       root:
-        __dirname + '/../../testdata/transforms/cloneForEachLocale/hrefType/'
+        `${__dirname}/../../testdata/transforms/cloneForEachLocale/hrefType/`
     })
       .loadAssets('index.html')
       .populate()
@@ -700,8 +689,7 @@ describe('cloneForEachLocale', function() {
     it('should remove a <span> that was translated and had no attributes other than data-i18n', function() {
       return new AssetGraph({
         root:
-          __dirname +
-          '/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nAndNoOtherAttributes/'
+          `${__dirname}/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nAndNoOtherAttributes/`
       })
         .loadAssets('index.html')
         .populate()
@@ -724,8 +712,7 @@ describe('cloneForEachLocale', function() {
     it('should leave a <span> that was translated and had another attribute besides data-i18n', function() {
       return new AssetGraph({
         root:
-          __dirname +
-          '/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nOtherAttribute/'
+          `${__dirname}/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nOtherAttribute/`
       })
         .loadAssets('index.html')
         .populate()
@@ -748,8 +735,7 @@ describe('cloneForEachLocale', function() {
     it('should not remove a span with data-i18=""', function() {
       return new AssetGraph({
         root:
-          __dirname +
-          '/../../testdata/transforms/cloneForEachLocale/spanWithEmptyDataI18n/'
+          `${__dirname}/../../testdata/transforms/cloneForEachLocale/spanWithEmptyDataI18n/`
       })
         .loadAssets('index.html')
         .populate()
@@ -774,8 +760,7 @@ describe('cloneForEachLocale', function() {
     it('should leave a <span> that was translated and had no attributes other than data-i18n', function() {
       return new AssetGraph({
         root:
-          __dirname +
-          '/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nAndNoOtherAttributes/'
+          `${__dirname}/../../testdata/transforms/cloneForEachLocale/spanWithDataI18nAndNoOtherAttributes/`
       })
         .loadAssets('index.html')
         .populate()

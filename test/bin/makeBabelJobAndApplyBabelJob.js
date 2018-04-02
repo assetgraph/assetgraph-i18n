@@ -12,16 +12,13 @@ describe('makeBabelJob and applyBabelJob', function() {
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand =
-      "cp '" +
-      __dirname +
-      "/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* " +
-      tmpTestCaseCopyDir;
+      `cp '${__dirname}/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
           new Error(
-            copyCommand + ' failed: STDERR:' + stderr + '\nSTDOUT:' + stdout
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
           )
         );
       }
@@ -56,11 +53,7 @@ describe('makeBabelJob and applyBabelJob', function() {
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
-              '\n' +
-              streamName.toUpperCase() +
-              ': ' +
-              Buffer.concat(buffersByStreamName[streamName]).toString('utf-8') +
-              '\n';
+              `\n${streamName.toUpperCase()}: ${Buffer.concat(buffersByStreamName[streamName]).toString('utf-8')}\n`;
           }
         });
         return outputText;
@@ -70,9 +63,7 @@ describe('makeBabelJob and applyBabelJob', function() {
         if (exitCode) {
           return done(
             new Error(
-              'The makeBabelJob process ended with a non-zero exit code: ' +
-                exitCode +
-                getStreamOutputText()
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
             )
           );
         }
@@ -204,8 +195,7 @@ describe('makeBabelJob and applyBabelJob', function() {
           if (exitCode) {
             return done(
               new Error(
-                'The applyBabelJob process ended with a non-zero exit code: ' +
-                  exitCode
+                `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`
               )
             );
           }
