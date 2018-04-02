@@ -22,19 +22,16 @@ describe('applyBabelJob', function() {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand =
-      `cp '${__dirname}/../../testdata/bin/applyBabelJob/complex'/index.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob/complex'/index.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(
-            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
-          )
+          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob`,
+        `${__dirname}/../../bin/applyBabelJob.js`,
         [
           '--babeldir',
           babelDir,
@@ -152,19 +149,16 @@ describe('applyBabelJob', function() {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand =
-      `cp '${__dirname}/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(
-            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
-          )
+          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob`,
+        `${__dirname}/../../bin/applyBabelJob.js`,
         [
           '--babeldir',
           babelDir,
@@ -245,19 +239,16 @@ describe('applyBabelJob', function() {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand =
-      `cp '${__dirname}/../../testdata/bin/applyBabelJob'/systemJs/*.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/systemJs/*.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(
-            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
-          )
+          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob`,
+        `${__dirname}/../../bin/applyBabelJob.js`,
         [
           '--babeldir',
           babelDir,
@@ -317,19 +308,16 @@ describe('applyBabelJob', function() {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand =
-      `cp '${__dirname}/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(
-            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
-          )
+          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob`,
+        `${__dirname}/../../bin/applyBabelJob.js`,
         [
           '--babeldir',
           babelDir,
