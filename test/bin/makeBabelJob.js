@@ -141,18 +141,18 @@ describe('makeBabelJob', function() {
           [
             'KeyAlreadyPartiallyTranslatedInIndexI18n=',
             'KeyAlreadyPartiallyTranslatedInOtherI18n=',
+            'KeyAlreadyTranslatedToCzech[one]=fzd',
             'KeyAlreadyTranslatedToCzech[few]=fzd',
             'KeyAlreadyTranslatedToCzech[many]=fzd',
-            'KeyAlreadyTranslatedToCzech[one]=fzd',
             'KeyAlreadyTranslatedToCzech[other]=fzd',
             'KeyDestinedForIndexI18n=',
+            'NotYetTranslatedKeyWithPluralCases[one]=',
             'NotYetTranslatedKeyWithPluralCases[few]=',
             'NotYetTranslatedKeyWithPluralCases[many]=',
-            'NotYetTranslatedKeyWithPluralCases[one]=',
             'NotYetTranslatedKeyWithPluralCases[other]=',
+            'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][few]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
-            'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
             ''
           ].join('\n')
@@ -164,18 +164,18 @@ describe('makeBabelJob', function() {
           [
             'KeyAlreadyPartiallyTranslatedInIndexI18n=',
             'KeyAlreadyPartiallyTranslatedInOtherI18n=',
+            'KeyAlreadyTranslatedToCzech[one]=',
             'KeyAlreadyTranslatedToCzech[few]=',
             'KeyAlreadyTranslatedToCzech[many]=',
-            'KeyAlreadyTranslatedToCzech[one]=',
             'KeyAlreadyTranslatedToCzech[other]=',
             'KeyDestinedForIndexI18n=',
+            'NotYetTranslatedKeyWithPluralCases[one]=',
             'NotYetTranslatedKeyWithPluralCases[few]=',
             'NotYetTranslatedKeyWithPluralCases[many]=',
-            'NotYetTranslatedKeyWithPluralCases[one]=',
             'NotYetTranslatedKeyWithPluralCases[other]=',
+            'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][few]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
-            'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
             ''
           ].join('\n')

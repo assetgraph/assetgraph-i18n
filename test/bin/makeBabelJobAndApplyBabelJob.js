@@ -11,32 +11,29 @@ describe('makeBabelJob and applyBabelJob', function() {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand =
-      `cp '${__dirname}/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(
-            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`
-          )
+          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
         );
       }
 
       const makeBabelJobProcess = childProcess.spawn(
-          Path.resolve(__dirname, '..', '..', 'bin', 'makeBabelJob'),
-          [
-            '--babeldir',
-            babelDir,
-            '--root',
-            tmpTestCaseCopyDir,
-            '--locales',
-            'en,da,de',
-            '--i18n',
-            Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html')
-          ]
-        );
+        Path.resolve(__dirname, '..', '..', 'bin', 'makeBabelJob.js'),
+        [
+          '--babeldir',
+          babelDir,
+          '--root',
+          tmpTestCaseCopyDir,
+          '--locales',
+          'en,da,de',
+          '--i18n',
+          Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
+          Path.resolve(tmpTestCaseCopyDir, 'index.html')
+        ]
+      );
 
       const buffersByStreamName = {};
       const streamNames = ['stdout', 'stderr'];
@@ -52,8 +49,9 @@ describe('makeBabelJob and applyBabelJob', function() {
         let outputText = '';
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
-            outputText +=
-              `\n${streamName.toUpperCase()}: ${Buffer.concat(buffersByStreamName[streamName]).toString('utf-8')}\n`;
+            outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
+              buffersByStreamName[streamName]
+            ).toString('utf-8')}\n`;
           }
         });
         return outputText;
@@ -178,7 +176,7 @@ describe('makeBabelJob and applyBabelJob', function() {
         );
 
         const applyBabelJobProcess = childProcess.spawn(
-          Path.resolve(__dirname, '..', '..', 'bin', 'applyBabelJob'),
+          Path.resolve(__dirname, '..', '..', 'bin', 'applyBabelJob.js'),
           [
             '--babeldir',
             babelDir,
