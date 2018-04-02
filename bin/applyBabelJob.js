@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 /*eslint indent:0*/
-var path = require('path');
+const path = require('path');
 
-var fs = require('fs');
-var util = require('util');
-var _ = require('lodash');
-var AssetGraph = require('assetgraph');
-var i18nTools = require('../lib/i18nTools');
-var pluralsCldr = require('plurals-cldr');
-var urlTools = require('urltools');
+const fs = require('fs');
+const util = require('util');
+const _ = require('lodash');
+const AssetGraph = require('assetgraph');
+const i18nTools = require('../lib/i18nTools');
+const pluralsCldr = require('plurals-cldr');
+const urlTools = require('urltools');
 
-var commandLineOptions = require('optimist')
+const commandLineOptions = require('optimist')
   .usage(
     '$0 --i18n <pathToI18nFile> [--locales <localeId>[,<localeId>...]] [--defaultlocale <localeId>] --babeldir=<dirContainingTheBabelFilesToApply> --root <inputRootDirectory> <htmlFile>...'
   )
@@ -29,7 +29,7 @@ var commandLineOptions = require('optimist')
   })
   .demand(['root', 'babeldir', 'i18n']).argv;
 
-var localeIds =
+const localeIds =
   commandLineOptions.locales &&
   _.flatten(
     _.flatten([commandLineOptions.locales]).map(function(localeId) {
@@ -37,10 +37,10 @@ var localeIds =
     })
   ).map(i18nTools.normalizeLocaleId);
 
-var initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
-var originalTextByAssetId = {};
-var defaultLocaleId;
-var i18nUrl;
+const initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
+const originalTextByAssetId = {};
+let defaultLocaleId;
+let i18nUrl;
 
 if (commandLineOptions.defaultlocale) {
   defaultLocaleId = i18nTools.normalizeLocaleId(
@@ -105,14 +105,14 @@ new AssetGraph({ root: commandLineOptions.root })
     }
   })
   .queue(function importLanguageKeys(assetGraph) {
-  var translationsByKeyAndLocaleId = {};
+  const translationsByKeyAndLocaleId = {};
 
-  var occurrencesByKey = i18nTools.findOccurrences(
+  const occurrencesByKey = i18nTools.findOccurrences(
     assetGraph,
     assetGraph.findAssets({ type: 'Html', isInitial: true })
   );
 
-  var i18nAssetForAllKeys;
+  let i18nAssetForAllKeys;
 
   if (i18nUrl) {
     i18nAssetForAllKeys = assetGraph.findAssets({ url: i18nUrl })[0];
@@ -132,19 +132,19 @@ new AssetGraph({ root: commandLineOptions.root })
     }
   }
 
-  var isSeenByLocaleId = {};
+  const isSeenByLocaleId = {};
 
   fs.readdirSync(commandLineOptions.babeldir).forEach(function(fileName) {
     if (fileName === 'SOURCE.txt') {
       console.warn('Skipping ' + fileName);
     } else {
-      var matchLocaleId = fileName.match(
+      const matchLocaleId = fileName.match(
         /^([a-zA-Z0-9\-\_]+)\.(?:txt|babel)$/
       );
       if (matchLocaleId) {
-        var localeId = i18nTools.normalizeLocaleId(matchLocaleId[1]);
+        const localeId = i18nTools.normalizeLocaleId(matchLocaleId[1]);
 
-        var babelBody = fs.readFileSync(
+        const babelBody = fs.readFileSync(
           path.resolve(commandLineOptions.babeldir, fileName),
           'utf-8'
         );
@@ -165,17 +165,17 @@ new AssetGraph({ root: commandLineOptions.root })
         babelBody.split(/\r?\n|\r\n?/).forEach(function(line, lineNumber) {
           if (!/^\s*\#|^\s*$/.test(line)) {
             // Skip comments and empty lines
-            var matchKeyValue = line.match(/^([^=]+)=(.*)$/);
+            const matchKeyValue = line.match(/^([^=]+)=(.*)$/);
             if (matchKeyValue) {
-              var key = matchKeyValue[1].trim();
+              let key = matchKeyValue[1].trim();
 
-              var value = matchKeyValue[2]
+              let value = matchKeyValue[2]
                 .trim()
                 .replace(/\\([n\\])/g, function($0, ch) {
                   return ch === 'n' ? '\n' : ch;
                 });
 
-              var path = [];
+              const path = [];
 
               // If the value looks like a number, we want it to be a number in our JSON representation
               if (/^(?:[1-9][0-9]*(?:\.[0-9]*)?)$/.test(value)) {
@@ -191,7 +191,7 @@ new AssetGraph({ root: commandLineOptions.root })
                 translationsByKeyAndLocaleId[key] = {};
               }
               path.unshift(localeId);
-              var cursor = translationsByKeyAndLocaleId[key];
+              let cursor = translationsByKeyAndLocaleId[key];
               while (path.length > 1) {
                 if (/^(?:[0-9]|[1-9][0-9]*)$/.test(path[1])) {
                   // Integer path component, assume that cursor[nextIndex] should be an array
@@ -280,7 +280,7 @@ new AssetGraph({ root: commandLineOptions.root })
       }
     });
   }
-  var secondaryI18nAssets = assetGraph
+  const secondaryI18nAssets = assetGraph
     .findAssets({
       type: 'I18n',
       isLoaded: true
@@ -290,16 +290,16 @@ new AssetGraph({ root: commandLineOptions.root })
     });
 
   Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
-    var translationsByLocaleId = translationsByKeyAndLocaleId[key];
+    const translationsByLocaleId = translationsByKeyAndLocaleId[key];
     Object.keys(translationsByLocaleId).forEach(function(localeId) {
-      var value = translationsByLocaleId[localeId];
+      const value = translationsByLocaleId[localeId];
       // Mostly copied from coalescePluralsToLocale
       translationsByLocaleId[localeId] = (function traverse(obj) {
         if (Array.isArray(obj)) {
           return obj.map(traverse);
         } else if (typeof obj === 'object' && obj !== null) {
-          var coalescedObj = {};
-          var keys = Object.keys(obj);
+          const coalescedObj = {};
+          let keys = Object.keys(obj);
           if (
             keys.length > 0 &&
             keys.every(function(key) {
@@ -340,11 +340,11 @@ new AssetGraph({ root: commandLineOptions.root })
   });
 
   Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
-    var i18nAsset;
+    let i18nAsset;
     if (!(key in i18nAssetForAllKeys.parseTree)) {
       // Even if a i18nAssetForAllKeys (--i18n ...) is defined, another .i18n we should prefer another file with that key already defined:
       if (secondaryI18nAssets.length > 0) {
-        for (var i = 0; i < secondaryI18nAssets.length; i += 1) {
+        for (let i = 0; i < secondaryI18nAssets.length; i += 1) {
           if (key in secondaryI18nAssets[i].parseTree) {
             i18nAsset = secondaryI18nAssets[i];
             break;
@@ -364,8 +364,8 @@ new AssetGraph({ root: commandLineOptions.root })
     Object.keys(translationsByKeyAndLocaleId[key]).forEach(function(
       localeId
     ) {
-      var newTranslation = translationsByKeyAndLocaleId[key][localeId];
-      var existingTranslation = i18nAsset.parseTree[key][localeId];
+      const newTranslation = translationsByKeyAndLocaleId[key][localeId];
+      const existingTranslation = i18nAsset.parseTree[key][localeId];
 
       function setMergedTranslation(mergedTranslation) {
         i18nAsset.parseTree[key][localeId] = mergedTranslation;
@@ -397,8 +397,8 @@ new AssetGraph({ root: commandLineOptions.root })
   });
 
   if (commandLineOptions.replace) {
-    var allKeysInDefaultLocale = {};
-    var replacedTextByAssetId = {};
+    const allKeysInDefaultLocale = {};
+    const replacedTextByAssetId = {};
     Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
       i18nTools
         .expandLocaleIdToPrioritizedList(defaultLocaleId)
@@ -412,14 +412,14 @@ new AssetGraph({ root: commandLineOptions.root })
     });
 
     // Replace data-i18n in Html assets first:
-    var i18nTagReplacer = i18nTools.createI18nTagReplacer({
+    const i18nTagReplacer = i18nTools.createI18nTagReplacer({
       allKeysForLocale: allKeysInDefaultLocale,
       localeId: defaultLocaleId,
       keepSpans: true,
       keepI18nAttributes: true
     });
     assetGraph.findAssets({ type: 'Html' }).forEach(function(htmlAsset) {
-      var hasOccurrences = false;
+      let hasOccurrences = false;
       i18nTools.eachI18nTagInHtmlDocument(htmlAsset.parseTree, function(
         options
       ) {
@@ -448,7 +448,7 @@ new AssetGraph({ root: commandLineOptions.root })
         defaultLocaleId &&
         defaultLocaleId in translationsByKeyAndLocaleId[key]
       ) {
-        var occurrences = occurrencesByKey[key] || [];
+        const occurrences = occurrencesByKey[key] || [];
         (occurrences || []).forEach(function(occurrence) {
           if (
             !_.isEqual(
@@ -457,9 +457,9 @@ new AssetGraph({ root: commandLineOptions.root })
             )
           ) {
             if (occurrence.type === 'TR' || occurrence.type === 'TRPAT') {
-              var asset = occurrence.asset.nonInlineAncestor;
+              const asset = occurrence.asset.nonInlineAncestor;
 
-              var replaceRegExp = new RegExp(
+              const replaceRegExp = new RegExp(
                 '(TR(?:PAT)?\\(([\'"])' +
                   key.replace(/[\.\[\]\*\+\?\{\}\(\)\^\$]/g, '\\$&') +
                   '\\2\\s*,\\s*)(?:[^)\'"]*|"[^"]*"|\'[^\']*\')*?\\)',
@@ -484,8 +484,8 @@ new AssetGraph({ root: commandLineOptions.root })
       }
     });
     Object.keys(replacedTextByAssetId).forEach(function(assetId) {
-      var asset = assetGraph.idIndex[assetId];
-      var replacedText = replacedTextByAssetId[assetId];
+      const asset = assetGraph.idIndex[assetId];
+      let replacedText = replacedTextByAssetId[assetId];
       asset.keepUnpopulated = true;
       if (asset.type === 'Html') {
         // Un-entitify < > & in data-bind and data-htmlizer attributes (common intentional spec breakage in development):

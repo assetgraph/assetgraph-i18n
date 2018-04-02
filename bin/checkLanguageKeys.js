@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /*eslint indent:0*/
-var optimist = require('optimist');
+const optimist = require('optimist');
 
-var commandLineOptions = optimist
+const commandLineOptions = optimist
   .usage('$0 --root <inputRootDirectory> [options] <htmlFile(s)>')
   .options('locales', {
     describe: 'Comma-separated list of locales to check',
@@ -43,16 +43,16 @@ if (commandLineOptions.h) {
   process.exit(1);
 }
 
-var _ = require('lodash');
-var AssetGraph = require('assetgraph');
-var i18nTools = require('../lib/i18nTools');
-var urlTools = require('urltools');
+const _ = require('lodash');
+const AssetGraph = require('assetgraph');
+const i18nTools = require('../lib/i18nTools');
+const urlTools = require('urltools');
 
-var rootUrl =
+let rootUrl =
   commandLineOptions.root &&
   urlTools.urlOrFsPathToUrl(commandLineOptions.root, true);
 
-var localeIds =
+const localeIds =
   commandLineOptions.locales &&
   _.flatten(
     _.flatten([commandLineOptions.locales]).map(function(localeId) {
@@ -60,11 +60,11 @@ var localeIds =
     })
   ).map(i18nTools.normalizeLocaleId);
 
-var defaultLocaleId =
+const defaultLocaleId =
   commandLineOptions.defaultlocale &&
   i18nTools.normalizeLocaleId(commandLineOptions.defaultlocale);
 
-var ignoreMessageTypes =
+const ignoreMessageTypes =
   commandLineOptions.ignore &&
   _.flatten(
     _.flatten([commandLineOptions.ignore]).map(function(ignoreMessageType) {
@@ -72,7 +72,7 @@ var ignoreMessageTypes =
     })
   );
 
-var warnMessageTypes =
+const warnMessageTypes =
   commandLineOptions.warn &&
   _.flatten(
     _.flatten([commandLineOptions.warn]).map(function(warnMessageType) {
@@ -80,7 +80,7 @@ var warnMessageTypes =
     })
   );
 
-var includeAttributeNames =
+const includeAttributeNames =
   commandLineOptions.includeattribute &&
   _.flatten(
     _.flatten([commandLineOptions.includeattribute]).map(function(
@@ -90,7 +90,7 @@ var includeAttributeNames =
     })
   );
 
-var excludeAttributeNames =
+const excludeAttributeNames =
   commandLineOptions.excludeattribute &&
   _.flatten(
     _.flatten([commandLineOptions.excludeattribute]).map(function(
@@ -100,7 +100,7 @@ var excludeAttributeNames =
     })
   );
 
-var inputUrls;
+let inputUrls;
 
 if (commandLineOptions._.length > 0) {
   inputUrls = commandLineOptions._.map(function(urlOrFsPath) {
