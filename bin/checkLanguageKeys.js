@@ -163,12 +163,12 @@ new AssetGraph({ root: rootUrl })
   .queue(
     require('../lib/transforms/checkLanguageKeys')({
       supportedLocaleIds: localeIds,
-      defaultLocaleId: defaultLocaleId,
-      ignoreMessageTypes: ignoreMessageTypes,
-      warnMessageTypes: warnMessageTypes,
+      defaultLocaleId,
+      ignoreMessageTypes,
+      warnMessageTypes,
       removeUnused: commandLineOptions.removeunused,
-      includeAttributeNames: includeAttributeNames,
-      excludeAttributeNames: excludeAttributeNames
+      includeAttributeNames,
+      excludeAttributeNames
     })
   )
   .if(commandLineOptions.removeunused)

@@ -233,7 +233,7 @@ new AssetGraph({ root: commandLineOptions.root })
   .queue(
     require('../lib/transforms/checkLanguageKeys')({
       supportedLocaleIds: localeIds,
-      defaultLocaleId: defaultLocaleId
+      defaultLocaleId
     })
   )
   .queue(function exportLanguageKeys(assetGraph) {
