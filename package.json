@@ -23,6 +23,11 @@
     "lib",
     "bin"
   ],
+  "bin": {
+    "applyBabelJob": "applyBabelJob.js",
+    "checkLanguageKeys": "checkLanguageKeys.js",
+    "makeBabelJob": "makeBabelJob.js"
+  },
   "dependencies": {
     "esanimate": "^1.1.0",
     "escodegen": "^1.8.0",
@@ -50,10 +55,6 @@
   },
   "peerDependencies": {
     "assetgraph": "^4.0.0"
-  },
-  "directories": {
-    "lib": "./lib",
-    "bin": "./bin"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
