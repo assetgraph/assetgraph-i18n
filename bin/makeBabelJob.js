@@ -1,29 +1,32 @@
 #!/usr/bin/env node
 
-var path = require('path'),
-  fs = require('fs'),
-  _ = require('lodash'),
-  AssetGraph = require('assetgraph'),
-  i18nTools = require('../lib/i18nTools'),
-  urlTools = require('urltools'),
-  mkpathSync = require('../lib/mkpathSync'),
-  pluralsCldr = require('plurals-cldr'),
-  commandLineOptions = require('optimist')
-    .usage(
-      '$0 --i18n <pathToI18nFile> [--all] [--defaultlocale <localeId>] --babeldir=<dirForBabelFiles> --root <inputRootDirectory> --locales <localeId>,... <htmlFile>...'
-    )
-    .boolean('all')
-    .demand(['root', 'locales', 'babeldir', 'i18n']).argv,
-  localeIds =
-    commandLineOptions.locales &&
-    _.flatten(
-      _.flatten([commandLineOptions.locales]).map(function(localeId) {
-        return localeId.split(',');
-      })
-    ).map(i18nTools.normalizeLocaleId),
-  initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl),
-  defaultLocaleId,
-  i18nUrl;
+var path = require('path');
+var fs = require('fs');
+var _ = require('lodash');
+var AssetGraph = require('assetgraph');
+var i18nTools = require('../lib/i18nTools');
+var urlTools = require('urltools');
+var mkpathSync = require('../lib/mkpathSync');
+var pluralsCldr = require('plurals-cldr');
+
+var commandLineOptions = require('optimist')
+  .usage(
+    '$0 --i18n <pathToI18nFile> [--all] [--defaultlocale <localeId>] --babeldir=<dirForBabelFiles> --root <inputRootDirectory> --locales <localeId>,... <htmlFile>...'
+  )
+  .boolean('all')
+  .demand(['root', 'locales', 'babeldir', 'i18n']).argv;
+
+var localeIds =
+  commandLineOptions.locales &&
+  _.flatten(
+    _.flatten([commandLineOptions.locales]).map(function(localeId) {
+      return localeId.split(',');
+    })
+  ).map(i18nTools.normalizeLocaleId);
+
+var initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
+var defaultLocaleId;
+var i18nUrl;
 
 if (commandLineOptions.defaultlocale) {
   defaultLocaleId = i18nTools.normalizeLocaleId(
@@ -54,8 +57,8 @@ function coalescePluralsToLocale(value, localeId, pluralFormsToInclude) {
     if (Array.isArray(obj)) {
       return obj.map(traverse);
     } else if (typeof obj === 'object' && obj !== null) {
-      var coalescedObj = {},
-        keys = Object.keys(obj);
+      var coalescedObj = {};
+      var keys = Object.keys(obj);
       if (
         keys.length > 0 &&
         keys.every(function(key) {
@@ -164,8 +167,8 @@ function getLeavesFrom(obj, otherObject) {
 }
 
 function flattenKey(key, value) {
-  var valueByFlattenedKey = {},
-    path = [];
+  var valueByFlattenedKey = {};
+  var path = [];
   (function traverse(obj) {
     if (Array.isArray(obj)) {
       for (var i = 0; i < obj.length; i += 1) {
@@ -194,16 +197,17 @@ function flattenKey(key, value) {
   return valueByFlattenedKey;
 }
 
-var pluralFormsInTheDefaultLocale = pluralsCldr.forms(defaultLocaleId),
-  relevantPluralFormsNotInTheDefaultLocale = _.difference(
-    _.union.apply(
-      _,
-      localeIds.map(function(localeId) {
-        return pluralsCldr.forms(localeId);
-      })
-    ),
-    pluralFormsInTheDefaultLocale
-  );
+var pluralFormsInTheDefaultLocale = pluralsCldr.forms(defaultLocaleId);
+
+var relevantPluralFormsNotInTheDefaultLocale = _.difference(
+  _.union.apply(
+    _,
+    localeIds.map(function(localeId) {
+      return pluralsCldr.forms(localeId);
+    })
+  ),
+  pluralFormsInTheDefaultLocale
+);
 
 new AssetGraph({ root: commandLineOptions.root })
   .logEvents({
@@ -237,38 +241,123 @@ new AssetGraph({ root: commandLineOptions.root })
     })
   )
   .queue(function exportLanguageKeys(assetGraph) {
-    var initialAssets = assetGraph.findAssets({ isInitial: true }),
-      occurrencesByKey = i18nTools.findOccurrences(assetGraph, initialAssets),
-      allKeys = i18nTools.extractAllKeys(assetGraph),
-      i18nAssetForAllKeys;
+  var initialAssets = assetGraph.findAssets({ isInitial: true });
+  var occurrencesByKey = i18nTools.findOccurrences(assetGraph, initialAssets);
+  var allKeys = i18nTools.extractAllKeys(assetGraph);
+  var i18nAssetForAllKeys;
 
-    if (i18nUrl) {
-      i18nAssetForAllKeys = assetGraph.findAssets({ url: i18nUrl })[0];
-      if (!i18nAssetForAllKeys) {
-        i18nAssetForAllKeys = new AssetGraph.I18n({
-          url: i18nUrl,
-          isDirty: true,
-          parseTree: {}
-        });
-        assetGraph.addAsset(i18nAssetForAllKeys);
-        assetGraph.emit(
-          'info',
-          '--i18n ' + commandLineOptions.i18n + ' not found, creating it'
-        );
-      } else if (!i18nAssetForAllKeys.isLoaded) {
-        i18nAssetForAllKeys.parseTree = {};
-      }
+  if (i18nUrl) {
+    i18nAssetForAllKeys = assetGraph.findAssets({ url: i18nUrl })[0];
+    if (!i18nAssetForAllKeys) {
+      i18nAssetForAllKeys = new AssetGraph.I18n({
+        url: i18nUrl,
+        isDirty: true,
+        parseTree: {}
+      });
+      assetGraph.addAsset(i18nAssetForAllKeys);
+      assetGraph.emit(
+        'info',
+        '--i18n ' + commandLineOptions.i18n + ' not found, creating it'
+      );
+    } else if (!i18nAssetForAllKeys.isLoaded) {
+      i18nAssetForAllKeys.parseTree = {};
+    }
+  }
+
+  var isRelevantInLocaleByFlattenedKeyByLocaleId = {};
+  var isRelevantInAnyLocaleByFlattenedKey = {};
+  var keyByFlattenedKey = {};
+  var isTranslatedByFlattenedKeyByLocaleId = {};
+
+  Object.keys(occurrencesByKey).forEach(function(key) {
+    var occurrences = occurrencesByKey[key];
+    var defaultValueInTheOccurrence;
+    var defaultValue;
+
+    // Look for a default value in the occurrences:
+    occurrences.forEach(function(occurrence) {
+      // FIXME: Warn about multiple different default values?
+      defaultValueInTheOccurrence = occurrence.defaultValue;
+    });
+
+    if (key in allKeys && defaultLocaleId in allKeys[key]) {
+      defaultValue = allKeys[key][defaultLocaleId];
+    } else {
+      defaultValue = defaultValueInTheOccurrence;
     }
 
-    var isRelevantInLocaleByFlattenedKeyByLocaleId = {},
-      isRelevantInAnyLocaleByFlattenedKey = {},
-      keyByFlattenedKey = {},
-      isTranslatedByFlattenedKeyByLocaleId = {};
+    localeIds.forEach(function(localeId) {
+      var value;
+      var isDefaultValue = false;
+      if (key in allKeys && localeId in allKeys[key]) {
+        value = allKeys[key][localeId];
+      } else {
+        value = nullOutLeaves(defaultValue);
+        isDefaultValue = true;
+      }
 
-    Object.keys(occurrencesByKey).forEach(function(key) {
-      var occurrences = occurrencesByKey[key],
-        defaultValueInTheOccurrence,
-        defaultValue;
+      isRelevantInLocaleByFlattenedKeyByLocaleId[localeId] =
+        isRelevantInLocaleByFlattenedKeyByLocaleId[localeId] || {};
+      isTranslatedByFlattenedKeyByLocaleId[localeId] =
+        isTranslatedByFlattenedKeyByLocaleId[localeId] || {};
+      var flattenedAndCoalesced = flattenKey(
+        key,
+        coalescePluralsToLocale(value, localeId)
+      );
+
+      Object.keys(flattenedAndCoalesced).forEach(function(flattenedKey) {
+        isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][
+          flattenedKey
+        ] = true;
+        var value = flattenedAndCoalesced[flattenedKey];
+        isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey] =
+          !isDefaultValue && typeof value !== 'undefined';
+        isRelevantInAnyLocaleByFlattenedKey[flattenedKey] = true;
+        keyByFlattenedKey[flattenedKey] = key;
+      });
+    });
+  });
+
+  var alreadyTranslatedByFlattenedKey = {};
+  Object.keys(keyByFlattenedKey).forEach(function(flattenedKey) {
+    alreadyTranslatedByFlattenedKey[flattenedKey] = localeIds.every(function(
+      localeId
+    ) {
+      return (
+        !isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][flattenedKey] ||
+        isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey]
+      );
+    });
+  });
+
+  var alreadyTranslatedByKey = {};
+  Object.keys(keyByFlattenedKey).forEach(function(flattenedKey) {
+    var key = keyByFlattenedKey[flattenedKey];
+    if (alreadyTranslatedByKey[key] !== false) {
+      alreadyTranslatedByKey[key] =
+        alreadyTranslatedByFlattenedKey[flattenedKey] || false;
+    }
+  });
+
+  localeIds.forEach(function(localeId) {
+    var babelSrc = '';
+
+    var isDefaultLocale =
+      localeId === defaultLocaleId ||
+      localeId.indexOf(defaultLocaleId + '_') === 0;
+
+    var keys = Object.keys(occurrencesByKey).sort(function(a, b) {
+      var aLowerCase = a.toLowerCase(),
+        bLowerCase = b.toLowerCase();
+      return aLowerCase < bLowerCase ? -1 : aLowerCase > bLowerCase ? 1 : 0;
+    });
+
+    keys.forEach(function(key) {
+      var occurrences = occurrencesByKey[key];
+      var omitExistingValues = false;
+      var value;
+      var defaultValue;
+      var defaultValueInTheOccurrence;
 
       // Look for a default value in the occurrences:
       occurrences.forEach(function(occurrence) {
@@ -282,282 +371,201 @@ new AssetGraph({ root: commandLineOptions.root })
         defaultValue = defaultValueInTheOccurrence;
       }
 
-      localeIds.forEach(function(localeId) {
-        var value,
-          isDefaultValue = false;
-        if (key in allKeys && localeId in allKeys[key]) {
-          value = allKeys[key][localeId];
-        } else {
-          value = nullOutLeaves(defaultValue);
-          isDefaultValue = true;
-        }
-
-        isRelevantInLocaleByFlattenedKeyByLocaleId[localeId] =
-          isRelevantInLocaleByFlattenedKeyByLocaleId[localeId] || {};
-        isTranslatedByFlattenedKeyByLocaleId[localeId] =
-          isTranslatedByFlattenedKeyByLocaleId[localeId] || {};
-        var flattenedAndCoalesced = flattenKey(
-          key,
-          coalescePluralsToLocale(value, localeId)
-        );
-
-        Object.keys(flattenedAndCoalesced).forEach(function(flattenedKey) {
-          isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][
-            flattenedKey
-          ] = true;
-          var value = flattenedAndCoalesced[flattenedKey];
-          isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey] =
-            !isDefaultValue && typeof value !== 'undefined';
-          isRelevantInAnyLocaleByFlattenedKey[flattenedKey] = true;
-          keyByFlattenedKey[flattenedKey] = key;
-        });
-      });
-    });
-
-    var alreadyTranslatedByFlattenedKey = {};
-    Object.keys(keyByFlattenedKey).forEach(function(flattenedKey) {
-      alreadyTranslatedByFlattenedKey[flattenedKey] = localeIds.every(function(
-        localeId
-      ) {
-        return (
-          !isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][flattenedKey] ||
-          isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey]
-        );
-      });
-    });
-
-    var alreadyTranslatedByKey = {};
-    Object.keys(keyByFlattenedKey).forEach(function(flattenedKey) {
-      var key = keyByFlattenedKey[flattenedKey];
-      if (alreadyTranslatedByKey[key] !== false) {
-        alreadyTranslatedByKey[key] =
-          alreadyTranslatedByFlattenedKey[flattenedKey] || false;
-      }
-    });
-
-    localeIds.forEach(function(localeId) {
-      var babelSrc = '',
-        isDefaultLocale =
-          localeId === defaultLocaleId ||
-          localeId.indexOf(defaultLocaleId + '_') === 0,
-        keys = Object.keys(occurrencesByKey).sort(function(a, b) {
-          var aLowerCase = a.toLowerCase(),
-            bLowerCase = b.toLowerCase();
-          return aLowerCase < bLowerCase ? -1 : aLowerCase > bLowerCase ? 1 : 0;
-        });
-      keys.forEach(function(key) {
-        var occurrences = occurrencesByKey[key],
-          omitExistingValues = false,
-          value,
-          defaultValue,
-          defaultValueInTheOccurrence;
-
-        // Look for a default value in the occurrences:
-        occurrences.forEach(function(occurrence) {
-          // FIXME: Warn about multiple different default values?
-          defaultValueInTheOccurrence = occurrence.defaultValue;
-        });
-
-        if (key in allKeys && defaultLocaleId in allKeys[key]) {
-          defaultValue = allKeys[key][defaultLocaleId];
-        } else {
-          defaultValue = defaultValueInTheOccurrence;
-        }
-
-        if (key in allKeys && localeId in allKeys[key]) {
-          value = allKeys[key][localeId];
-        } else if (defaultValue && localeId.indexOf(defaultLocaleId) === 0) {
-          value = defaultValue;
-        } else if (defaultValue) {
-          value = defaultValue;
-          // Use the defaultValue to figure out which babel keys to flatten it to (only relevant for structured values):
-          omitExistingValues = true;
-        } else {
-          value = null;
-        }
-
-        var valueByFlattenedKey = flattenKey(key, value),
-          defaultValueInTheOccurrenceByFlattenedKey,
-          flattenedKeysThatMustBePresent = Object.keys(valueByFlattenedKey);
-        // Make sure that all the flattened keys from the actual occurrence are present:
-        if (typeof defaultValueInTheOccurrence !== 'undefined') {
-          defaultValueInTheOccurrence = coalescePluralsToLocale(
-            defaultValueInTheOccurrence,
-            localeId
-          );
-          defaultValueInTheOccurrenceByFlattenedKey = flattenKey(
-            key,
-            defaultValueInTheOccurrence
-          );
-          flattenedKeysThatMustBePresent = _.union(
-            Object.keys(defaultValueInTheOccurrenceByFlattenedKey),
-            flattenedKeysThatMustBePresent
-          );
-        }
-
-        var keyNeedsTranslation = false;
-        flattenedKeysThatMustBePresent.forEach(function(flattenedKey) {
-          if (
-            alreadyTranslatedByFlattenedKey[flattenedKey] &&
-            !commandLineOptions.all &&
-            (!isDefaultLocale ||
-              alreadyTranslatedByKey[keyByFlattenedKey[flattenedKey]])
-          ) {
-            return;
-          }
-          var value = valueByFlattenedKey[flattenedKey];
-          if (
-            typeof value === 'undefined' &&
-            defaultValueInTheOccurrenceByFlattenedKey &&
-            isDefaultLocale
-          ) {
-            value = defaultValueInTheOccurrenceByFlattenedKey[flattenedKey];
-          }
-          babelSrc +=
-            flattenedKey +
-            '=' +
-            (omitExistingValues
-              ? ''
-              : String(value || '')
-                  .replace(/\\/g, '\\\\')
-                  .replace(/\n/g, '\\n')) +
-            '\n';
-          keyNeedsTranslation = true;
-        });
-
-        if (
-          keyNeedsTranslation &&
-          isDefaultLocale &&
-          relevantPluralFormsNotInTheDefaultLocale.length > 0 &&
-          valueContainsPlurals(value)
-        ) {
-          var localeIdsByFlattenedKey = {};
-          relevantPluralFormsNotInTheDefaultLocale.forEach(function(
-            pluralForm
-          ) {
-            localeIds.forEach(function(localeId) {
-              if (pluralsCldr.forms(localeId).indexOf(pluralForm) !== -1) {
-                var valueByFlattenedKey = flattenKey(
-                    key,
-                    nullOutLeaves(
-                      coalescePluralsToLocale(
-                        defaultValueInTheOccurrence,
-                        localeId,
-                        pluralForm
-                      )
-                    )
-                  ),
-                  existingTranslationByFlattenedKey =
-                    allKeys[key] && localeId in allKeys[key]
-                      ? flattenKey(key, allKeys[key][localeId])
-                      : {};
-
-                Object.keys(valueByFlattenedKey).forEach(function(
-                  flattenedKey
-                ) {
-                  if (!(flattenedKey in existingTranslationByFlattenedKey)) {
-                    (localeIdsByFlattenedKey[flattenedKey] =
-                      localeIdsByFlattenedKey[flattenedKey] || []).push(
-                      localeId
-                    );
-                  }
-                });
-              }
-            });
-          });
-          var flattenedKeysByJoinedLocaleIds = {};
-          Object.keys(localeIdsByFlattenedKey).forEach(function(flattenedKey) {
-            var localeIds = localeIdsByFlattenedKey[flattenedKey];
-            localeIds.sort();
-            (flattenedKeysByJoinedLocaleIds[localeIds.join(',')] =
-              flattenedKeysByJoinedLocaleIds[localeIds.join(',')] || []).push(
-              flattenedKey
-            );
-          });
-
-          Object.keys(flattenedKeysByJoinedLocaleIds).forEach(function(
-            joinedLocaleIds
-          ) {
-            var flattenedKeys = flattenedKeysByJoinedLocaleIds[joinedLocaleIds],
-              localeIds = joinedLocaleIds.split(',');
-            babelSrc +=
-              '# NOTE: The language' +
-              (localeIds.length > 1 ? 's ' : ' ') +
-              localeIds.join(', ') +
-              (localeIds.length > 1 ? ' need' : ' needs') +
-              (flattenedKeys.length > 1
-                ? ' these additional keys'
-                : ' this additional key') +
-              ' to cover all plural forms:\n' +
-              flattenedKeys
-                .map(function(flattenedKey) {
-                  return '# ' + flattenedKey + '=\n';
-                })
-                .join('');
-          });
-        }
-
-        var i18nAssetForKey =
-          assetGraph.findAssets({
-            type: 'I18n',
-            isLoaded: true,
-            parseTree: function(parseTree) {
-              return key in parseTree;
-            }
-          })[0] || i18nAssetForAllKeys;
-
-        if (i18nAssetForKey) {
-          if (!(key in i18nAssetForKey.parseTree)) {
-            i18nAssetForKey.parseTree[key] = {};
-            i18nAssetForKey.markDirty();
-          }
-          i18nAssetForKey.parseTree[key] = i18nAssetForKey.parseTree[key] || {};
-          var newValue;
-          if (!(localeId in i18nAssetForKey.parseTree[key])) {
-            if (localeId.indexOf(defaultLocaleId) === 0) {
-              i18nAssetForKey.parseTree[key][localeId] = defaultValue;
-            } else {
-              if (omitExistingValues) {
-                newValue = nullOutLeaves(
-                  coalescePluralsToLocale(value, localeId)
-                );
-              } else {
-                newValue = getLeavesFrom(
-                  coalescePluralsToLocale(defaultValue, localeId),
-                  value
-                );
-              }
-              i18nAssetForKey.parseTree[key][localeId] = newValue;
-            }
-            i18nAssetForKey.markDirty();
-          } else {
-            var existingValue = i18nAssetForKey.parseTree[key][localeId];
-            newValue = nullOutLeaves(
-              coalescePluralsToLocale(existingValue, localeId),
-              true
-            );
-            i18nAssetForKey.parseTree[key][localeId] = newValue;
-            i18nAssetForKey.markDirty();
-          }
-        }
-      });
-      var targetBabelFileName = path.resolve(
-        commandLineOptions.babeldir,
-        localeId + '.txt'
-      );
-      if (babelSrc.length) {
-        console.warn('Writing ' + targetBabelFileName);
-        fs.writeFileSync(targetBabelFileName, babelSrc, 'utf-8');
+      if (key in allKeys && localeId in allKeys[key]) {
+        value = allKeys[key][localeId];
+      } else if (defaultValue && localeId.indexOf(defaultLocaleId) === 0) {
+        value = defaultValue;
+      } else if (defaultValue) {
+        value = defaultValue;
+        // Use the defaultValue to figure out which babel keys to flatten it to (only relevant for structured values):
+        omitExistingValues = true;
       } else {
-        console.warn(
-          'No existing keys for ' +
-            localeId +
-            ', not writing ' +
-            targetBabelFileName
+        value = null;
+      }
+
+      var valueByFlattenedKey = flattenKey(key, value);
+      var defaultValueInTheOccurrenceByFlattenedKey;
+      var flattenedKeysThatMustBePresent = Object.keys(valueByFlattenedKey);
+      // Make sure that all the flattened keys from the actual occurrence are present:
+      if (typeof defaultValueInTheOccurrence !== 'undefined') {
+        defaultValueInTheOccurrence = coalescePluralsToLocale(
+          defaultValueInTheOccurrence,
+          localeId
+        );
+        defaultValueInTheOccurrenceByFlattenedKey = flattenKey(
+          key,
+          defaultValueInTheOccurrence
+        );
+        flattenedKeysThatMustBePresent = _.union(
+          Object.keys(defaultValueInTheOccurrenceByFlattenedKey),
+          flattenedKeysThatMustBePresent
         );
       }
+
+      var keyNeedsTranslation = false;
+      flattenedKeysThatMustBePresent.forEach(function(flattenedKey) {
+        if (
+          alreadyTranslatedByFlattenedKey[flattenedKey] &&
+          !commandLineOptions.all &&
+          (!isDefaultLocale ||
+            alreadyTranslatedByKey[keyByFlattenedKey[flattenedKey]])
+        ) {
+          return;
+        }
+        var value = valueByFlattenedKey[flattenedKey];
+        if (
+          typeof value === 'undefined' &&
+          defaultValueInTheOccurrenceByFlattenedKey &&
+          isDefaultLocale
+        ) {
+          value = defaultValueInTheOccurrenceByFlattenedKey[flattenedKey];
+        }
+        babelSrc +=
+          flattenedKey +
+          '=' +
+          (omitExistingValues
+            ? ''
+            : String(value || '')
+                .replace(/\\/g, '\\\\')
+                .replace(/\n/g, '\\n')) +
+          '\n';
+        keyNeedsTranslation = true;
+      });
+
+      if (
+        keyNeedsTranslation &&
+        isDefaultLocale &&
+        relevantPluralFormsNotInTheDefaultLocale.length > 0 &&
+        valueContainsPlurals(value)
+      ) {
+        var localeIdsByFlattenedKey = {};
+        relevantPluralFormsNotInTheDefaultLocale.forEach(function(
+          pluralForm
+        ) {
+          localeIds.forEach(function(localeId) {
+            if (pluralsCldr.forms(localeId).indexOf(pluralForm) !== -1) {
+              var valueByFlattenedKey = flattenKey(
+                  key,
+                  nullOutLeaves(
+                    coalescePluralsToLocale(
+                      defaultValueInTheOccurrence,
+                      localeId,
+                      pluralForm
+                    )
+                  )
+                );
+
+              var existingTranslationByFlattenedKey =
+                allKeys[key] && localeId in allKeys[key]
+                  ? flattenKey(key, allKeys[key][localeId])
+                  : {};
+
+              Object.keys(valueByFlattenedKey).forEach(function(
+                flattenedKey
+              ) {
+                if (!(flattenedKey in existingTranslationByFlattenedKey)) {
+                  (localeIdsByFlattenedKey[flattenedKey] =
+                    localeIdsByFlattenedKey[flattenedKey] || []).push(
+                    localeId
+                  );
+                }
+              });
+            }
+          });
+        });
+        var flattenedKeysByJoinedLocaleIds = {};
+        Object.keys(localeIdsByFlattenedKey).forEach(function(flattenedKey) {
+          var localeIds = localeIdsByFlattenedKey[flattenedKey];
+          localeIds.sort();
+          (flattenedKeysByJoinedLocaleIds[localeIds.join(',')] =
+            flattenedKeysByJoinedLocaleIds[localeIds.join(',')] || []).push(
+            flattenedKey
+          );
+        });
+
+        Object.keys(flattenedKeysByJoinedLocaleIds).forEach(function(
+          joinedLocaleIds
+        ) {
+          var flattenedKeys = flattenedKeysByJoinedLocaleIds[joinedLocaleIds];
+          var localeIds = joinedLocaleIds.split(',');
+          babelSrc +=
+            '# NOTE: The language' +
+            (localeIds.length > 1 ? 's ' : ' ') +
+            localeIds.join(', ') +
+            (localeIds.length > 1 ? ' need' : ' needs') +
+            (flattenedKeys.length > 1
+              ? ' these additional keys'
+              : ' this additional key') +
+            ' to cover all plural forms:\n' +
+            flattenedKeys
+              .map(function(flattenedKey) {
+                return '# ' + flattenedKey + '=\n';
+              })
+              .join('');
+        });
+      }
+
+      var i18nAssetForKey =
+        assetGraph.findAssets({
+          type: 'I18n',
+          isLoaded: true,
+          parseTree: function(parseTree) {
+            return key in parseTree;
+          }
+        })[0] || i18nAssetForAllKeys;
+
+      if (i18nAssetForKey) {
+        if (!(key in i18nAssetForKey.parseTree)) {
+          i18nAssetForKey.parseTree[key] = {};
+          i18nAssetForKey.markDirty();
+        }
+        i18nAssetForKey.parseTree[key] = i18nAssetForKey.parseTree[key] || {};
+        var newValue;
+        if (!(localeId in i18nAssetForKey.parseTree[key])) {
+          if (localeId.indexOf(defaultLocaleId) === 0) {
+            i18nAssetForKey.parseTree[key][localeId] = defaultValue;
+          } else {
+            if (omitExistingValues) {
+              newValue = nullOutLeaves(
+                coalescePluralsToLocale(value, localeId)
+              );
+            } else {
+              newValue = getLeavesFrom(
+                coalescePluralsToLocale(defaultValue, localeId),
+                value
+              );
+            }
+            i18nAssetForKey.parseTree[key][localeId] = newValue;
+          }
+          i18nAssetForKey.markDirty();
+        } else {
+          var existingValue = i18nAssetForKey.parseTree[key][localeId];
+          newValue = nullOutLeaves(
+            coalescePluralsToLocale(existingValue, localeId),
+            true
+          );
+          i18nAssetForKey.parseTree[key][localeId] = newValue;
+          i18nAssetForKey.markDirty();
+        }
+      }
     });
-  })
+    var targetBabelFileName = path.resolve(
+      commandLineOptions.babeldir,
+      localeId + '.txt'
+    );
+    if (babelSrc.length) {
+      console.warn('Writing ' + targetBabelFileName);
+      fs.writeFileSync(targetBabelFileName, babelSrc, 'utf-8');
+    } else {
+      console.warn(
+        'No existing keys for ' +
+          localeId +
+          ', not writing ' +
+          targetBabelFileName
+      );
+    }
+  });
+})
   .prettyPrintAssets({ type: 'I18n', isDirty: true })
   .writeAssetsToDisc({ type: 'I18n', isDirty: true })
   .run();

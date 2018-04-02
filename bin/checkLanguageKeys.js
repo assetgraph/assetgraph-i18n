@@ -1,97 +1,106 @@
 #!/usr/bin/env node
 
 /*eslint indent:0*/
-var optimist = require('optimist'),
-  commandLineOptions = optimist
-    .usage('$0 --root <inputRootDirectory> [options] <htmlFile(s)>')
-    .options('locales', {
-      describe: 'Comma-separated list of locales to check',
-      type: 'string',
-      demand: true
-    })
-    .options('removeunused', {
-      describe: 'Remove unused language keys from .i18n files',
-      type: 'boolean'
-    })
-    .options('ignore', {
-      describe:
-        "Type(s) of messages to suppress (supported: 'missing', 'untranslated', 'defaultValueMismatch', 'whitespace', 'unused')",
-      type: 'string'
-    })
-    .options('warn', {
-      descrbe:
-        "Type(s) of messages that should be emitted with 'warning' status (supported: 'missing', 'untranslated', 'defaultValueMismatch', 'whitespace', 'unused'). Intended for use with --stoponwarning",
-      type: 'string'
-    })
-    .options('stoponwarning', {
-      describe:
-        'Whether to stop with a non-zero exit code when a warning is encountered',
-      type: 'boolean',
-      default: false
-    })
-    .options('defaultlocale', {
-      describe:
-        'The locale of the default value in TR statements and tags with a data-i18n attribute',
-      type: 'string',
-      default: 'en'
-    })
-    .wrap(72).argv;
+var optimist = require('optimist');
+
+var commandLineOptions = optimist
+  .usage('$0 --root <inputRootDirectory> [options] <htmlFile(s)>')
+  .options('locales', {
+    describe: 'Comma-separated list of locales to check',
+    type: 'string',
+    demand: true
+  })
+  .options('removeunused', {
+    describe: 'Remove unused language keys from .i18n files',
+    type: 'boolean'
+  })
+  .options('ignore', {
+    describe:
+      "Type(s) of messages to suppress (supported: 'missing', 'untranslated', 'defaultValueMismatch', 'whitespace', 'unused')",
+    type: 'string'
+  })
+  .options('warn', {
+    descrbe:
+      "Type(s) of messages that should be emitted with 'warning' status (supported: 'missing', 'untranslated', 'defaultValueMismatch', 'whitespace', 'unused'). Intended for use with --stoponwarning",
+    type: 'string'
+  })
+  .options('stoponwarning', {
+    describe:
+      'Whether to stop with a non-zero exit code when a warning is encountered',
+    type: 'boolean',
+    default: false
+  })
+  .options('defaultlocale', {
+    describe:
+      'The locale of the default value in TR statements and tags with a data-i18n attribute',
+    type: 'string',
+    default: 'en'
+  })
+  .wrap(72).argv;
 
 if (commandLineOptions.h) {
   optimist.showHelp();
   process.exit(1);
 }
 
-var _ = require('lodash'),
-  AssetGraph = require('assetgraph'),
-  i18nTools = require('../lib/i18nTools'),
-  urlTools = require('urltools'),
-  rootUrl =
-    commandLineOptions.root &&
-    urlTools.urlOrFsPathToUrl(commandLineOptions.root, true),
-  localeIds =
-    commandLineOptions.locales &&
-    _.flatten(
-      _.flatten([commandLineOptions.locales]).map(function(localeId) {
-        return localeId.split(',');
-      })
-    ).map(i18nTools.normalizeLocaleId),
-  defaultLocaleId =
-    commandLineOptions.defaultlocale &&
-    i18nTools.normalizeLocaleId(commandLineOptions.defaultlocale),
-  ignoreMessageTypes =
-    commandLineOptions.ignore &&
-    _.flatten(
-      _.flatten([commandLineOptions.ignore]).map(function(ignoreMessageType) {
-        return ignoreMessageType.split(',');
-      })
-    ),
-  warnMessageTypes =
-    commandLineOptions.warn &&
-    _.flatten(
-      _.flatten([commandLineOptions.warn]).map(function(warnMessageType) {
-        return warnMessageType.split(',');
-      })
-    ),
-  includeAttributeNames =
-    commandLineOptions.includeattribute &&
-    _.flatten(
-      _.flatten([commandLineOptions.includeattribute]).map(function(
-        attributeName
-      ) {
-        return attributeName.split(',');
-      })
-    ),
-  excludeAttributeNames =
-    commandLineOptions.excludeattribute &&
-    _.flatten(
-      _.flatten([commandLineOptions.excludeattribute]).map(function(
-        attributeName
-      ) {
-        return attributeName.split(',');
-      })
-    ),
-  inputUrls;
+var _ = require('lodash');
+var AssetGraph = require('assetgraph');
+var i18nTools = require('../lib/i18nTools');
+var urlTools = require('urltools');
+
+var rootUrl =
+  commandLineOptions.root &&
+  urlTools.urlOrFsPathToUrl(commandLineOptions.root, true);
+
+var localeIds =
+  commandLineOptions.locales &&
+  _.flatten(
+    _.flatten([commandLineOptions.locales]).map(function(localeId) {
+      return localeId.split(',');
+    })
+  ).map(i18nTools.normalizeLocaleId);
+
+var defaultLocaleId =
+  commandLineOptions.defaultlocale &&
+  i18nTools.normalizeLocaleId(commandLineOptions.defaultlocale);
+
+var ignoreMessageTypes =
+  commandLineOptions.ignore &&
+  _.flatten(
+    _.flatten([commandLineOptions.ignore]).map(function(ignoreMessageType) {
+      return ignoreMessageType.split(',');
+    })
+  );
+
+var warnMessageTypes =
+  commandLineOptions.warn &&
+  _.flatten(
+    _.flatten([commandLineOptions.warn]).map(function(warnMessageType) {
+      return warnMessageType.split(',');
+    })
+  );
+
+var includeAttributeNames =
+  commandLineOptions.includeattribute &&
+  _.flatten(
+    _.flatten([commandLineOptions.includeattribute]).map(function(
+      attributeName
+    ) {
+      return attributeName.split(',');
+    })
+  );
+
+var excludeAttributeNames =
+  commandLineOptions.excludeattribute &&
+  _.flatten(
+    _.flatten([commandLineOptions.excludeattribute]).map(function(
+      attributeName
+    ) {
+      return attributeName.split(',');
+    })
+  );
+
+var inputUrls;
 
 if (commandLineOptions._.length > 0) {
   inputUrls = commandLineOptions._.map(function(urlOrFsPath) {
