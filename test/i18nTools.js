@@ -1,6 +1,7 @@
 /*global describe, it*/
-const unexpected = require('./unexpected-with-plugins'),
-  i18nTools = require('../lib/i18nTools');
+const unexpected = require('./unexpected-with-plugins');
+
+const i18nTools = require('../lib/i18nTools');
 
 describe('i18nTools', function() {
   const expect = unexpected

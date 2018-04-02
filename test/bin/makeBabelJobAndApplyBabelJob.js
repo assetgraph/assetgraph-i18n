@@ -1,19 +1,21 @@
 /*global describe, it*/
-const expect = require('../unexpected-with-plugins'),
-  childProcess = require('child_process'),
-  fs = require('fs'),
-  Path = require('path'),
-  temp = require('temp');
+const expect = require('../unexpected-with-plugins');
+
+const childProcess = require('child_process');
+const fs = require('fs');
+const Path = require('path');
+const temp = require('temp');
 
 describe('makeBabelJob and applyBabelJob', function() {
   it('should extract and reimport a translation job', function(done) {
-    const babelDir = temp.mkdirSync(),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* " +
-        tmpTestCaseCopyDir;
+    const babelDir = temp.mkdirSync();
+    const tmpTestCaseCopyDir = temp.mkdirSync();
+
+    const copyCommand =
+      "cp '" +
+      __dirname +
+      "/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* " +
+      tmpTestCaseCopyDir;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
@@ -23,6 +25,7 @@ describe('makeBabelJob and applyBabelJob', function() {
           )
         );
       }
+
       const makeBabelJobProcess = childProcess.spawn(
           Path.resolve(__dirname, '..', '..', 'bin', 'makeBabelJob'),
           [
@@ -36,9 +39,10 @@ describe('makeBabelJob and applyBabelJob', function() {
             Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
             Path.resolve(tmpTestCaseCopyDir, 'index.html')
           ]
-        ),
-        buffersByStreamName = {},
-        streamNames = ['stdout', 'stderr'];
+        );
+
+      const buffersByStreamName = {};
+      const streamNames = ['stdout', 'stderr'];
 
       streamNames.forEach(function(streamName) {
         buffersByStreamName[streamName] = [];

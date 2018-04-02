@@ -1,6 +1,7 @@
 /*global describe, it*/
-const expect = require('../unexpected-with-plugins'),
-  AssetGraph = require('assetgraph');
+const expect = require('../unexpected-with-plugins');
+
+const AssetGraph = require('assetgraph');
 
 describe('checkLanguageKeys', function() {
   it('should handle a combo test case', function() {

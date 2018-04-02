@@ -1,7 +1,8 @@
 /*global describe, it*/
-const expect = require('../unexpected-with-plugins'),
-  _ = require('lodash'),
-  AssetGraph = require('assetgraph');
+const expect = require('../unexpected-with-plugins');
+
+const _ = require('lodash');
+const AssetGraph = require('assetgraph');
 
 describe('cloneForEachLocale', function() {
   it('should make a clone of each Html file for each language', function(done) {
@@ -192,69 +193,71 @@ describe('cloneForEachLocale', function() {
         )
       )
       .queue(function(assetGraph) {
-        expect(assetGraph, 'to contain assets', {}, 8);
-        expect(assetGraph, 'to contain assets', 'Html', 5);
-        expect(assetGraph, 'to contain assets', 'JavaScript', 2);
-        expect(assetGraph, 'to contain asset', 'I18n');
-        expect(
-          assetGraph,
-          'to contain assets',
-          { type: 'Html', isFragment: true },
-          3
-        );
+      expect(assetGraph, 'to contain assets', {}, 8);
+      expect(assetGraph, 'to contain assets', 'Html', 5);
+      expect(assetGraph, 'to contain assets', 'JavaScript', 2);
+      expect(assetGraph, 'to contain asset', 'I18n');
+      expect(
+        assetGraph,
+        'to contain assets',
+        { type: 'Html', isFragment: true },
+        3
+      );
 
-        let danishJavaScript = assetGraph.findRelations({
-            type: 'HtmlScript',
-            from: { fileName: 'index.da.html' }
-          })[0].to,
-          americanEnglishJavaScript = assetGraph.findRelations({
-            type: 'HtmlScript',
-            from: { fileName: 'index.en_us.html' }
-          })[0].to;
-        expect(danishJavaScript, 'to be truthy');
-        expect(americanEnglishJavaScript, 'to be truthy');
-        expect(
-          assetGraph.findRelations({ from: danishJavaScript })[0].to,
-          'to equal',
-          assetGraph.findRelations({ from: americanEnglishJavaScript })[0].to
-        );
-
-        danishJavaScript = assetGraph.findRelations({
+      let danishJavaScript = assetGraph.findRelations({
           type: 'HtmlScript',
           from: { fileName: 'index.da.html' }
         })[0].to;
-        expect(
-          assetGraph.findRelations({
-            from: danishJavaScript,
-            type: 'JavaScriptStaticUrl'
-          })[2].to.parseTree.firstChild.innerHTML,
-          'to equal',
-          '\n' +
-            '    <div>Min sprognøgle</div>\n' +
-            '    <span id="bar">Min anden sprognøgle</span>\n' +
-            '    quux på dansk\n' +
-            '    <span title="blah på dansk">baz på dansk</span>\n' +
-            '    Her er en rar dyb i18n-struktur på dansk\n'
-        );
 
-        americanEnglishJavaScript = assetGraph.findRelations({
-          type: 'HtmlScript',
-          from: { fileName: 'index.en_us.html' }
-        })[0].to;
-        expect(
-          assetGraph.findRelations({
-            from: americanEnglishJavaScript,
-            type: 'JavaScriptStaticUrl'
-          })[2].to.parseTree.firstChild.innerHTML,
-          'to equal',
-          '\n' +
-            '    <div>My language key</div>\n' +
-            '    <span id="bar">My other language key</span>\n' +
-            '    quux in English\n' +
-            '    <span title="blah in English">baz in English</span>\n' +
-            '    Here is a nice and English nested i18n construct in English\n'
-        );
-      })
+      let americanEnglishJavaScript = assetGraph.findRelations({
+        type: 'HtmlScript',
+        from: { fileName: 'index.en_us.html' }
+      })[0].to;
+
+      expect(danishJavaScript, 'to be truthy');
+      expect(americanEnglishJavaScript, 'to be truthy');
+      expect(
+        assetGraph.findRelations({ from: danishJavaScript })[0].to,
+        'to equal',
+        assetGraph.findRelations({ from: americanEnglishJavaScript })[0].to
+      );
+
+      danishJavaScript = assetGraph.findRelations({
+        type: 'HtmlScript',
+        from: { fileName: 'index.da.html' }
+      })[0].to;
+      expect(
+        assetGraph.findRelations({
+          from: danishJavaScript,
+          type: 'JavaScriptStaticUrl'
+        })[2].to.parseTree.firstChild.innerHTML,
+        'to equal',
+        '\n' +
+          '    <div>Min sprognøgle</div>\n' +
+          '    <span id="bar">Min anden sprognøgle</span>\n' +
+          '    quux på dansk\n' +
+          '    <span title="blah på dansk">baz på dansk</span>\n' +
+          '    Her er en rar dyb i18n-struktur på dansk\n'
+      );
+
+      americanEnglishJavaScript = assetGraph.findRelations({
+        type: 'HtmlScript',
+        from: { fileName: 'index.en_us.html' }
+      })[0].to;
+      expect(
+        assetGraph.findRelations({
+          from: americanEnglishJavaScript,
+          type: 'JavaScriptStaticUrl'
+        })[2].to.parseTree.firstChild.innerHTML,
+        'to equal',
+        '\n' +
+          '    <div>My language key</div>\n' +
+          '    <span id="bar">My other language key</span>\n' +
+          '    quux in English\n' +
+          '    <span title="blah in English">baz in English</span>\n' +
+          '    Here is a nice and English nested i18n construct in English\n'
+      );
+    })
       .run(done);
   });
 
@@ -389,30 +392,33 @@ describe('cloneForEachLocale', function() {
         )
       )
       .queue(function(assetGraph) {
-        expect(assetGraph, 'to contain assets', {}, 9);
-        expect(assetGraph, 'to contain assets', 'Html', 6);
-        expect(assetGraph, 'to contain assets', 'JavaScript', 2);
-        expect(
-          assetGraph,
-          'to contain assets',
-          { type: 'Html', isFragment: true },
-          4
-        );
-        expect(assetGraph, 'to contain asset', 'I18n');
+      expect(assetGraph, 'to contain assets', {}, 9);
+      expect(assetGraph, 'to contain assets', 'Html', 6);
+      expect(assetGraph, 'to contain assets', 'JavaScript', 2);
+      expect(
+        assetGraph,
+        'to contain assets',
+        { type: 'Html', isFragment: true },
+        4
+      );
+      expect(assetGraph, 'to contain asset', 'I18n');
 
-        const danishHtml = assetGraph.findAssets({
-            fileName: 'index.da.html'
-          })[0],
-          danishJavaScript = assetGraph.findRelations({
-            from: danishHtml,
-            type: 'HtmlScript'
-          })[0].to,
-          danishKnockoutJsTemplate = assetGraph.findRelations({
-            from: danishJavaScript,
-            type: 'JavaScriptStaticUrl'
-          })[0].to;
-        expect(danishKnockoutJsTemplate.text, 'to match', /Min sprognøgle/);
-      })
+      const danishHtml = assetGraph.findAssets({
+          fileName: 'index.da.html'
+        })[0];
+
+      const danishJavaScript = assetGraph.findRelations({
+        from: danishHtml,
+        type: 'HtmlScript'
+      })[0].to;
+
+      const danishKnockoutJsTemplate = assetGraph.findRelations({
+        from: danishJavaScript,
+        type: 'JavaScriptStaticUrl'
+      })[0].to;
+
+      expect(danishKnockoutJsTemplate.text, 'to match', /Min sprognøgle/);
+    })
       .run(done);
   });
 
@@ -429,71 +435,72 @@ describe('cloneForEachLocale', function() {
         )
       )
       .queue(function(assetGraph) {
-        expect(assetGraph, 'to contain assets', { type: 'Css' }, 5);
-        expect(assetGraph, 'to contain assets', { type: 'Png' }, 3);
+      expect(assetGraph, 'to contain assets', { type: 'Css' }, 5);
+      expect(assetGraph, 'to contain assets', { type: 'Png' }, 3);
 
-        const danishCss = assetGraph.findAssets({
-            fileName: 'needsLocalization.da.css'
-          })[0],
-          cssRules = danishCss.parseTree.nodes;
-        expect(cssRules, 'to have length', 3);
-        expect(cssRules[0].selector, 'to equal', 'body');
-        expect(cssRules[1].selector, 'to equal', 'html .theThing');
-        let outgoingRelations = assetGraph.findRelations({ from: danishCss });
-        expect(outgoingRelations, 'to have length', 1);
-        expect(outgoingRelations[0].href, 'to equal', 'foo.png');
-
-        const germanCss = assetGraph.findAssets({
-          fileName: 'needsLocalization.de.css'
+      const danishCss = assetGraph.findAssets({
+          fileName: 'needsLocalization.da.css'
         })[0];
-        expect(germanCss.parseTree.nodes, 'to have length', 3);
-        expect(germanCss.parseTree.nodes[0].selector, 'to equal', 'body');
-        expect(
-          germanCss.parseTree.nodes[1].selector,
-          'to equal',
-          'html.anotherClassOnHtml .theGermanThing'
-        );
 
-        outgoingRelations = assetGraph.findRelations({ from: germanCss });
-        expect(outgoingRelations, 'to have length', 1);
-        expect(outgoingRelations[0].to, 'to have property', 'isImage', true);
+      const cssRules = danishCss.parseTree.nodes;
+      expect(cssRules, 'to have length', 3);
+      expect(cssRules[0].selector, 'to equal', 'body');
+      expect(cssRules[1].selector, 'to equal', 'html .theThing');
+      let outgoingRelations = assetGraph.findRelations({ from: danishCss });
+      expect(outgoingRelations, 'to have length', 1);
+      expect(outgoingRelations[0].href, 'to equal', 'foo.png');
 
-        const englishCss = assetGraph.findAssets({
-          fileName: 'needsLocalization.en.css'
-        })[0];
-        expect(englishCss.parseTree.nodes, 'to have length', 2);
-        expect(englishCss.parseTree.nodes[0].selector, 'to equal', 'body');
+      const germanCss = assetGraph.findAssets({
+        fileName: 'needsLocalization.de.css'
+      })[0];
+      expect(germanCss.parseTree.nodes, 'to have length', 3);
+      expect(germanCss.parseTree.nodes[0].selector, 'to equal', 'body');
+      expect(
+        germanCss.parseTree.nodes[1].selector,
+        'to equal',
+        'html.anotherClassOnHtml .theGermanThing'
+      );
 
-        expect(englishCss.parseTree.nodes[1].selector, 'to equal', '.foobar');
+      outgoingRelations = assetGraph.findRelations({ from: germanCss });
+      expect(outgoingRelations, 'to have length', 1);
+      expect(outgoingRelations[0].to, 'to have property', 'isImage', true);
 
-        const czechCss = assetGraph.findAssets({
-          fileName: 'needsLocalization.cs.css'
-        })[0];
-        expect(czechCss.parseTree.nodes, 'to have length', 2);
-        expect(czechCss.parseTree.nodes[0].selector, 'to equal', 'body');
+      const englishCss = assetGraph.findAssets({
+        fileName: 'needsLocalization.en.css'
+      })[0];
+      expect(englishCss.parseTree.nodes, 'to have length', 2);
+      expect(englishCss.parseTree.nodes[0].selector, 'to equal', 'body');
 
-        expect(
-          czechCss.parseTree.nodes[1].selector,
-          'to equal',
-          '.foobar, html .theCzechThing'
-        );
+      expect(englishCss.parseTree.nodes[1].selector, 'to equal', '.foobar');
 
-        expect(assetGraph, 'to contain no relations', { from: englishCss });
+      const czechCss = assetGraph.findAssets({
+        fileName: 'needsLocalization.cs.css'
+      })[0];
+      expect(czechCss.parseTree.nodes, 'to have length', 2);
+      expect(czechCss.parseTree.nodes[0].selector, 'to equal', 'body');
 
-        expect(assetGraph, 'to contain no relations', {
-          to: { fileName: 'bar.png' }
-        });
+      expect(
+        czechCss.parseTree.nodes[1].selector,
+        'to equal',
+        '.foobar, html .theCzechThing'
+      );
 
-        expect(assetGraph, 'to contain relation', {
-          from: { fileName: 'needsLocalization.de.css' },
-          to: { isInline: true, isImage: true }
-        });
+      expect(assetGraph, 'to contain no relations', { from: englishCss });
 
-        expect(assetGraph, 'to contain no relations', {
-          from: { fileName: 'needsLocalization.da.css' },
-          to: { isInline: true, isImage: true }
-        });
-      })
+      expect(assetGraph, 'to contain no relations', {
+        to: { fileName: 'bar.png' }
+      });
+
+      expect(assetGraph, 'to contain relation', {
+        from: { fileName: 'needsLocalization.de.css' },
+        to: { isInline: true, isImage: true }
+      });
+
+      expect(assetGraph, 'to contain no relations', {
+        from: { fileName: 'needsLocalization.da.css' },
+        to: { isInline: true, isImage: true }
+      });
+    })
       .run(done);
   });
 

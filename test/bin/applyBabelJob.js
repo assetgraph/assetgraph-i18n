@@ -1,9 +1,10 @@
 /*global describe, it*/
-const childProcess = require('child_process'),
-  fs = require('fs'),
-  Path = require('path'),
-  expect = require('unexpected'),
-  temp = require('temp');
+const childProcess = require('child_process');
+
+const fs = require('fs');
+const Path = require('path');
+const expect = require('unexpected');
+const temp = require('temp');
 
 describe('applyBabelJob', function() {
   it('should handle a complex test case', function(done) {
@@ -16,13 +17,16 @@ describe('applyBabelJob', function() {
         'applyBabelJob',
         'complex',
         'translationjob'
-      ),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin/applyBabelJob/complex'/index.* " +
-        tmpTestCaseCopyDir;
+      );
+
+    const tmpTestCaseCopyDir = temp.mkdirSync();
+
+    const copyCommand =
+      "cp '" +
+      __dirname +
+      "/../../testdata/bin/applyBabelJob/complex'/index.* " +
+      tmpTestCaseCopyDir;
+
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
@@ -147,13 +151,16 @@ describe('applyBabelJob', function() {
         'applyBabelJob',
         'invalidPlurals',
         'translationjob'
-      ),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* " +
-        tmpTestCaseCopyDir;
+      );
+
+    const tmpTestCaseCopyDir = temp.mkdirSync();
+
+    const copyCommand =
+      "cp '" +
+      __dirname +
+      "/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* " +
+      tmpTestCaseCopyDir;
+
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
@@ -241,13 +248,16 @@ describe('applyBabelJob', function() {
         'applyBabelJob',
         'systemJs',
         'translationjob'
-      ),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin/applyBabelJob'/systemJs/*.* " +
-        tmpTestCaseCopyDir;
+      );
+
+    const tmpTestCaseCopyDir = temp.mkdirSync();
+
+    const copyCommand =
+      "cp '" +
+      __dirname +
+      "/../../testdata/bin/applyBabelJob'/systemJs/*.* " +
+      tmpTestCaseCopyDir;
+
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
@@ -314,13 +324,16 @@ describe('applyBabelJob', function() {
         'applyBabelJob',
         'retranslationOfSomeNestedKeys',
         'translationjob'
-      ),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* " +
-        tmpTestCaseCopyDir;
+      );
+
+    const tmpTestCaseCopyDir = temp.mkdirSync();
+
+    const copyCommand =
+      "cp '" +
+      __dirname +
+      "/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* " +
+      tmpTestCaseCopyDir;
+
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
