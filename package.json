@@ -60,7 +60,7 @@
     "registry": "http://registry.npmjs.org/"
   },
   "scripts": {
-    "lint": "eslint . bin/*",
+    "lint": "eslint .",
     "test": "npm run lint && mocha",
     "travis": "npm run lint && npm run coverage",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- mocha && echo google-chrome coverage/lcov-report/index.html"
