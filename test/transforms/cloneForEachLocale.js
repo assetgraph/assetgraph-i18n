@@ -1,7 +1,5 @@
 /*global describe, it*/
-var expect = require('../unexpected-with-plugins'),
-  _ = require('lodash'),
-  AssetGraph = require('assetgraph');
+const expect = require('../unexpected-with-plugins'), _ = require('lodash'), AssetGraph = require('assetgraph');
 
 describe('cloneForEachLocale', function() {
   it('should make a clone of each Html file for each language', function(done) {
@@ -90,7 +88,7 @@ describe('cloneForEachLocale', function() {
         expect(assetGraph, 'to contain assets', 'Html', 3);
         expect(assetGraph, 'to contain assets', 'JavaScript', 3);
 
-        var paragraphs = assetGraph
+        let paragraphs = assetGraph
           .findAssets({ fileName: 'index.da.html' })[0]
           .parseTree.getElementsByTagName('p');
         expect(paragraphs[0].firstChild.nodeValue, 'to equal', 'Kropstekst');
@@ -203,14 +201,14 @@ describe('cloneForEachLocale', function() {
           3
         );
 
-        var danishJavaScript = assetGraph.findRelations({
-            type: 'HtmlScript',
-            from: { fileName: 'index.da.html' }
-          })[0].to,
-          americanEnglishJavaScript = assetGraph.findRelations({
-            type: 'HtmlScript',
-            from: { fileName: 'index.en_us.html' }
-          })[0].to;
+        let danishJavaScript = assetGraph.findRelations({
+                type: 'HtmlScript',
+                from: { fileName: 'index.da.html' }
+              })[0].to,
+            americanEnglishJavaScript = assetGraph.findRelations({
+              type: 'HtmlScript',
+              from: { fileName: 'index.en_us.html' }
+            })[0].to;
         expect(danishJavaScript, 'to be truthy');
         expect(americanEnglishJavaScript, 'to be truthy');
         expect(
@@ -303,7 +301,7 @@ describe('cloneForEachLocale', function() {
       .queue(function(assetGraph) {
         expect(assetGraph, 'to contain assets', 'JavaScript', 2);
 
-        var danishJavaScript = assetGraph.findAssets({
+        const danishJavaScript = assetGraph.findAssets({
           type: 'JavaScript',
           incomingRelations: {
             $elemMatch: {
@@ -400,17 +398,17 @@ describe('cloneForEachLocale', function() {
         );
         expect(assetGraph, 'to contain asset', 'I18n');
 
-        var danishHtml = assetGraph.findAssets({
-            fileName: 'index.da.html'
-          })[0],
-          danishJavaScript = assetGraph.findRelations({
-            from: danishHtml,
-            type: 'HtmlScript'
-          })[0].to,
-          danishKnockoutJsTemplate = assetGraph.findRelations({
-            from: danishJavaScript,
-            type: 'JavaScriptStaticUrl'
-          })[0].to;
+        const danishHtml = assetGraph.findAssets({
+                  fileName: 'index.da.html'
+                })[0],
+              danishJavaScript = assetGraph.findRelations({
+                from: danishHtml,
+                type: 'HtmlScript'
+              })[0].to,
+              danishKnockoutJsTemplate = assetGraph.findRelations({
+                from: danishJavaScript,
+                type: 'JavaScriptStaticUrl'
+              })[0].to;
         expect(danishKnockoutJsTemplate.text, 'to match', /Min sprognøgle/);
       })
       .run(done);
@@ -432,18 +430,18 @@ describe('cloneForEachLocale', function() {
         expect(assetGraph, 'to contain assets', { type: 'Css' }, 5);
         expect(assetGraph, 'to contain assets', { type: 'Png' }, 3);
 
-        var danishCss = assetGraph.findAssets({
-            fileName: 'needsLocalization.da.css'
-          })[0],
-          cssRules = danishCss.parseTree.nodes;
+        const danishCss = assetGraph.findAssets({
+                  fileName: 'needsLocalization.da.css'
+                })[0],
+              cssRules = danishCss.parseTree.nodes;
         expect(cssRules, 'to have length', 3);
         expect(cssRules[0].selector, 'to equal', 'body');
         expect(cssRules[1].selector, 'to equal', 'html .theThing');
-        var outgoingRelations = assetGraph.findRelations({ from: danishCss });
+        let outgoingRelations = assetGraph.findRelations({ from: danishCss });
         expect(outgoingRelations, 'to have length', 1);
         expect(outgoingRelations[0].href, 'to equal', 'foo.png');
 
-        var germanCss = assetGraph.findAssets({
+        const germanCss = assetGraph.findAssets({
           fileName: 'needsLocalization.de.css'
         })[0];
         expect(germanCss.parseTree.nodes, 'to have length', 3);
@@ -458,7 +456,7 @@ describe('cloneForEachLocale', function() {
         expect(outgoingRelations, 'to have length', 1);
         expect(outgoingRelations[0].to, 'to have property', 'isImage', true);
 
-        var englishCss = assetGraph.findAssets({
+        const englishCss = assetGraph.findAssets({
           fileName: 'needsLocalization.en.css'
         })[0];
         expect(englishCss.parseTree.nodes, 'to have length', 2);
@@ -466,7 +464,7 @@ describe('cloneForEachLocale', function() {
 
         expect(englishCss.parseTree.nodes[1].selector, 'to equal', '.foobar');
 
-        var czechCss = assetGraph.findAssets({
+        const czechCss = assetGraph.findAssets({
           fileName: 'needsLocalization.cs.css'
         })[0];
         expect(czechCss.parseTree.nodes, 'to have length', 2);
@@ -645,7 +643,7 @@ describe('cloneForEachLocale', function() {
       .queue(function(assetGraph) {
         // TODO: The presence of only LOCALECOOKIENAME/SUPPORTEDLOCALEIDS/DEFAULTLOCALEID don't really require the asset to be cloned as
         // they just need to be replaced to the same value in each locale.
-        var numJavaScriptAssets = assetGraph.findAssets({ type: 'JavaScript' })
+        const numJavaScriptAssets = assetGraph.findAssets({ type: 'JavaScript' })
           .length;
         expect(
           numJavaScriptAssets === 1 || numJavaScriptAssets === 2,

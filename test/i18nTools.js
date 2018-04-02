@@ -1,9 +1,8 @@
 /*global describe, it*/
-var unexpected = require('./unexpected-with-plugins'),
-  i18nTools = require('../lib/i18nTools');
+const unexpected = require('./unexpected-with-plugins'), i18nTools = require('../lib/i18nTools');
 
 describe('i18nTools', function() {
-  var expect = unexpected
+  const expect = unexpected
     .clone()
     .addAssertion('to tokenize as', function(expect, subject, value) {
       expect(i18nTools.tokenizePattern(subject), 'to equal', value);

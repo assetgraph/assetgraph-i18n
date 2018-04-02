@@ -1,19 +1,15 @@
 /*global describe, it*/
-var expect = require('../unexpected-with-plugins'),
-  childProcess = require('child_process'),
-  fs = require('fs'),
-  Path = require('path'),
-  temp = require('temp');
+const expect = require('../unexpected-with-plugins'), childProcess = require('child_process'), fs = require('fs'), Path = require('path'), temp = require('temp');
 
 describe('makeBabelJob', function() {
   it('should extract a translation job and set null values in the correct places in the existing i18n files', function(done) {
-    var babelDir = temp.mkdirSync(),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin'/makeBabelJob/complex/* " +
-        tmpTestCaseCopyDir;
+    const babelDir = temp.mkdirSync(),
+          tmpTestCaseCopyDir = temp.mkdirSync(),
+          copyCommand =
+            "cp '" +
+            __dirname +
+            "/../../testdata/bin'/makeBabelJob/complex/* " +
+            tmpTestCaseCopyDir;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
@@ -24,24 +20,24 @@ describe('makeBabelJob', function() {
         );
       }
 
-      var makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
-          [
-            '--babeldir',
-            babelDir,
-            '--root',
-            tmpTestCaseCopyDir,
-            '--i18n',
-            Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html'),
-            '--defaultlocale',
-            'en',
-            '--locales',
-            'en,pl,da,de,cs'
-          ]
-        ),
-        buffersByStreamName = {},
-        streamNames = ['stdout', 'stderr'];
+      const makeBabelJobProcess = childProcess.spawn(
+                __dirname + '/../../bin/makeBabelJob',
+                [
+                  '--babeldir',
+                  babelDir,
+                  '--root',
+                  tmpTestCaseCopyDir,
+                  '--i18n',
+                  Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
+                  Path.resolve(tmpTestCaseCopyDir, 'index.html'),
+                  '--defaultlocale',
+                  'en',
+                  '--locales',
+                  'en,pl,da,de,cs'
+                ]
+              ),
+            buffersByStreamName = {},
+            streamNames = ['stdout', 'stderr'];
       streamNames.forEach(function(streamName) {
         buffersByStreamName[streamName] = [];
         makeBabelJobProcess[streamName].on('data', function(chunk) {
@@ -50,7 +46,7 @@ describe('makeBabelJob', function() {
       });
 
       function getStreamOutputText() {
-        var outputText = '';
+        let outputText = '';
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
@@ -268,13 +264,13 @@ describe('makeBabelJob', function() {
   });
 
   it('should not do anything if the project is fully translated', function(done) {
-    var babelDir = temp.mkdirSync(),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin'/makeBabelJob/noTranslationsNecessary/* " +
-        tmpTestCaseCopyDir;
+    const babelDir = temp.mkdirSync(),
+          tmpTestCaseCopyDir = temp.mkdirSync(),
+          copyCommand =
+            "cp '" +
+            __dirname +
+            "/../../testdata/bin'/makeBabelJob/noTranslationsNecessary/* " +
+            tmpTestCaseCopyDir;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
@@ -285,22 +281,22 @@ describe('makeBabelJob', function() {
         );
       }
 
-      var makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
-          [
-            '--babeldir',
-            babelDir,
-            '--root',
-            tmpTestCaseCopyDir,
-            '--i18n',
-            Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html'),
-            '--locales',
-            'en,cs'
-          ]
-        ),
-        buffersByStreamName = {},
-        streamNames = ['stdout', 'stderr'];
+      const makeBabelJobProcess = childProcess.spawn(
+                __dirname + '/../../bin/makeBabelJob',
+                [
+                  '--babeldir',
+                  babelDir,
+                  '--root',
+                  tmpTestCaseCopyDir,
+                  '--i18n',
+                  Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
+                  Path.resolve(tmpTestCaseCopyDir, 'index.html'),
+                  '--locales',
+                  'en,cs'
+                ]
+              ),
+            buffersByStreamName = {},
+            streamNames = ['stdout', 'stderr'];
 
       streamNames.forEach(function(streamName) {
         buffersByStreamName[streamName] = [];
@@ -310,7 +306,7 @@ describe('makeBabelJob', function() {
       });
 
       function getStreamOutputText() {
-        var outputText = '';
+        let outputText = '';
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
@@ -342,13 +338,13 @@ describe('makeBabelJob', function() {
   });
 
   it('should extract all flattened keys for the default language when any language is missing at least one', function(done) {
-    var babelDir = temp.mkdirSync(),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin'/makeBabelJob/includeAllFlattened/* " +
-        tmpTestCaseCopyDir;
+    const babelDir = temp.mkdirSync(),
+          tmpTestCaseCopyDir = temp.mkdirSync(),
+          copyCommand =
+            "cp '" +
+            __dirname +
+            "/../../testdata/bin'/makeBabelJob/includeAllFlattened/* " +
+            tmpTestCaseCopyDir;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
@@ -359,22 +355,22 @@ describe('makeBabelJob', function() {
         );
       }
 
-      var makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
-          [
-            '--babeldir',
-            babelDir,
-            '--root',
-            tmpTestCaseCopyDir,
-            '--i18n',
-            Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html'),
-            '--locales',
-            'en,cs'
-          ]
-        ),
-        buffersByStreamName = {},
-        streamNames = ['stdout', 'stderr'];
+      const makeBabelJobProcess = childProcess.spawn(
+                __dirname + '/../../bin/makeBabelJob',
+                [
+                  '--babeldir',
+                  babelDir,
+                  '--root',
+                  tmpTestCaseCopyDir,
+                  '--i18n',
+                  Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
+                  Path.resolve(tmpTestCaseCopyDir, 'index.html'),
+                  '--locales',
+                  'en,cs'
+                ]
+              ),
+            buffersByStreamName = {},
+            streamNames = ['stdout', 'stderr'];
 
       streamNames.forEach(function(streamName) {
         buffersByStreamName[streamName] = [];
@@ -384,7 +380,7 @@ describe('makeBabelJob', function() {
       });
 
       function getStreamOutputText() {
-        var outputText = '';
+        let outputText = '';
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=
@@ -453,13 +449,13 @@ describe('makeBabelJob', function() {
   });
 
   it('should discover language keys imported via System.js', function(done) {
-    var babelDir = temp.mkdirSync(),
-      tmpTestCaseCopyDir = temp.mkdirSync(),
-      copyCommand =
-        "cp '" +
-        __dirname +
-        "/../../testdata/bin'/makeBabelJob/systemJs/* " +
-        tmpTestCaseCopyDir;
+    const babelDir = temp.mkdirSync(),
+          tmpTestCaseCopyDir = temp.mkdirSync(),
+          copyCommand =
+            "cp '" +
+            __dirname +
+            "/../../testdata/bin'/makeBabelJob/systemJs/* " +
+            tmpTestCaseCopyDir;
 
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
@@ -470,22 +466,22 @@ describe('makeBabelJob', function() {
         );
       }
 
-      var makeBabelJobProcess = childProcess.spawn(
-          __dirname + '/../../bin/makeBabelJob',
-          [
-            '--babeldir',
-            babelDir,
-            '--root',
-            tmpTestCaseCopyDir,
-            '--i18n',
-            Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html'),
-            '--locales',
-            'en,cs'
-          ]
-        ),
-        buffersByStreamName = {},
-        streamNames = ['stdout', 'stderr'];
+      const makeBabelJobProcess = childProcess.spawn(
+                __dirname + '/../../bin/makeBabelJob',
+                [
+                  '--babeldir',
+                  babelDir,
+                  '--root',
+                  tmpTestCaseCopyDir,
+                  '--i18n',
+                  Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
+                  Path.resolve(tmpTestCaseCopyDir, 'index.html'),
+                  '--locales',
+                  'en,cs'
+                ]
+              ),
+            buffersByStreamName = {},
+            streamNames = ['stdout', 'stderr'];
 
       streamNames.forEach(function(streamName) {
         buffersByStreamName[streamName] = [];
@@ -495,7 +491,7 @@ describe('makeBabelJob', function() {
       });
 
       function getStreamOutputText() {
-        var outputText = '';
+        let outputText = '';
         streamNames.forEach(function(streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText +=

@@ -1,10 +1,9 @@
 /*global describe, it*/
-var expect = require('../unexpected-with-plugins'),
-  AssetGraph = require('assetgraph');
+const expect = require('../unexpected-with-plugins'), AssetGraph = require('assetgraph');
 
 describe('checkLanguageKeys', function() {
   it('should handle a combo test case', function() {
-    var infos = [];
+    const infos = [];
     return new AssetGraph({
       root: __dirname + '/../../testdata/transforms/checkLanguageKeys/combo/'
     })
@@ -35,7 +34,7 @@ describe('checkLanguageKeys', function() {
   });
 
   it('a space at the end of a TR original text', function() {
-    var infos = [];
+    const infos = [];
     return new AssetGraph({
       root:
         __dirname +
@@ -58,7 +57,7 @@ describe('checkLanguageKeys', function() {
   });
 
   it('warns when a structured value with plural rule keys is non-exhaustive for a given locale', function() {
-    var infos = [];
+    const infos = [];
     return new AssetGraph({
       root:
         __dirname + '/../../testdata/transforms/checkLanguageKeys/pluralRule/'
@@ -93,7 +92,7 @@ describe('checkLanguageKeys', function() {
   });
 
   it('emits info events when multiple language keys have the same translation in the default locale', function() {
-    var infos = [];
+    const infos = [];
     return new AssetGraph({
       root:
         __dirname +
