@@ -113,12 +113,12 @@ if (commandLineOptions._.length > 0) {
       })
     );
     if (rootUrl) {
-      console.warn('Guessing --root from input files: ' + rootUrl);
+      console.warn(`Guessing --root from input files: ${rootUrl}`);
     }
   }
 } else if (rootUrl && /^file:/.test(rootUrl)) {
-  inputUrls = [rootUrl + '**/*.html'];
-  console.warn('No input files specified, defaulting to ' + inputUrls[0]);
+  inputUrls = [`${rootUrl}**/*.html`];
+  console.warn(`No input files specified, defaulting to ${inputUrls[0]}`);
 } else {
   throw new Error(
     "No input files and no --root specified (or it isn't file:), cannot proceed"

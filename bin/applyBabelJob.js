@@ -48,11 +48,7 @@ if (commandLineOptions.defaultlocale) {
   );
   if (localeIds && localeIds.indexOf(defaultLocaleId) === -1) {
     throw new Error(
-      'The default locale id (' +
-        defaultLocaleId +
-        ') is not among the locales listed with the --locales switch (' +
-        localeIds.join(', ') +
-        ')'
+      `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(', ')})`
     );
   }
 } else if (localeIds) {
@@ -125,7 +121,7 @@ new AssetGraph({ root: commandLineOptions.root })
       assetGraph.addAsset(i18nAssetForAllKeys);
       assetGraph.emit(
         'info',
-        '--i18n ' + commandLineOptions.i18n + ' not found, creating it'
+        `--i18n ${commandLineOptions.i18n} not found, creating it`
       );
     } else if (!i18nAssetForAllKeys.isLoaded) {
       i18nAssetForAllKeys.parseTree = {};
@@ -136,7 +132,7 @@ new AssetGraph({ root: commandLineOptions.root })
 
   fs.readdirSync(commandLineOptions.babeldir).forEach(function(fileName) {
     if (fileName === 'SOURCE.txt') {
-      console.warn('Skipping ' + fileName);
+      console.warn(`Skipping ${fileName}`);
     } else {
       const matchLocaleId = fileName.match(
         /^([a-zA-Z0-9\-\_]+)\.(?:txt|babel)$/
@@ -153,11 +149,7 @@ new AssetGraph({ root: commandLineOptions.root })
 
         if (localeIds && localeIds.indexOf(localeId) === -1) {
           console.warn(
-            'Skipping ' +
-              fileName +
-              ' because ' +
-              localeId +
-              ' was not mentioned in --locales'
+            `Skipping ${fileName} because ${localeId} was not mentioned in --locales`
           );
           return;
         }
@@ -199,17 +191,7 @@ new AssetGraph({ root: commandLineOptions.root })
                     cursor[path[0]] = [];
                   } else if (!Array.isArray(cursor[path[0]])) {
                     throw new Error(
-                      'Error: Expected ' +
-                        JSON.stringify(cursor) +
-                        "['" +
-                        path[0] +
-                        "'] " +
-                        'to be undefined or an array while processing line ' +
-                        lineNumber +
-                        ' of ' +
-                        fileName +
-                        ':\n' +
-                        line
+                      `Error: Expected ${JSON.stringify(cursor)}['${path[0]}'] to be undefined or an array while processing line ${lineNumber} of ${fileName}:\n${line}`
                     );
                   }
                 } else {
@@ -221,17 +203,7 @@ new AssetGraph({ root: commandLineOptions.root })
                     cursor[path[0]] === null
                   ) {
                     throw new Error(
-                      'Error: Expected ' +
-                        JSON.stringify(cursor) +
-                        "['" +
-                        path[0] +
-                        "'] " +
-                        'to be undefined or an object while processing line ' +
-                        lineNumber +
-                        ' of ' +
-                        fileName +
-                        ':\n' +
-                        line
+                      `Error: Expected ${JSON.stringify(cursor)}['${path[0]}'] to be undefined or an object while processing line ${lineNumber} of ${fileName}:\n${line}`
                     );
                   }
                 }
@@ -239,31 +211,20 @@ new AssetGraph({ root: commandLineOptions.root })
               }
               if (path[0] in cursor) {
                 throw new Error(
-                  'Error: Found double declaration of key in line ' +
-                    lineNumber +
-                    ' of ' +
-                    fileName +
-                    ':\n' +
-                    line
+                  `Error: Found double declaration of key in line ${lineNumber} of ${fileName}:\n${line}`
                 );
               }
               cursor[path[0]] = value;
             } else {
               console.warn(
-                "Couldn't parse line " +
-                  (lineNumber + 1) +
-                  ' of the ' +
-                  localeId +
-                  ' file: ' +
-                  line
+                `Couldn't parse line ${lineNumber + 1} of the ${localeId} file: ${line}`
               );
             }
           }
         });
       } else {
         console.warn(
-          'Skipping file whose basename does not look like a locale id: ' +
-            fileName
+          `Skipping file whose basename does not look like a locale id: ${fileName}`
         );
       }
     }
@@ -272,10 +233,7 @@ new AssetGraph({ root: commandLineOptions.root })
     localeIds.forEach(function(localeId) {
       if (!isSeenByLocaleId[localeId]) {
         console.warn(
-          localeId +
-            '.txt was not found although --locales ' +
-            localeId +
-            ' was specified'
+          `${localeId}.txt was not found although --locales ${localeId} was specified`
         );
       }
     });
@@ -317,10 +275,7 @@ new AssetGraph({ root: commandLineOptions.root })
             });
             if (Object.keys(obj).length > keys.length) {
               console.log(
-                key +
-                  ': Discarding plural forms not used in ' +
-                  localeId +
-                  ':',
+                `${key}: Discarding plural forms not used in ${localeId}:`,
                 obj,
                 '=>',
                 coalescedObj
@@ -460,9 +415,7 @@ new AssetGraph({ root: commandLineOptions.root })
               const asset = occurrence.asset.nonInlineAncestor;
 
               const replaceRegExp = new RegExp(
-                '(TR(?:PAT)?\\(([\'"])' +
-                  key.replace(/[\.\[\]\*\+\?\{\}\(\)\^\$]/g, '\\$&') +
-                  '\\2\\s*,\\s*)(?:[^)\'"]*|"[^"]*"|\'[^\']*\')*?\\)',
+                `(TR(?:PAT)?\\((['"])${key.replace(/[\.\[\]\*\+\?\{\}\(\)\^\$]/g, '\\$&')}\\2\\s*,\\s*)(?:[^)'"]*|"[^"]*"|'[^']*')*?\\)`,
                 'g'
               );
 
@@ -472,11 +425,9 @@ new AssetGraph({ root: commandLineOptions.root })
                 asset.text
               ).replace(
                 replaceRegExp,
-                '$1' +
-                  util.inspect(
-                    translationsByKeyAndLocaleId[key][defaultLocaleId]
-                  ) +
-                  ')'
+                `$1${util.inspect(
+  translationsByKeyAndLocaleId[key][defaultLocaleId]
+)})`
               );
             }
           }

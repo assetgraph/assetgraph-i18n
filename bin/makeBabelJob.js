@@ -34,11 +34,7 @@ if (commandLineOptions.defaultlocale) {
   );
   if (localeIds && localeIds.indexOf(defaultLocaleId) === -1) {
     throw new Error(
-      'The default locale id (' +
-        defaultLocaleId +
-        ') is not among the locales listed with the --locales switch (' +
-        localeIds.join(', ') +
-        ')'
+      `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(', ')})`
     );
   }
 } else if (localeIds) {
@@ -188,7 +184,7 @@ function flattenKey(key, value) {
         key +
           path
             .map(function(pathComponent) {
-              return '[' + pathComponent + ']';
+              return `[${pathComponent}]`;
             })
             .join('')
       ] = obj;
@@ -257,7 +253,7 @@ new AssetGraph({ root: commandLineOptions.root })
       assetGraph.addAsset(i18nAssetForAllKeys);
       assetGraph.emit(
         'info',
-        '--i18n ' + commandLineOptions.i18n + ' not found, creating it'
+        `--i18n ${commandLineOptions.i18n} not found, creating it`
       );
     } else if (!i18nAssetForAllKeys.isLoaded) {
       i18nAssetForAllKeys.parseTree = {};
@@ -344,7 +340,7 @@ new AssetGraph({ root: commandLineOptions.root })
 
     const isDefaultLocale =
       localeId === defaultLocaleId ||
-      localeId.indexOf(defaultLocaleId + '_') === 0;
+      localeId.indexOf(`${defaultLocaleId}_`) === 0;
 
     const keys = Object.keys(occurrencesByKey).sort(function(a, b) {
       const aLowerCase = a.toLowerCase(), bLowerCase = b.toLowerCase();
@@ -420,14 +416,11 @@ new AssetGraph({ root: commandLineOptions.root })
           value = defaultValueInTheOccurrenceByFlattenedKey[flattenedKey];
         }
         babelSrc +=
-          flattenedKey +
-          '=' +
-          (omitExistingValues
-            ? ''
-            : String(value || '')
-                .replace(/\\/g, '\\\\')
-                .replace(/\n/g, '\\n')) +
-          '\n';
+          `${flattenedKey}=${omitExistingValues
+  ? ''
+  : String(value || '')
+      .replace(/\\/g, '\\\\')
+      .replace(/\n/g, '\\n')}\n`;
         keyNeedsTranslation = true;
       });
 
@@ -488,19 +481,13 @@ new AssetGraph({ root: commandLineOptions.root })
           const flattenedKeys = flattenedKeysByJoinedLocaleIds[joinedLocaleIds];
           const localeIds = joinedLocaleIds.split(',');
           babelSrc +=
-            '# NOTE: The language' +
-            (localeIds.length > 1 ? 's ' : ' ') +
-            localeIds.join(', ') +
-            (localeIds.length > 1 ? ' need' : ' needs') +
-            (flattenedKeys.length > 1
-              ? ' these additional keys'
-              : ' this additional key') +
-            ' to cover all plural forms:\n' +
-            flattenedKeys
-              .map(function(flattenedKey) {
-                return '# ' + flattenedKey + '=\n';
-              })
-              .join('');
+            `# NOTE: The language${localeIds.length > 1 ? 's ' : ' '}${localeIds.join(', ')}${localeIds.length > 1 ? ' need' : ' needs'}${flattenedKeys.length > 1
+  ? ' these additional keys'
+  : ' this additional key'} to cover all plural forms:\n${flattenedKeys
+  .map(function(flattenedKey) {
+    return `# ${flattenedKey}=\n`;
+  })
+  .join('')}`;
         });
       }
 
@@ -550,17 +537,14 @@ new AssetGraph({ root: commandLineOptions.root })
     });
     const targetBabelFileName = path.resolve(
       commandLineOptions.babeldir,
-      localeId + '.txt'
+      `${localeId}.txt`
     );
     if (babelSrc.length) {
-      console.warn('Writing ' + targetBabelFileName);
+      console.warn(`Writing ${targetBabelFileName}`);
       fs.writeFileSync(targetBabelFileName, babelSrc, 'utf-8');
     } else {
       console.warn(
-        'No existing keys for ' +
-          localeId +
-          ', not writing ' +
-          targetBabelFileName
+        `No existing keys for ${localeId}, not writing ${targetBabelFileName}`
       );
     }
   });
