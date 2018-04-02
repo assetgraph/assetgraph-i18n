@@ -32,7 +32,9 @@ if (commandLineOptions.defaultlocale) {
   );
   if (localeIds && localeIds.indexOf(defaultLocaleId) === -1) {
     throw new Error(
-      `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(', ')})`
+      `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(
+        ', '
+      )})`
     );
   }
 } else if (localeIds) {
@@ -55,7 +57,10 @@ function coalescePluralsToLocale(value, localeId, pluralFormsToInclude) {
       let keys = Object.keys(obj);
       if (
         keys.length > 0 &&
-        keys.every(key => ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1)
+        keys.every(
+          key =>
+            ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1
+        )
       ) {
         keys = [];
         pluralsCldr.forms(localeId).forEach(pluralForm => {
@@ -87,7 +92,10 @@ function valueContainsPlurals(obj) {
     const keys = Object.keys(obj);
     if (
       keys.length > 0 &&
-      keys.every(key => ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1)
+      keys.every(
+        key =>
+          ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1
+      )
     ) {
       return true;
     } else {
@@ -124,12 +132,14 @@ function nullOutLeaves(obj, undefinedOnly) {
 
 function getLeavesFrom(obj, otherObject) {
   if (Array.isArray(obj)) {
-    return obj.map((item, i) => getLeavesFrom(
-      item,
-      Array.isArray(otherObject)
-        ? nullIfNullOrUndefined(otherObject[i])
-        : null
-    ));
+    return obj.map((item, i) =>
+      getLeavesFrom(
+        item,
+        Array.isArray(otherObject)
+          ? nullIfNullOrUndefined(otherObject[i])
+          : null
+      )
+    );
   } else if (typeof obj === 'object' && obj !== null) {
     const resultObj = {};
     Object.keys(obj).forEach(propertyName => {
@@ -165,10 +175,7 @@ function flattenKey(key, value) {
     } else {
       // Assume a type that can be stringified using String(obj):
       valueByFlattenedKey[
-        key +
-          path
-            .map(pathComponent => `[${pathComponent}]`)
-            .join('')
+        key + path.map(pathComponent => `[${pathComponent}]`).join('')
       ] = obj;
     }
   })(value);
@@ -182,38 +189,39 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
   pluralFormsInTheDefaultLocale
 );
 
-new AssetGraph({ root: commandLineOptions.root })
-  .logEvents({
+(async () => {
+  const assetGraph = new AssetGraph({ root: commandLineOptions.root });
+  await assetGraph.logEvents({
     repl: commandLineOptions.repl,
     stopOnWarning: commandLineOptions.stoponwarning
-  })
-  .loadAssets(initialAssetUrls)
-  .populate({
+  });
+  await assetGraph.loadAssets(initialAssetUrls);
+  await assetGraph.populate({
     from: { type: 'Html' },
-    followRelations: { type: 'HtmlScript', to: { url: /^file:/ } }
-  })
-  .bundleSystemJs({
+    followRelations: { type: 'HtmlScript', to: { protocol: 'file:' } }
+  });
+  await assetGraph.bundleSystemJs({
     conditions: { 'locale.js': defaultLocaleId, locale: defaultLocaleId }
-  })
-  .bundleRequireJs()
-  .serializeSourceMaps()
-  .populate({
+  });
+  await assetGraph.bundleRequireJs();
+  await assetGraph.serializeSourceMaps();
+  await assetGraph.populate({
     startAssets: { type: 'SourceMap' },
-    followRelations: { to: { url: /^file:\// } }
-  })
-  .populate({
+    followRelations: { to: { protocol: 'file:' } }
+  });
+  await assetGraph.populate({
     followRelations: {
       type: { $nin: ['HtmlAnchor', 'HtmlMetaRefresh'] },
-      to: { url: AssetGraph.query.not(/^https?:/) }
+      to: { protocol: { $nin: ['http:', 'https:'] } }
     }
-  })
-  .queue(
-    require('../lib/transforms/checkLanguageKeys')({
-      supportedLocaleIds: localeIds,
-      defaultLocaleId
-    })
-  )
-  .queue(function exportLanguageKeys(assetGraph) {
+  });
+
+  require('../lib/transforms/checkLanguageKeys')({
+    supportedLocaleIds: localeIds,
+    defaultLocaleId
+  });
+
+  // Export language keys
   const initialAssets = assetGraph.findAssets({ isInitial: true });
   const occurrencesByKey = i18nTools.findOccurrences(assetGraph, initialAssets);
   const allKeys = i18nTools.extractAllKeys(assetGraph);
@@ -293,8 +301,11 @@ new AssetGraph({ root: commandLineOptions.root })
 
   const alreadyTranslatedByFlattenedKey = {};
   Object.keys(keyByFlattenedKey).forEach(flattenedKey => {
-    alreadyTranslatedByFlattenedKey[flattenedKey] = localeIds.every(localeId => !isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][flattenedKey] ||
-    isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey]);
+    alreadyTranslatedByFlattenedKey[flattenedKey] = localeIds.every(
+      localeId =>
+        !isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][flattenedKey] ||
+        isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey]
+    );
   });
 
   const alreadyTranslatedByKey = {};
@@ -314,7 +325,8 @@ new AssetGraph({ root: commandLineOptions.root })
       localeId.indexOf(`${defaultLocaleId}_`) === 0;
 
     const keys = Object.keys(occurrencesByKey).sort((a, b) => {
-      const aLowerCase = a.toLowerCase(), bLowerCase = b.toLowerCase();
+      const aLowerCase = a.toLowerCase();
+      const bLowerCase = b.toLowerCase();
       return aLowerCase < bLowerCase ? -1 : aLowerCase > bLowerCase ? 1 : 0;
     });
 
@@ -386,12 +398,13 @@ new AssetGraph({ root: commandLineOptions.root })
         ) {
           value = defaultValueInTheOccurrenceByFlattenedKey[flattenedKey];
         }
-        babelSrc +=
-          `${flattenedKey}=${omitExistingValues
-  ? ''
-  : String(value || '')
-      .replace(/\\/g, '\\\\')
-      .replace(/\n/g, '\\n')}\n`;
+        babelSrc += `${flattenedKey}=${
+          omitExistingValues
+            ? ''
+            : String(value || '')
+                .replace(/\\/g, '\\\\')
+                .replace(/\n/g, '\\n')
+        }\n`;
         keyNeedsTranslation = true;
       });
 
@@ -406,15 +419,15 @@ new AssetGraph({ root: commandLineOptions.root })
           localeIds.forEach(localeId => {
             if (pluralsCldr.forms(localeId).indexOf(pluralForm) !== -1) {
               const valueByFlattenedKey = flattenKey(
-                  key,
-                  nullOutLeaves(
-                    coalescePluralsToLocale(
-                      defaultValueInTheOccurrence,
-                      localeId,
-                      pluralForm
-                    )
+                key,
+                nullOutLeaves(
+                  coalescePluralsToLocale(
+                    defaultValueInTheOccurrence,
+                    localeId,
+                    pluralForm
                   )
-                );
+                )
+              );
 
               const existingTranslationByFlattenedKey =
                 allKeys[key] && localeId in allKeys[key]
@@ -424,9 +437,7 @@ new AssetGraph({ root: commandLineOptions.root })
               Object.keys(valueByFlattenedKey).forEach(flattenedKey => {
                 if (!(flattenedKey in existingTranslationByFlattenedKey)) {
                   (localeIdsByFlattenedKey[flattenedKey] =
-                    localeIdsByFlattenedKey[flattenedKey] || []).push(
-                    localeId
-                  );
+                    localeIdsByFlattenedKey[flattenedKey] || []).push(localeId);
                 }
               });
             }
@@ -445,12 +456,15 @@ new AssetGraph({ root: commandLineOptions.root })
         Object.keys(flattenedKeysByJoinedLocaleIds).forEach(joinedLocaleIds => {
           const flattenedKeys = flattenedKeysByJoinedLocaleIds[joinedLocaleIds];
           const localeIds = joinedLocaleIds.split(',');
-          babelSrc +=
-            `# NOTE: The language${localeIds.length > 1 ? 's ' : ' '}${localeIds.join(', ')}${localeIds.length > 1 ? ' need' : ' needs'}${flattenedKeys.length > 1
-  ? ' these additional keys'
-  : ' this additional key'} to cover all plural forms:\n${flattenedKeys
-  .map(flattenedKey => `# ${flattenedKey}=\n`)
-  .join('')}`;
+          babelSrc += `# NOTE: The language${
+            localeIds.length > 1 ? 's ' : ' '
+          }${localeIds.join(', ')}${localeIds.length > 1 ? ' need' : ' needs'}${
+            flattenedKeys.length > 1
+              ? ' these additional keys'
+              : ' this additional key'
+          } to cover all plural forms:\n${flattenedKeys
+            .map(flattenedKey => `# ${flattenedKey}=\n`)
+            .join('')}`;
         });
       }
 
@@ -511,7 +525,9 @@ new AssetGraph({ root: commandLineOptions.root })
       );
     }
   });
-})
-  .prettyPrintAssets({ type: 'I18n', isDirty: true })
-  .writeAssetsToDisc({ type: 'I18n', isDirty: true })
-  .run();
+
+  for (const asset of assetGraph.findAssets({ type: 'I18n', isDirty: true })) {
+    asset.prettyPrint();
+  }
+  await assetGraph.writeAssetsToDisc({ type: 'I18n', isDirty: true });
+})();
