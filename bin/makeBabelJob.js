@@ -461,7 +461,7 @@ new AssetGraph({ root: commandLineOptions.root })
         assetGraph.findAssets({
           type: 'I18n',
           isLoaded: true,
-          parseTree: function(parseTree) {
+          parseTree(parseTree) {
             return key in parseTree;
           }
         })[0] || i18nAssetForAllKeys;
