@@ -178,10 +178,7 @@ function flattenKey(key, value) {
 const pluralFormsInTheDefaultLocale = pluralsCldr.forms(defaultLocaleId);
 
 const relevantPluralFormsNotInTheDefaultLocale = _.difference(
-  _.union.apply(
-    _,
-    localeIds.map(localeId => pluralsCldr.forms(localeId))
-  ),
+  _.union(...localeIds.map(localeId => pluralsCldr.forms(localeId))),
   pluralFormsInTheDefaultLocale
 );
 
