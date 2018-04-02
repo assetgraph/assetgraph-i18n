@@ -46,7 +46,9 @@ if (commandLineOptions.defaultlocale) {
   );
   if (localeIds && localeIds.indexOf(defaultLocaleId) === -1) {
     throw new Error(
-      `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(', ')})`
+      `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(
+        ', '
+      )})`
     );
   }
 } else if (localeIds) {
@@ -62,43 +64,44 @@ if (commandLineOptions.i18n) {
   initialAssetUrls.push(i18nUrl);
 }
 
-new AssetGraph({ root: commandLineOptions.root })
-  .on('addAsset', asset => {
+(async () => {
+  const assetGraph = new AssetGraph({ root: commandLineOptions.root });
+  assetGraph.on('addAsset', asset => {
     asset.once('load', () => {
       originalTextByAssetId[asset.id] = asset.text;
     });
-  })
-  .logEvents({
+  });
+  await assetGraph.logEvents({
     repl: commandLineOptions.repl,
     stopOnWarning: commandLineOptions.stoponwarning,
     suppressJavaScriptCommonJsRequireWarnings: true
-  })
-  .loadAssets(initialAssetUrls)
-  .populate({
+  });
+  await assetGraph.loadAssets(initialAssetUrls);
+  await assetGraph.populate({
     from: { type: 'Html' },
     followRelations: { type: 'HtmlScript', to: { url: /^file:/ } }
-  })
-  .bundleSystemJs({
+  });
+  await assetGraph.bundleSystemJs({
     sourceMaps: true,
     conditions: { 'locale.js': defaultLocaleId, locale: defaultLocaleId }
-  })
-  .bundleRequireJs({ sourceMaps: true })
-  .populate({
+  });
+  await assetGraph.bundleRequireJs({ sourceMaps: true });
+  await assetGraph.populate({
     startAssets: { type: 'JavaScript' },
     followRelations: { to: { url: /^file:\// } }
-  })
-  .serializeSourceMaps()
-  .populate({
+  });
+  await assetGraph.serializeSourceMaps();
+  await assetGraph.populate({
     startAssets: { type: 'SourceMap' },
     followRelations: { to: { url: /^file:\// } }
-  })
-  .populate({
+  });
+  await assetGraph.populate({
     followRelations: {
       type: { $nin: ['HtmlAnchor', 'HtmlMetaRefresh'] },
       to: { protocol: { $nin: ['https:', 'http:'] } }
     }
-  })
-  .queue(function importLanguageKeys(assetGraph) {
+  });
+
   const translationsByKeyAndLocaleId = {};
 
   const occurrencesByKey = i18nTools.findOccurrences(
@@ -161,7 +164,7 @@ new AssetGraph({ root: commandLineOptions.root })
 
               let value = matchKeyValue[2]
                 .trim()
-                .replace(/\\([n\\])/g, ($0, ch) => ch === 'n' ? '\n' : ch);
+                .replace(/\\([n\\])/g, ($0, ch) => (ch === 'n' ? '\n' : ch));
 
               const path = [];
 
@@ -187,7 +190,9 @@ new AssetGraph({ root: commandLineOptions.root })
                     cursor[path[0]] = [];
                   } else if (!Array.isArray(cursor[path[0]])) {
                     throw new Error(
-                      `Error: Expected ${JSON.stringify(cursor)}['${path[0]}'] to be undefined or an array while processing line ${lineNumber} of ${fileName}:\n${line}`
+                      `Error: Expected ${JSON.stringify(cursor)}['${
+                        path[0]
+                      }'] to be undefined or an array while processing line ${lineNumber} of ${fileName}:\n${line}`
                     );
                   }
                 } else {
@@ -199,7 +204,9 @@ new AssetGraph({ root: commandLineOptions.root })
                     cursor[path[0]] === null
                   ) {
                     throw new Error(
-                      `Error: Expected ${JSON.stringify(cursor)}['${path[0]}'] to be undefined or an object while processing line ${lineNumber} of ${fileName}:\n${line}`
+                      `Error: Expected ${JSON.stringify(cursor)}['${
+                        path[0]
+                      }'] to be undefined or an object while processing line ${lineNumber} of ${fileName}:\n${line}`
                     );
                   }
                 }
@@ -213,7 +220,8 @@ new AssetGraph({ root: commandLineOptions.root })
               cursor[path[0]] = value;
             } else {
               console.warn(
-                `Couldn't parse line ${lineNumber + 1} of the ${localeId} file: ${line}`
+                `Couldn't parse line ${lineNumber +
+                  1} of the ${localeId} file: ${line}`
               );
             }
           }
@@ -254,9 +262,11 @@ new AssetGraph({ root: commandLineOptions.root })
           let keys = Object.keys(obj);
           if (
             keys.length > 0 &&
-            keys.every(key => ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(
-              key
-            ) !== -1)
+            keys.every(
+              key =>
+                ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !==
+                -1
+            )
           ) {
             keys = [];
             pluralsCldr.forms(localeId).forEach(pluralForm => {
@@ -366,10 +376,7 @@ new AssetGraph({ root: commandLineOptions.root })
       i18nTools.eachI18nTagInHtmlDocument(htmlAsset.parseTree, options => {
         if (
           options.key in allKeysInDefaultLocale &&
-          !_.isEqual(
-            options.defaultValue,
-            allKeysInDefaultLocale[options.key]
-          )
+          !_.isEqual(options.defaultValue, allKeysInDefaultLocale[options.key])
         ) {
           hasOccurrences = true;
           i18nTagReplacer(options);
@@ -401,7 +408,10 @@ new AssetGraph({ root: commandLineOptions.root })
               const asset = occurrence.asset.nonInlineAncestor;
 
               const replaceRegExp = new RegExp(
-                `(TR(?:PAT)?\\((['"])${key.replace(/[\.\[\]\*\+\?\{\}\(\)\^\$]/g, '\\$&')}\\2\\s*,\\s*)(?:[^)'"]*|"[^"]*"|'[^']*')*?\\)`,
+                `(TR(?:PAT)?\\((['"])${key.replace(
+                  /[\.\[\]\*\+\?\{\}\(\)\^\$]/g,
+                  '\\$&'
+                )}\\2\\s*,\\s*)(?:[^)'"]*|"[^"]*"|'[^']*')*?\\)`,
                 'g'
               );
 
@@ -412,8 +422,8 @@ new AssetGraph({ root: commandLineOptions.root })
               ).replace(
                 replaceRegExp,
                 `$1${util.inspect(
-  translationsByKeyAndLocaleId[key][defaultLocaleId]
-)})`
+                  translationsByKeyAndLocaleId[key][defaultLocaleId]
+                )})`
               );
             }
           }
@@ -429,24 +439,28 @@ new AssetGraph({ root: commandLineOptions.root })
         asset.keepUnpopulated = true;
         replacedText = replacedText.replace(
           /(?:data-htmlizer|data-bind)="[^"]*"/g,
-          $0 => $0
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&amp;/g, '&')
+          $0 =>
+            $0
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&amp;/g, '&')
         );
       }
       asset._rawSrc = replacedText.toString('utf-8');
       asset.hasReplacedLanguageKeys = true;
     });
   }
-})
-  .prettyPrintAssets({ type: 'I18n', isDirty: true })
-  .writeStatsToStderr()
-  .writeAssetsToDisc({ type: 'I18n', isDirty: true })
-  .if(commandLineOptions.replace)
-  .writeAssetsToDisc({
-    type: ['JavaScript', 'Html'],
-    hasReplacedLanguageKeys: true
-  })
-  .endif()
-  .run();
+
+  for (const asset of assetGraph.findAssets({ type: 'I18n', isDirty: true })) {
+    asset.prettyPrint();
+  }
+  await assetGraph.writeStatsToStderr();
+  await assetGraph.writeAssetsToDisc({ type: 'I18n', isDirty: true });
+
+  if (commandLineOptions.replace) {
+    await assetGraph.writeAssetsToDisc({
+      type: { $in: ['JavaScript', 'Html'] },
+      hasReplacedLanguageKeys: true
+    });
+  }
+})();
