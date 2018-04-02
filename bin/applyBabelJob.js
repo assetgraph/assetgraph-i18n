@@ -32,9 +32,7 @@ const commandLineOptions = require('optimist')
 const localeIds =
   commandLineOptions.locales &&
   _.flatten(
-    _.flatten([commandLineOptions.locales]).map(function(localeId) {
-      return localeId.split(',');
-    })
+    _.flatten([commandLineOptions.locales]).map(localeId => localeId.split(','))
   ).map(i18nTools.normalizeLocaleId);
 
 const initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
@@ -65,8 +63,8 @@ if (commandLineOptions.i18n) {
 }
 
 new AssetGraph({ root: commandLineOptions.root })
-  .on('addAsset', function(asset) {
-    asset.once('load', function() {
+  .on('addAsset', asset => {
+    asset.once('load', () => {
       originalTextByAssetId[asset.id] = asset.text;
     });
   })
@@ -130,7 +128,7 @@ new AssetGraph({ root: commandLineOptions.root })
 
   const isSeenByLocaleId = {};
 
-  fs.readdirSync(commandLineOptions.babeldir).forEach(function(fileName) {
+  fs.readdirSync(commandLineOptions.babeldir).forEach(fileName => {
     if (fileName === 'SOURCE.txt') {
       console.warn(`Skipping ${fileName}`);
     } else {
@@ -154,7 +152,7 @@ new AssetGraph({ root: commandLineOptions.root })
           return;
         }
 
-        babelBody.split(/\r?\n|\r\n?/).forEach(function(line, lineNumber) {
+        babelBody.split(/\r?\n|\r\n?/).forEach((line, lineNumber) => {
           if (!/^\s*\#|^\s*$/.test(line)) {
             // Skip comments and empty lines
             const matchKeyValue = line.match(/^([^=]+)=(.*)$/);
@@ -163,9 +161,7 @@ new AssetGraph({ root: commandLineOptions.root })
 
               let value = matchKeyValue[2]
                 .trim()
-                .replace(/\\([n\\])/g, function($0, ch) {
-                  return ch === 'n' ? '\n' : ch;
-                });
+                .replace(/\\([n\\])/g, ($0, ch) => ch === 'n' ? '\n' : ch);
 
               const path = [];
 
@@ -175,7 +171,7 @@ new AssetGraph({ root: commandLineOptions.root })
                 value = parseFloat(value);
               }
               // Chop off [x][y]... suffix and note the components in the 'path' array
-              key = key.replace(/\[([^\]]+)\]/g, function($0, pathComponent) {
+              key = key.replace(/\[([^\]]+)\]/g, ($0, pathComponent) => {
                 path.push(pathComponent);
                 return '';
               });
@@ -230,7 +226,7 @@ new AssetGraph({ root: commandLineOptions.root })
     }
   });
   if (localeIds) {
-    localeIds.forEach(function(localeId) {
+    localeIds.forEach(localeId => {
       if (!isSeenByLocaleId[localeId]) {
         console.warn(
           `${localeId}.txt was not found although --locales ${localeId} was specified`
@@ -243,13 +239,11 @@ new AssetGraph({ root: commandLineOptions.root })
       type: 'I18n',
       isLoaded: true
     })
-    .filter(function(asset) {
-      return asset !== i18nAssetForAllKeys;
-    });
+    .filter(asset => asset !== i18nAssetForAllKeys);
 
-  Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
+  Object.keys(translationsByKeyAndLocaleId).forEach(key => {
     const translationsByLocaleId = translationsByKeyAndLocaleId[key];
-    Object.keys(translationsByLocaleId).forEach(function(localeId) {
+    Object.keys(translationsByLocaleId).forEach(localeId => {
       const value = translationsByLocaleId[localeId];
       // Mostly copied from coalescePluralsToLocale
       translationsByLocaleId[localeId] = (function traverse(obj) {
@@ -260,16 +254,12 @@ new AssetGraph({ root: commandLineOptions.root })
           let keys = Object.keys(obj);
           if (
             keys.length > 0 &&
-            keys.every(function(key) {
-              return (
-                ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(
-                  key
-                ) !== -1
-              );
-            })
+            keys.every(key => ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(
+              key
+            ) !== -1)
           ) {
             keys = [];
-            pluralsCldr.forms(localeId).forEach(function(pluralForm) {
+            pluralsCldr.forms(localeId).forEach(pluralForm => {
               coalescedObj[pluralForm] = obj[pluralForm];
               keys.push(pluralForm);
             });
@@ -283,7 +273,7 @@ new AssetGraph({ root: commandLineOptions.root })
             }
             obj = coalescedObj;
           }
-          keys.forEach(function(propertyName) {
+          keys.forEach(propertyName => {
             coalescedObj[propertyName] = traverse(obj[propertyName]);
           });
           return coalescedObj;
@@ -294,7 +284,7 @@ new AssetGraph({ root: commandLineOptions.root })
     });
   });
 
-  Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
+  Object.keys(translationsByKeyAndLocaleId).forEach(key => {
     let i18nAsset;
     if (!(key in i18nAssetForAllKeys.parseTree)) {
       // Even if a i18nAssetForAllKeys (--i18n ...) is defined, another .i18n we should prefer another file with that key already defined:
@@ -316,9 +306,7 @@ new AssetGraph({ root: commandLineOptions.root })
       i18nAsset.parseTree[key] = {};
       i18nAsset.markDirty();
     }
-    Object.keys(translationsByKeyAndLocaleId[key]).forEach(function(
-      localeId
-    ) {
+    Object.keys(translationsByKeyAndLocaleId[key]).forEach(localeId => {
       const newTranslation = translationsByKeyAndLocaleId[key][localeId];
       const existingTranslation = i18nAsset.parseTree[key][localeId];
 
@@ -354,10 +342,10 @@ new AssetGraph({ root: commandLineOptions.root })
   if (commandLineOptions.replace) {
     const allKeysInDefaultLocale = {};
     const replacedTextByAssetId = {};
-    Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
+    Object.keys(translationsByKeyAndLocaleId).forEach(key => {
       i18nTools
         .expandLocaleIdToPrioritizedList(defaultLocaleId)
-        .some(function(localeId) {
+        .some(localeId => {
           if (localeId in translationsByKeyAndLocaleId[key]) {
             allKeysInDefaultLocale[key] =
               translationsByKeyAndLocaleId[key][localeId];
@@ -373,11 +361,9 @@ new AssetGraph({ root: commandLineOptions.root })
       keepSpans: true,
       keepI18nAttributes: true
     });
-    assetGraph.findAssets({ type: 'Html' }).forEach(function(htmlAsset) {
+    assetGraph.findAssets({ type: 'Html' }).forEach(htmlAsset => {
       let hasOccurrences = false;
-      i18nTools.eachI18nTagInHtmlDocument(htmlAsset.parseTree, function(
-        options
-      ) {
+      i18nTools.eachI18nTagInHtmlDocument(htmlAsset.parseTree, options => {
         if (
           options.key in allKeysInDefaultLocale &&
           !_.isEqual(
@@ -398,13 +384,13 @@ new AssetGraph({ root: commandLineOptions.root })
     });
 
     // Then regexp TR and TRPAT in JavaScript assets. This has to happen last because it regexps directly on the source:
-    Object.keys(translationsByKeyAndLocaleId).forEach(function(key) {
+    Object.keys(translationsByKeyAndLocaleId).forEach(key => {
       if (
         defaultLocaleId &&
         defaultLocaleId in translationsByKeyAndLocaleId[key]
       ) {
         const occurrences = occurrencesByKey[key] || [];
-        (occurrences || []).forEach(function(occurrence) {
+        (occurrences || []).forEach(occurrence => {
           if (
             !_.isEqual(
               occurrence.defaultValue,
@@ -434,7 +420,7 @@ new AssetGraph({ root: commandLineOptions.root })
         });
       }
     });
-    Object.keys(replacedTextByAssetId).forEach(function(assetId) {
+    Object.keys(replacedTextByAssetId).forEach(assetId => {
       const asset = assetGraph.idIndex[assetId];
       let replacedText = replacedTextByAssetId[assetId];
       asset.keepUnpopulated = true;
@@ -443,12 +429,10 @@ new AssetGraph({ root: commandLineOptions.root })
         asset.keepUnpopulated = true;
         replacedText = replacedText.replace(
           /(?:data-htmlizer|data-bind)="[^"]*"/g,
-          function($0) {
-            return $0
-              .replace(/&lt;/g, '<')
-              .replace(/&gt;/g, '>')
-              .replace(/&amp;/g, '&');
-          }
+          $0 => $0
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
         );
       }
       asset._rawSrc = replacedText.toString('utf-8');

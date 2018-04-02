@@ -55,9 +55,7 @@ let rootUrl =
 const localeIds =
   commandLineOptions.locales &&
   _.flatten(
-    _.flatten([commandLineOptions.locales]).map(function(localeId) {
-      return localeId.split(',');
-    })
+    _.flatten([commandLineOptions.locales]).map(localeId => localeId.split(','))
   ).map(i18nTools.normalizeLocaleId);
 
 const defaultLocaleId =
@@ -67,50 +65,34 @@ const defaultLocaleId =
 const ignoreMessageTypes =
   commandLineOptions.ignore &&
   _.flatten(
-    _.flatten([commandLineOptions.ignore]).map(function(ignoreMessageType) {
-      return ignoreMessageType.split(',');
-    })
+    _.flatten([commandLineOptions.ignore]).map(ignoreMessageType => ignoreMessageType.split(','))
   );
 
 const warnMessageTypes =
   commandLineOptions.warn &&
   _.flatten(
-    _.flatten([commandLineOptions.warn]).map(function(warnMessageType) {
-      return warnMessageType.split(',');
-    })
+    _.flatten([commandLineOptions.warn]).map(warnMessageType => warnMessageType.split(','))
   );
 
 const includeAttributeNames =
   commandLineOptions.includeattribute &&
   _.flatten(
-    _.flatten([commandLineOptions.includeattribute]).map(function(
-      attributeName
-    ) {
-      return attributeName.split(',');
-    })
+    _.flatten([commandLineOptions.includeattribute]).map(attributeName => attributeName.split(','))
   );
 
 const excludeAttributeNames =
   commandLineOptions.excludeattribute &&
   _.flatten(
-    _.flatten([commandLineOptions.excludeattribute]).map(function(
-      attributeName
-    ) {
-      return attributeName.split(',');
-    })
+    _.flatten([commandLineOptions.excludeattribute]).map(attributeName => attributeName.split(','))
   );
 
 let inputUrls;
 
 if (commandLineOptions._.length > 0) {
-  inputUrls = commandLineOptions._.map(function(urlOrFsPath) {
-    return urlTools.urlOrFsPathToUrl(urlOrFsPath, false);
-  });
+  inputUrls = commandLineOptions._.map(urlOrFsPath => urlTools.urlOrFsPathToUrl(urlOrFsPath, false));
   if (!rootUrl) {
     rootUrl = urlTools.findCommonUrlPrefix(
-      inputUrls.filter(function(inputUrl) {
-        return /^file:/.test(inputUrl);
-      })
+      inputUrls.filter(inputUrl => /^file:/.test(inputUrl))
     );
     if (rootUrl) {
       console.warn(`Guessing --root from input files: ${rootUrl}`);
