@@ -65,31 +65,41 @@ const defaultLocaleId =
 const ignoreMessageTypes =
   commandLineOptions.ignore &&
   _.flatten(
-    _.flatten([commandLineOptions.ignore]).map(ignoreMessageType => ignoreMessageType.split(','))
+    _.flatten([commandLineOptions.ignore]).map(ignoreMessageType =>
+      ignoreMessageType.split(',')
+    )
   );
 
 const warnMessageTypes =
   commandLineOptions.warn &&
   _.flatten(
-    _.flatten([commandLineOptions.warn]).map(warnMessageType => warnMessageType.split(','))
+    _.flatten([commandLineOptions.warn]).map(warnMessageType =>
+      warnMessageType.split(',')
+    )
   );
 
 const includeAttributeNames =
   commandLineOptions.includeattribute &&
   _.flatten(
-    _.flatten([commandLineOptions.includeattribute]).map(attributeName => attributeName.split(','))
+    _.flatten([commandLineOptions.includeattribute]).map(attributeName =>
+      attributeName.split(',')
+    )
   );
 
 const excludeAttributeNames =
   commandLineOptions.excludeattribute &&
   _.flatten(
-    _.flatten([commandLineOptions.excludeattribute]).map(attributeName => attributeName.split(','))
+    _.flatten([commandLineOptions.excludeattribute]).map(attributeName =>
+      attributeName.split(',')
+    )
   );
 
 let inputUrls;
 
 if (commandLineOptions._.length > 0) {
-  inputUrls = commandLineOptions._.map(urlOrFsPath => urlTools.urlOrFsPathToUrl(urlOrFsPath, false));
+  inputUrls = commandLineOptions._.map(urlOrFsPath =>
+    urlTools.urlOrFsPathToUrl(urlOrFsPath, false)
+  );
   if (!rootUrl) {
     rootUrl = urlTools.findCommonUrlPrefix(
       inputUrls.filter(inputUrl => /^file:/.test(inputUrl))

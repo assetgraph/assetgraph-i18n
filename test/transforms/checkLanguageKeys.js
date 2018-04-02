@@ -38,8 +38,7 @@ describe('checkLanguageKeys', function() {
   it('a space at the end of a TR original text', function() {
     const infos = [];
     return new AssetGraph({
-      root:
-        `${__dirname}/../../testdata/transforms/checkLanguageKeys/neverEndingSpaceLoop/`
+      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/neverEndingSpaceLoop/`
     })
       .on('info', function(err) {
         infos.push(err);
@@ -60,8 +59,7 @@ describe('checkLanguageKeys', function() {
   it('warns when a structured value with plural rule keys is non-exhaustive for a given locale', function() {
     const infos = [];
     return new AssetGraph({
-      root:
-        `${__dirname}/../../testdata/transforms/checkLanguageKeys/pluralRule/`
+      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/pluralRule/`
     })
       .on('info', function(err) {
         infos.push(err);
@@ -95,8 +93,7 @@ describe('checkLanguageKeys', function() {
   it('emits info events when multiple language keys have the same translation in the default locale', function() {
     const infos = [];
     return new AssetGraph({
-      root:
-        `${__dirname}/../../testdata/transforms/checkLanguageKeys/duplicateLanguageKeys/`
+      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/duplicateLanguageKeys/`
     })
       .on('info', function(err) {
         infos.push(err);
