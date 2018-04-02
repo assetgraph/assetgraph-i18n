@@ -1,5 +1,7 @@
 /*global describe, it*/
-const expect = require('../unexpected-with-plugins'), _ = require('lodash'), AssetGraph = require('assetgraph');
+const expect = require('../unexpected-with-plugins'),
+  _ = require('lodash'),
+  AssetGraph = require('assetgraph');
 
 describe('cloneForEachLocale', function() {
   it('should make a clone of each Html file for each language', function(done) {
@@ -202,13 +204,13 @@ describe('cloneForEachLocale', function() {
         );
 
         let danishJavaScript = assetGraph.findRelations({
-                type: 'HtmlScript',
-                from: { fileName: 'index.da.html' }
-              })[0].to,
-            americanEnglishJavaScript = assetGraph.findRelations({
-              type: 'HtmlScript',
-              from: { fileName: 'index.en_us.html' }
-            })[0].to;
+            type: 'HtmlScript',
+            from: { fileName: 'index.da.html' }
+          })[0].to,
+          americanEnglishJavaScript = assetGraph.findRelations({
+            type: 'HtmlScript',
+            from: { fileName: 'index.en_us.html' }
+          })[0].to;
         expect(danishJavaScript, 'to be truthy');
         expect(americanEnglishJavaScript, 'to be truthy');
         expect(
@@ -399,16 +401,16 @@ describe('cloneForEachLocale', function() {
         expect(assetGraph, 'to contain asset', 'I18n');
 
         const danishHtml = assetGraph.findAssets({
-                  fileName: 'index.da.html'
-                })[0],
-              danishJavaScript = assetGraph.findRelations({
-                from: danishHtml,
-                type: 'HtmlScript'
-              })[0].to,
-              danishKnockoutJsTemplate = assetGraph.findRelations({
-                from: danishJavaScript,
-                type: 'JavaScriptStaticUrl'
-              })[0].to;
+            fileName: 'index.da.html'
+          })[0],
+          danishJavaScript = assetGraph.findRelations({
+            from: danishHtml,
+            type: 'HtmlScript'
+          })[0].to,
+          danishKnockoutJsTemplate = assetGraph.findRelations({
+            from: danishJavaScript,
+            type: 'JavaScriptStaticUrl'
+          })[0].to;
         expect(danishKnockoutJsTemplate.text, 'to match', /Min sprognøgle/);
       })
       .run(done);
@@ -431,9 +433,9 @@ describe('cloneForEachLocale', function() {
         expect(assetGraph, 'to contain assets', { type: 'Png' }, 3);
 
         const danishCss = assetGraph.findAssets({
-                  fileName: 'needsLocalization.da.css'
-                })[0],
-              cssRules = danishCss.parseTree.nodes;
+            fileName: 'needsLocalization.da.css'
+          })[0],
+          cssRules = danishCss.parseTree.nodes;
         expect(cssRules, 'to have length', 3);
         expect(cssRules[0].selector, 'to equal', 'body');
         expect(cssRules[1].selector, 'to equal', 'html .theThing');
@@ -643,8 +645,9 @@ describe('cloneForEachLocale', function() {
       .queue(function(assetGraph) {
         // TODO: The presence of only LOCALECOOKIENAME/SUPPORTEDLOCALEIDS/DEFAULTLOCALEID don't really require the asset to be cloned as
         // they just need to be replaced to the same value in each locale.
-        const numJavaScriptAssets = assetGraph.findAssets({ type: 'JavaScript' })
-          .length;
+        const numJavaScriptAssets = assetGraph.findAssets({
+          type: 'JavaScript'
+        }).length;
         expect(
           numJavaScriptAssets === 1 || numJavaScriptAssets === 2,
           'to be truthy'

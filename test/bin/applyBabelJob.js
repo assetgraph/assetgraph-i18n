@@ -1,24 +1,28 @@
 /*global describe, it*/
-const childProcess = require('child_process'), fs = require('fs'), Path = require('path'), expect = require('unexpected'), temp = require('temp');
+const childProcess = require('child_process'),
+  fs = require('fs'),
+  Path = require('path'),
+  expect = require('unexpected'),
+  temp = require('temp');
 
 describe('applyBabelJob', function() {
   it('should handle a complex test case', function(done) {
     const babelDir = Path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'testdata',
-              'bin',
-              'applyBabelJob',
-              'complex',
-              'translationjob'
-            ),
-          tmpTestCaseCopyDir = temp.mkdirSync(),
-          copyCommand =
-            "cp '" +
-            __dirname +
-            "/../../testdata/bin/applyBabelJob/complex'/index.* " +
-            tmpTestCaseCopyDir;
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'bin',
+        'applyBabelJob',
+        'complex',
+        'translationjob'
+      ),
+      tmpTestCaseCopyDir = temp.mkdirSync(),
+      copyCommand =
+        "cp '" +
+        __dirname +
+        "/../../testdata/bin/applyBabelJob/complex'/index.* " +
+        tmpTestCaseCopyDir;
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
@@ -135,21 +139,21 @@ describe('applyBabelJob', function() {
 
   it('should warn about and discard plural cases not supported by a locale', function(done) {
     const babelDir = Path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'testdata',
-              'bin',
-              'applyBabelJob',
-              'invalidPlurals',
-              'translationjob'
-            ),
-          tmpTestCaseCopyDir = temp.mkdirSync(),
-          copyCommand =
-            "cp '" +
-            __dirname +
-            "/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* " +
-            tmpTestCaseCopyDir;
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'bin',
+        'applyBabelJob',
+        'invalidPlurals',
+        'translationjob'
+      ),
+      tmpTestCaseCopyDir = temp.mkdirSync(),
+      copyCommand =
+        "cp '" +
+        __dirname +
+        "/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* " +
+        tmpTestCaseCopyDir;
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
@@ -229,21 +233,21 @@ describe('applyBabelJob', function() {
 
   it('should update the actual source files when importing into a project that uses system.js', function(done) {
     const babelDir = Path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'testdata',
-              'bin',
-              'applyBabelJob',
-              'systemJs',
-              'translationjob'
-            ),
-          tmpTestCaseCopyDir = temp.mkdirSync(),
-          copyCommand =
-            "cp '" +
-            __dirname +
-            "/../../testdata/bin/applyBabelJob'/systemJs/*.* " +
-            tmpTestCaseCopyDir;
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'bin',
+        'applyBabelJob',
+        'systemJs',
+        'translationjob'
+      ),
+      tmpTestCaseCopyDir = temp.mkdirSync(),
+      copyCommand =
+        "cp '" +
+        __dirname +
+        "/../../testdata/bin/applyBabelJob'/systemJs/*.* " +
+        tmpTestCaseCopyDir;
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
@@ -302,21 +306,21 @@ describe('applyBabelJob', function() {
 
   it('should handle a partly retranslated set of nested keys', function(done) {
     const babelDir = Path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'testdata',
-              'bin',
-              'applyBabelJob',
-              'retranslationOfSomeNestedKeys',
-              'translationjob'
-            ),
-          tmpTestCaseCopyDir = temp.mkdirSync(),
-          copyCommand =
-            "cp '" +
-            __dirname +
-            "/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* " +
-            tmpTestCaseCopyDir;
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'bin',
+        'applyBabelJob',
+        'retranslationOfSomeNestedKeys',
+        'translationjob'
+      ),
+      tmpTestCaseCopyDir = temp.mkdirSync(),
+      copyCommand =
+        "cp '" +
+        __dirname +
+        "/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* " +
+        tmpTestCaseCopyDir;
     childProcess.exec(copyCommand, function(err, stdout, stderr) {
       if (err) {
         return done(
