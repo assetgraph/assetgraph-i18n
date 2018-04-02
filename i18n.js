@@ -29,8 +29,8 @@ function createTr(localeData) {
         'i18nTools.tokenizePattern: Value must be a string: ' + valueString
       );
     }
-    var tokens = [],
-      fragments = pattern.split(/(\{\d+\})/);
+    var tokens = [];
+    var fragments = pattern.split(/(\{\d+\})/);
     for (var i = 0; i < fragments.length; i += 1) {
       var fragment = fragments[i];
       if (fragment.length > 0) {
@@ -58,12 +58,13 @@ function createTr(localeData) {
   var tr = TR; // Avoid triggering "i18nTools.eachTrInAst: Invalid TR key name syntax: TR(key, defaultPattern)"
 
   TR.PAT = function(key, defaultPattern) {
-    var pattern = tr(key, defaultPattern),
-      tokens = tokenizePattern(pattern);
+    var pattern = tr(key, defaultPattern);
+    var tokens = tokenizePattern(pattern);
     return function() {
       // placeHolderValue, ...
-      var placeHolderValues = arguments,
-        renderedString = '';
+      var placeHolderValues = arguments;
+
+      var renderedString = '';
       for (var i = 0; i < tokens.length; i += 1) {
         var token = tokens[i];
         if (token.type === 'placeHolder') {

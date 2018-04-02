@@ -135,9 +135,7 @@ if (commandLineOptions.i18n) {
     if (fileName === 'SOURCE.txt') {
       console.warn(`Skipping ${fileName}`);
     } else {
-      const matchLocaleId = fileName.match(
-        /^([a-zA-Z0-9\-\_]+)\.(?:txt|babel)$/
-      );
+      const matchLocaleId = fileName.match(/^([a-zA-Z0-9_-]+)\.(?:txt|babel)$/);
       if (matchLocaleId) {
         const localeId = i18nTools.normalizeLocaleId(matchLocaleId[1]);
 
@@ -156,7 +154,7 @@ if (commandLineOptions.i18n) {
         }
 
         babelBody.split(/\r?\n|\r\n?/).forEach((line, lineNumber) => {
-          if (!/^\s*\#|^\s*$/.test(line)) {
+          if (!/^\s*#|^\s*$/.test(line)) {
             // Skip comments and empty lines
             const matchKeyValue = line.match(/^([^=]+)=(.*)$/);
             if (matchKeyValue) {
@@ -409,7 +407,7 @@ if (commandLineOptions.i18n) {
 
               const replaceRegExp = new RegExp(
                 `(TR(?:PAT)?\\((['"])${key.replace(
-                  /[\.\[\]\*\+\?\{\}\(\)\^\$]/g,
+                  /[.[\]*+?{}()^$]/g,
                   '\\$&'
                 )}\\2\\s*,\\s*)(?:[^)'"]*|"[^"]*"|'[^']*')*?\\)`,
                 'g'
