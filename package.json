@@ -24,9 +24,9 @@
     "bin"
   ],
   "bin": {
-    "applyBabelJob": "applyBabelJob.js",
-    "checkLanguageKeys": "checkLanguageKeys.js",
-    "makeBabelJob": "makeBabelJob.js"
+    "applyBabelJob": "bin/applyBabelJob.js",
+    "checkLanguageKeys": "bin/checkLanguageKeys.js",
+    "makeBabelJob": "bin/makeBabelJob.js"
   },
   "dependencies": {
     "esanimate": "^1.1.0",
