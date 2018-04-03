@@ -117,21 +117,25 @@ if (commandLineOptions._.length > 0) {
   );
 }
 
-new AssetGraph({ root: rootUrl })
-  .logEvents({
+(async () => {
+  const assetGraph = new AssetGraph({ root: rootUrl });
+  await assetGraph.logEvents({
     repl: commandLineOptions.repl,
     stopOnWarning: commandLineOptions.stoponwarning,
     suppressJavaScriptCommonJsRequireWarnings: true
-  })
-  .loadAssets(inputUrls)
-  .bundleWebpack()
-  .populate({
+  });
+  await assetGraph.loadAssets(inputUrls);
+  await assetGraph.bundleWebpack();
+  await assetGraph.populate({
     from: { type: 'Html' },
-    followRelations: { type: 'HtmlScript', to: { url: /^file:/ } }
-  })
-  .bundleSystemJs({ sourceMaps: true, conditions: { locale: localeIds } })
-  .bundleRequireJs({ sourceMaps: true })
-  .populate({
+    followRelations: { type: 'HtmlScript', to: { protocol: 'file:' } }
+  });
+  await assetGraph.bundleSystemJs({
+    sourceMaps: true,
+    conditions: { locale: localeIds }
+  });
+  await assetGraph.bundleRequireJs({ sourceMaps: true });
+  await assetGraph.populate({
     followRelations: {
       $or: [
         {
@@ -151,20 +155,20 @@ new AssetGraph({ root: rootUrl })
         }
       ]
     }
-  })
-  .queue(
-    require('../lib/transforms/checkLanguageKeys')({
-      supportedLocaleIds: localeIds,
-      defaultLocaleId,
-      ignoreMessageTypes,
-      warnMessageTypes,
-      removeUnused: commandLineOptions.removeunused,
-      includeAttributeNames,
-      excludeAttributeNames
-    })
-  )
-  .if(commandLineOptions.removeunused)
-  .prettyPrintAssets({ type: ['I18n'], isDirty: true })
-  .writeAssetsToDisc({ type: ['I18n'], isDirty: true })
-  .endif()
-  .run();
+  });
+
+  require('../lib/transforms/checkLanguageKeys')({
+    supportedLocaleIds: localeIds,
+    defaultLocaleId,
+    ignoreMessageTypes,
+    warnMessageTypes,
+    removeUnused: commandLineOptions.removeunused,
+    includeAttributeNames,
+    excludeAttributeNames
+  });
+
+  if (commandLineOptions.removeunused) {
+    await assetGraph.prettyPrintAssets({ type: 'I18n', isDirty: true });
+    await assetGraph.writeAssetsToDisc({ type: 'I18n', isDirty: true });
+  }
+})();
