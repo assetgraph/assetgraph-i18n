@@ -165,7 +165,7 @@ if (commandLineOptions._.length > 0) {
     removeUnused: commandLineOptions.removeunused,
     includeAttributeNames,
     excludeAttributeNames
-  });
+  })(assetGraph);
 
   if (commandLineOptions.removeunused) {
     await assetGraph.prettyPrintAssets({ type: 'I18n', isDirty: true });
