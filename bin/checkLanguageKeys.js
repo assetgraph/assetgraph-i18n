@@ -168,7 +168,9 @@ if (commandLineOptions._.length > 0) {
   })(assetGraph);
 
   if (commandLineOptions.removeunused) {
-    await assetGraph.prettyPrintAssets({ type: 'I18n', isDirty: true });
+    for (const asset of assetGraph.findAssets({ type: 'I18n', isDirty: true })) {
+      asset.prettyPrint();
+    }
     await assetGraph.writeAssetsToDisc({ type: 'I18n', isDirty: true });
   }
 })();
