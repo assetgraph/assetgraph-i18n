@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "esanimate": "^1.1.0",
-    "escodegen": "^1.8.0",
+    "escodegen": "^1.9.1",
     "esmangle": "^1.0.1",
     "estraverse": "^4.2.0",
     "estraverse-fb": "^1.3.2",
