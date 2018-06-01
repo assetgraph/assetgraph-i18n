@@ -58,9 +58,6 @@
   "peerDependencies": {
     "assetgraph": "^4.0.0"
   },
-  "publishConfig": {
-    "registry": "http://registry.npmjs.org/"
-  },
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint && mocha",
