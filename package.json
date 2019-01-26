@@ -61,7 +61,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "mocha",
-    "travis": "npm run lint && npm run coverage",
+    "ci": "npm run lint && npm run coverage",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- mocha && echo google-chrome coverage/lcov-report/index.html"
   },
   "nyc": {
