@@ -39,7 +39,7 @@
     "memoizesync": "1.1.1",
     "optimist": "0.6.1",
     "plurals-cldr": "^1.0.2",
-    "urltools": "^0.2.1"
+    "urltools": "^0.4.1"
   },
   "devDependencies": {
     "assetgraph": "^5.1.1",
