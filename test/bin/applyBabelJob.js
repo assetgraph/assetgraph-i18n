@@ -1,4 +1,4 @@
-/*global describe, it*/
+/* global describe, it */
 /* eslint-disable no-path-concat */
 const childProcess = require('child_process');
 

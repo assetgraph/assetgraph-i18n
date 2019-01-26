@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/*eslint indent:0*/
+/* eslint indent:0 */
 const path = require('path');
 
 const fs = require('fs');
