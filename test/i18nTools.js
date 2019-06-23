@@ -1,4 +1,3 @@
-/* global describe, it */
 const unexpected = require('./unexpected-with-plugins');
 
 const i18nTools = require('../lib/i18nTools');
