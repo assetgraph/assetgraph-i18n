@@ -2,7 +2,7 @@
   "name": "assetgraph-i18n",
   "description": "i18n plugin for assetgraph-builder",
   "repository": "git://github.com/One-com/assetgraph-builder.git",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "main": "lib/index.js",
   "keywords": [
     "assetgraph",
