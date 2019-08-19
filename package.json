@@ -42,7 +42,7 @@
     "urltools": "^0.4.1"
   },
   "devDependencies": {
-    "assetgraph": "^5.1.1",
+    "assetgraph": "^6.0.0",
     "coveralls": "^3.0.2",
     "eslint": "^6.0.0",
     "eslint-config-prettier": "^6.0.0",
