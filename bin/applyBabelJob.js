@@ -19,20 +19,22 @@ const commandLineOptions = require('optimist')
     describe:
       'The locale of the default value in TR statements and tags with a data-i18n attribute',
     type: 'string',
-    default: 'en'
+    default: 'en',
   })
   .options('replace', {
     describe:
       'Replace the data-i18n attributes, TR and TRPAT expressions in the original source code with the default locale keys in the translation job (experimental)',
     type: 'boolean',
-    default: false
+    default: false,
   })
   .demand(['root', 'babeldir', 'i18n']).argv;
 
 const localeIds =
   commandLineOptions.locales &&
   _.flatten(
-    _.flatten([commandLineOptions.locales]).map(localeId => localeId.split(','))
+    _.flatten([commandLineOptions.locales]).map((localeId) =>
+      localeId.split(',')
+    )
   ).map(i18nTools.normalizeLocaleId);
 
 const initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
@@ -66,7 +68,7 @@ if (commandLineOptions.i18n) {
 
 (async () => {
   const assetGraph = new AssetGraph({ root: commandLineOptions.root });
-  assetGraph.on('addAsset', asset => {
+  assetGraph.on('addAsset', (asset) => {
     asset.once('load', () => {
       originalTextByAssetId[asset.id] = asset.text;
     });
@@ -74,32 +76,32 @@ if (commandLineOptions.i18n) {
   await assetGraph.logEvents({
     repl: commandLineOptions.repl,
     stopOnWarning: commandLineOptions.stoponwarning,
-    suppressJavaScriptCommonJsRequireWarnings: true
+    suppressJavaScriptCommonJsRequireWarnings: true,
   });
   await assetGraph.loadAssets(initialAssetUrls);
   await assetGraph.populate({
     from: { type: 'Html' },
-    followRelations: { type: 'HtmlScript', to: { url: /^file:/ } }
+    followRelations: { type: 'HtmlScript', to: { url: /^file:/ } },
   });
   await assetGraph.bundleSystemJs({
     sourceMaps: true,
-    conditions: { 'locale.js': defaultLocaleId, locale: defaultLocaleId }
+    conditions: { 'locale.js': defaultLocaleId, locale: defaultLocaleId },
   });
   await assetGraph.bundleRequireJs({ sourceMaps: true });
   await assetGraph.populate({
     startAssets: { type: 'JavaScript' },
-    followRelations: { to: { url: /^file:\// } }
+    followRelations: { to: { url: /^file:\// } },
   });
   await assetGraph.serializeSourceMaps();
   await assetGraph.populate({
     startAssets: { type: 'SourceMap' },
-    followRelations: { to: { url: /^file:\// } }
+    followRelations: { to: { url: /^file:\// } },
   });
   await assetGraph.populate({
     followRelations: {
       type: { $nin: ['HtmlAnchor', 'HtmlMetaRefresh'] },
-      to: { protocol: { $nin: ['https:', 'http:'] } }
-    }
+      to: { protocol: { $nin: ['https:', 'http:'] } },
+    },
   });
 
   const translationsByKeyAndLocaleId = {};
@@ -117,7 +119,7 @@ if (commandLineOptions.i18n) {
       i18nAssetForAllKeys = new AssetGraph.I18n({
         url: i18nUrl,
         isDirty: true,
-        parseTree: {}
+        parseTree: {},
       });
       assetGraph.addAsset(i18nAssetForAllKeys);
       assetGraph.emit(
@@ -131,7 +133,7 @@ if (commandLineOptions.i18n) {
 
   const isSeenByLocaleId = {};
 
-  fs.readdirSync(commandLineOptions.babeldir).forEach(fileName => {
+  fs.readdirSync(commandLineOptions.babeldir).forEach((fileName) => {
     if (fileName === 'SOURCE.txt') {
       console.warn(`Skipping ${fileName}`);
     } else {
@@ -218,8 +220,9 @@ if (commandLineOptions.i18n) {
               cursor[path[0]] = value;
             } else {
               console.warn(
-                `Couldn't parse line ${lineNumber +
-                  1} of the ${localeId} file: ${line}`
+                `Couldn't parse line ${
+                  lineNumber + 1
+                } of the ${localeId} file: ${line}`
               );
             }
           }
@@ -232,7 +235,7 @@ if (commandLineOptions.i18n) {
     }
   });
   if (localeIds) {
-    localeIds.forEach(localeId => {
+    localeIds.forEach((localeId) => {
       if (!isSeenByLocaleId[localeId]) {
         console.warn(
           `${localeId}.txt was not found although --locales ${localeId} was specified`
@@ -243,13 +246,13 @@ if (commandLineOptions.i18n) {
   const secondaryI18nAssets = assetGraph
     .findAssets({
       type: 'I18n',
-      isLoaded: true
+      isLoaded: true,
     })
-    .filter(asset => asset !== i18nAssetForAllKeys);
+    .filter((asset) => asset !== i18nAssetForAllKeys);
 
-  Object.keys(translationsByKeyAndLocaleId).forEach(key => {
+  Object.keys(translationsByKeyAndLocaleId).forEach((key) => {
     const translationsByLocaleId = translationsByKeyAndLocaleId[key];
-    Object.keys(translationsByLocaleId).forEach(localeId => {
+    Object.keys(translationsByLocaleId).forEach((localeId) => {
       const value = translationsByLocaleId[localeId];
       // Mostly copied from coalescePluralsToLocale
       translationsByLocaleId[localeId] = (function traverse(obj) {
@@ -261,13 +264,13 @@ if (commandLineOptions.i18n) {
           if (
             keys.length > 0 &&
             keys.every(
-              key =>
+              (key) =>
                 ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !==
                 -1
             )
           ) {
             keys = [];
-            pluralsCldr.forms(localeId).forEach(pluralForm => {
+            pluralsCldr.forms(localeId).forEach((pluralForm) => {
               coalescedObj[pluralForm] = obj[pluralForm];
               keys.push(pluralForm);
             });
@@ -281,7 +284,7 @@ if (commandLineOptions.i18n) {
             }
             obj = coalescedObj;
           }
-          keys.forEach(propertyName => {
+          keys.forEach((propertyName) => {
             coalescedObj[propertyName] = traverse(obj[propertyName]);
           });
           return coalescedObj;
@@ -292,7 +295,7 @@ if (commandLineOptions.i18n) {
     });
   });
 
-  Object.keys(translationsByKeyAndLocaleId).forEach(key => {
+  Object.keys(translationsByKeyAndLocaleId).forEach((key) => {
     let i18nAsset;
     if (!(key in i18nAssetForAllKeys.parseTree)) {
       // Even if a i18nAssetForAllKeys (--i18n ...) is defined, another .i18n we should prefer another file with that key already defined:
@@ -314,7 +317,7 @@ if (commandLineOptions.i18n) {
       i18nAsset.parseTree[key] = {};
       i18nAsset.markDirty();
     }
-    Object.keys(translationsByKeyAndLocaleId[key]).forEach(localeId => {
+    Object.keys(translationsByKeyAndLocaleId[key]).forEach((localeId) => {
       const newTranslation = translationsByKeyAndLocaleId[key][localeId];
       const existingTranslation = i18nAsset.parseTree[key][localeId];
 
@@ -350,10 +353,10 @@ if (commandLineOptions.i18n) {
   if (commandLineOptions.replace) {
     const allKeysInDefaultLocale = {};
     const replacedTextByAssetId = {};
-    Object.keys(translationsByKeyAndLocaleId).forEach(key => {
+    Object.keys(translationsByKeyAndLocaleId).forEach((key) => {
       i18nTools
         .expandLocaleIdToPrioritizedList(defaultLocaleId)
-        .some(localeId => {
+        .some((localeId) => {
           if (localeId in translationsByKeyAndLocaleId[key]) {
             allKeysInDefaultLocale[key] =
               translationsByKeyAndLocaleId[key][localeId];
@@ -367,11 +370,11 @@ if (commandLineOptions.i18n) {
       allKeysForLocale: allKeysInDefaultLocale,
       localeId: defaultLocaleId,
       keepSpans: true,
-      keepI18nAttributes: true
+      keepI18nAttributes: true,
     });
-    assetGraph.findAssets({ type: 'Html' }).forEach(htmlAsset => {
+    assetGraph.findAssets({ type: 'Html' }).forEach((htmlAsset) => {
       let hasOccurrences = false;
-      i18nTools.eachI18nTagInHtmlDocument(htmlAsset.parseTree, options => {
+      i18nTools.eachI18nTagInHtmlDocument(htmlAsset.parseTree, (options) => {
         if (
           options.key in allKeysInDefaultLocale &&
           !_.isEqual(options.defaultValue, allKeysInDefaultLocale[options.key])
@@ -389,13 +392,13 @@ if (commandLineOptions.i18n) {
     });
 
     // Then regexp TR and TRPAT in JavaScript assets. This has to happen last because it regexps directly on the source:
-    Object.keys(translationsByKeyAndLocaleId).forEach(key => {
+    Object.keys(translationsByKeyAndLocaleId).forEach((key) => {
       if (
         defaultLocaleId &&
         defaultLocaleId in translationsByKeyAndLocaleId[key]
       ) {
         const occurrences = occurrencesByKey[key] || [];
-        (occurrences || []).forEach(occurrence => {
+        (occurrences || []).forEach((occurrence) => {
           if (
             !_.isEqual(
               occurrence.defaultValue,
@@ -428,7 +431,7 @@ if (commandLineOptions.i18n) {
         });
       }
     });
-    Object.keys(replacedTextByAssetId).forEach(assetId => {
+    Object.keys(replacedTextByAssetId).forEach((assetId) => {
       const asset = assetGraph.idIndex[assetId];
       let replacedText = replacedTextByAssetId[assetId];
       asset.keepUnpopulated = true;
@@ -437,7 +440,7 @@ if (commandLineOptions.i18n) {
         asset.keepUnpopulated = true;
         replacedText = replacedText.replace(
           /(?:data-htmlizer|data-bind)="[^"]*"/g,
-          $0 =>
+          ($0) =>
             $0
               .replace(/&lt;/g, '<')
               .replace(/&gt;/g, '>')
@@ -458,7 +461,7 @@ if (commandLineOptions.i18n) {
   if (commandLineOptions.replace) {
     await assetGraph.writeAssetsToDisc({
       type: { $in: ['JavaScript', 'Html'] },
-      hasReplacedLanguageKeys: true
+      hasReplacedLanguageKeys: true,
     });
   }
 })();

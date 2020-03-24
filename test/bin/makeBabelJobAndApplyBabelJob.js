@@ -5,14 +5,14 @@ const fs = require('fs');
 const Path = require('path');
 const temp = require('temp');
 
-describe('makeBabelJob and applyBabelJob', function() {
-  it('should extract and reimport a translation job', function(done) {
+describe('makeBabelJob and applyBabelJob', function () {
+  it('should extract and reimport a translation job', function (done) {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -30,23 +30,23 @@ describe('makeBabelJob and applyBabelJob', function() {
           'en,da,de',
           '--i18n',
           Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
-          Path.resolve(tmpTestCaseCopyDir, 'index.html')
+          Path.resolve(tmpTestCaseCopyDir, 'index.html'),
         ]
       );
 
       const buffersByStreamName = {};
       const streamNames = ['stdout', 'stderr'];
 
-      streamNames.forEach(function(streamName) {
+      streamNames.forEach(function (streamName) {
         buffersByStreamName[streamName] = [];
-        makeBabelJobProcess[streamName].on('data', function(chunk) {
+        makeBabelJobProcess[streamName].on('data', function (chunk) {
           buffersByStreamName[streamName].push(chunk);
         });
       });
 
       function getStreamOutputText() {
         let outputText = '';
-        streamNames.forEach(function(streamName) {
+        streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
               buffersByStreamName[streamName]
@@ -56,7 +56,7 @@ describe('makeBabelJob and applyBabelJob', function() {
         return outputText;
       }
 
-      makeBabelJobProcess.on('exit', function(exitCode) {
+      makeBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           return done(
             new Error(
@@ -68,7 +68,7 @@ describe('makeBabelJob and applyBabelJob', function() {
         expect(fs.readdirSync(babelDir).sort(), 'to equal', [
           'da.txt',
           'de.txt',
-          'en.txt'
+          'en.txt',
         ]);
 
         expect(
@@ -93,7 +93,7 @@ describe('makeBabelJob and applyBabelJob', function() {
             'simplekeyinknockoutjstemplate=Simple key in a Knockout.js template',
             'stringvalue=value',
             'withexistingkeys=the English value',
-            ''
+            '',
           ]
         );
 
@@ -119,7 +119,7 @@ describe('makeBabelJob and applyBabelJob', function() {
             'simplekeyinknockoutjstemplate=',
             'stringvalue=',
             'withexistingkeys=the Danish value',
-            ''
+            '',
           ]
         );
 
@@ -145,7 +145,7 @@ describe('makeBabelJob and applyBabelJob', function() {
             'simplekeyinknockoutjstemplate=',
             'stringvalue=',
             'withexistingkeys=',
-            ''
+            '',
           ]
         );
 
@@ -169,7 +169,7 @@ describe('makeBabelJob and applyBabelJob', function() {
             'withexistingkeys=den opdaterede danske værdi',
             'simplekeyinhtml=Simpel nøgle på dansk',
             'simplekeyinhtmlattribute=Simpel nøgle i HTML-attribut på dansk',
-            'keywithplaceholdersinhtml=Nøgle med pladsholdere på dansk'
+            'keywithplaceholdersinhtml=Nøgle med pladsholdere på dansk',
           ].join('\n'),
           'utf-8'
         );
@@ -185,10 +185,10 @@ describe('makeBabelJob and applyBabelJob', function() {
             'en,da,de',
             '--i18n',
             Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html')
+            Path.resolve(tmpTestCaseCopyDir, 'index.html'),
           ]
         );
-        applyBabelJobProcess.on('exit', function(exitCode) {
+        applyBabelJobProcess.on('exit', function (exitCode) {
           if (exitCode) {
             return done(
               new Error(
@@ -209,77 +209,77 @@ describe('makeBabelJob and applyBabelJob', function() {
               stringvalue: {
                 en: 'value',
                 da: 'the Danish stringvalue',
-                de: ''
+                de: '',
               },
               arrayvalue: {
                 en: [5, 'items', 'in', 'an', 'array'],
                 da: [5, 'elementer', 'i', 'et', 'array'],
-                de: ['', '', '', '', '']
+                de: ['', '', '', '', ''],
               },
               objectvalue: {
                 en: {
                   key1: 'value1',
-                  key2: 'value2'
+                  key2: 'value2',
                 },
                 da: {
                   key1: 'værdi1',
-                  key2: 'værdi2'
+                  key2: 'værdi2',
                 },
                 de: {
                   key1: '',
-                  key2: ''
-                }
+                  key2: '',
+                },
               },
               objectvaluewithsomemissingkeysinthestructure: {
                 da: {
-                  foo: { quux: 'fuzfuz', bar: 'bazbaz' }
+                  foo: { quux: 'fuzfuz', bar: 'bazbaz' },
                 },
                 de: {
-                  foo: { quux: '', bar: '' }
+                  foo: { quux: '', bar: '' },
                 },
                 en: {
-                  foo: { quux: 'blah', bar: 'baz' }
-                }
+                  foo: { quux: 'blah', bar: 'baz' },
+                },
               },
               withexistingkeys: {
                 en: 'the English value',
                 da: 'den opdaterede danske værdi',
-                de: ''
+                de: '',
               },
               simplekeyinhtml: {
                 en: 'Simple key in HTML, English',
                 da: 'Simpel nøgle på dansk',
-                de: ''
+                de: '',
               },
               simplekeyinhtmlattribute: {
                 en: 'Simple key in HTML attribute, English',
                 da: 'Simpel nøgle i HTML-attribut på dansk',
-                de: ''
+                de: '',
               },
               keywithplaceholdersinhtml: {
                 en: 'Key with {0} placeholders in HTML, English',
                 da: 'Nøgle med pladsholdere på dansk',
-                de: ''
+                de: '',
               },
               simplekeyinknockoutjstemplate: {
                 en: 'Simple key in a Knockout.js template',
                 da: 'Simpel nøgle i en Knockout.js-skabelon',
-                de: ''
+                de: '',
               },
               alreadyPartiallyTranslatedKey: {
                 en: {
                   theTranslatedOne: 'yep',
-                  theNotYetTranslatedOne: 'yup'
+                  theNotYetTranslatedOne: 'yup',
                 },
                 da: {
                   theTranslatedOne: 'ja',
-                  theNotYetTranslatedOne: 'nowItIsTranslated'
+                  theNotYetTranslatedOne: 'nowItIsTranslated',
                 },
                 de: {
                   theTranslatedOne: 'Ja',
-                  theNotYetTranslatedOne: ''
-                }
-              }
+                  theNotYetTranslatedOne: '',
+                },
+              },
             }
           );
           done();

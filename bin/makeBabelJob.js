@@ -19,7 +19,9 @@ const commandLineOptions = require('optimist')
 const localeIds =
   commandLineOptions.locales &&
   _.flatten(
-    _.flatten([commandLineOptions.locales]).map(localeId => localeId.split(','))
+    _.flatten([commandLineOptions.locales]).map((localeId) =>
+      localeId.split(',')
+    )
   ).map(i18nTools.normalizeLocaleId);
 
 const initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
@@ -58,12 +60,12 @@ function coalescePluralsToLocale(value, localeId, pluralFormsToInclude) {
       if (
         keys.length > 0 &&
         keys.every(
-          key =>
+          (key) =>
             ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1
         )
       ) {
         keys = [];
-        pluralsCldr.forms(localeId).forEach(pluralForm => {
+        pluralsCldr.forms(localeId).forEach((pluralForm) => {
           if (
             !pluralFormsToInclude ||
             pluralFormsToInclude === pluralForm ||
@@ -75,7 +77,7 @@ function coalescePluralsToLocale(value, localeId, pluralFormsToInclude) {
         });
         obj = coalescedObj;
       }
-      keys.forEach(propertyName => {
+      keys.forEach((propertyName) => {
         coalescedObj[propertyName] = traverse(obj[propertyName]);
       });
       return coalescedObj;
@@ -93,13 +95,13 @@ function valueContainsPlurals(obj) {
     if (
       keys.length > 0 &&
       keys.every(
-        key =>
+        (key) =>
           ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1
       )
     ) {
       return true;
     } else {
-      return keys.some(key => valueContainsPlurals(obj[key]));
+      return keys.some((key) => valueContainsPlurals(obj[key]));
     }
   } else {
     return false;
@@ -116,10 +118,10 @@ function nullIfNullOrUndefined(val) {
 
 function nullOutLeaves(obj, undefinedOnly) {
   if (Array.isArray(obj)) {
-    return obj.map(item => nullOutLeaves(item, undefinedOnly));
+    return obj.map((item) => nullOutLeaves(item, undefinedOnly));
   } else if (typeof obj === 'object' && obj !== null) {
     const resultObj = {};
-    Object.keys(obj).forEach(propertyName => {
+    Object.keys(obj).forEach((propertyName) => {
       resultObj[propertyName] = nullOutLeaves(obj[propertyName], undefinedOnly);
     });
     return resultObj;
@@ -142,7 +144,7 @@ function getLeavesFrom(obj, otherObject) {
     );
   } else if (typeof obj === 'object' && obj !== null) {
     const resultObj = {};
-    Object.keys(obj).forEach(propertyName => {
+    Object.keys(obj).forEach((propertyName) => {
       resultObj[propertyName] = getLeavesFrom(
         obj[propertyName],
         otherObject && typeof otherObject === 'object'
@@ -167,7 +169,7 @@ function flattenKey(key, value) {
         path.pop();
       }
     } else if (typeof obj === 'object' && obj !== null) {
-      Object.keys(obj).forEach(propertyName => {
+      Object.keys(obj).forEach((propertyName) => {
         path.push(propertyName);
         traverse(obj[propertyName]);
         path.pop();
@@ -175,7 +177,7 @@ function flattenKey(key, value) {
     } else {
       // Assume a type that can be stringified using String(obj):
       valueByFlattenedKey[
-        key + path.map(pathComponent => `[${pathComponent}]`).join('')
+        key + path.map((pathComponent) => `[${pathComponent}]`).join('')
       ] = obj;
     }
   })(value);
@@ -185,7 +187,7 @@ function flattenKey(key, value) {
 const pluralFormsInTheDefaultLocale = pluralsCldr.forms(defaultLocaleId);
 
 const relevantPluralFormsNotInTheDefaultLocale = _.difference(
-  _.union(...localeIds.map(localeId => pluralsCldr.forms(localeId))),
+  _.union(...localeIds.map((localeId) => pluralsCldr.forms(localeId))),
   pluralFormsInTheDefaultLocale
 );
 
@@ -193,32 +195,32 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
   const assetGraph = new AssetGraph({ root: commandLineOptions.root });
   await assetGraph.logEvents({
     repl: commandLineOptions.repl,
-    stopOnWarning: commandLineOptions.stoponwarning
+    stopOnWarning: commandLineOptions.stoponwarning,
   });
   await assetGraph.loadAssets(initialAssetUrls);
   await assetGraph.populate({
     from: { type: 'Html' },
-    followRelations: { type: 'HtmlScript', to: { protocol: 'file:' } }
+    followRelations: { type: 'HtmlScript', to: { protocol: 'file:' } },
   });
   await assetGraph.bundleSystemJs({
-    conditions: { 'locale.js': defaultLocaleId, locale: defaultLocaleId }
+    conditions: { 'locale.js': defaultLocaleId, locale: defaultLocaleId },
   });
   await assetGraph.bundleRequireJs();
   await assetGraph.serializeSourceMaps();
   await assetGraph.populate({
     startAssets: { type: 'SourceMap' },
-    followRelations: { to: { protocol: 'file:' } }
+    followRelations: { to: { protocol: 'file:' } },
   });
   await assetGraph.populate({
     followRelations: {
       type: { $nin: ['HtmlAnchor', 'HtmlMetaRefresh'] },
-      to: { protocol: { $nin: ['http:', 'https:'] } }
-    }
+      to: { protocol: { $nin: ['http:', 'https:'] } },
+    },
   });
 
   require('../lib/transforms/checkLanguageKeys')({
     supportedLocaleIds: localeIds,
-    defaultLocaleId
+    defaultLocaleId,
   });
 
   // Export language keys
@@ -233,7 +235,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       i18nAssetForAllKeys = new AssetGraph.I18n({
         url: i18nUrl,
         isDirty: true,
-        parseTree: {}
+        parseTree: {},
       });
       assetGraph.addAsset(i18nAssetForAllKeys);
       assetGraph.emit(
@@ -250,13 +252,13 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
   const keyByFlattenedKey = {};
   const isTranslatedByFlattenedKeyByLocaleId = {};
 
-  Object.keys(occurrencesByKey).forEach(key => {
+  Object.keys(occurrencesByKey).forEach((key) => {
     const occurrences = occurrencesByKey[key];
     let defaultValueInTheOccurrence;
     let defaultValue;
 
     // Look for a default value in the occurrences:
-    occurrences.forEach(occurrence => {
+    occurrences.forEach((occurrence) => {
       // FIXME: Warn about multiple different default values?
       defaultValueInTheOccurrence = occurrence.defaultValue;
     });
@@ -267,7 +269,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       defaultValue = defaultValueInTheOccurrence;
     }
 
-    localeIds.forEach(localeId => {
+    localeIds.forEach((localeId) => {
       let value;
       let isDefaultValue = false;
       if (key in allKeys && localeId in allKeys[key]) {
@@ -286,7 +288,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
         coalescePluralsToLocale(value, localeId)
       );
 
-      Object.keys(flattenedAndCoalesced).forEach(flattenedKey => {
+      Object.keys(flattenedAndCoalesced).forEach((flattenedKey) => {
         isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][
           flattenedKey
         ] = true;
@@ -300,16 +302,16 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
   });
 
   const alreadyTranslatedByFlattenedKey = {};
-  Object.keys(keyByFlattenedKey).forEach(flattenedKey => {
+  Object.keys(keyByFlattenedKey).forEach((flattenedKey) => {
     alreadyTranslatedByFlattenedKey[flattenedKey] = localeIds.every(
-      localeId =>
+      (localeId) =>
         !isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][flattenedKey] ||
         isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey]
     );
   });
 
   const alreadyTranslatedByKey = {};
-  Object.keys(keyByFlattenedKey).forEach(flattenedKey => {
+  Object.keys(keyByFlattenedKey).forEach((flattenedKey) => {
     const key = keyByFlattenedKey[flattenedKey];
     if (alreadyTranslatedByKey[key] !== false) {
       alreadyTranslatedByKey[key] =
@@ -317,7 +319,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
     }
   });
 
-  localeIds.forEach(localeId => {
+  localeIds.forEach((localeId) => {
     let babelSrc = '';
 
     const isDefaultLocale =
@@ -330,7 +332,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       return aLowerCase < bLowerCase ? -1 : aLowerCase > bLowerCase ? 1 : 0;
     });
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const occurrences = occurrencesByKey[key];
       let omitExistingValues = false;
       let value;
@@ -338,7 +340,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       let defaultValueInTheOccurrence;
 
       // Look for a default value in the occurrences:
-      occurrences.forEach(occurrence => {
+      occurrences.forEach((occurrence) => {
         // FIXME: Warn about multiple different default values?
         defaultValueInTheOccurrence = occurrence.defaultValue;
       });
@@ -381,7 +383,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       }
 
       let keyNeedsTranslation = false;
-      flattenedKeysThatMustBePresent.forEach(flattenedKey => {
+      flattenedKeysThatMustBePresent.forEach((flattenedKey) => {
         if (
           alreadyTranslatedByFlattenedKey[flattenedKey] &&
           !commandLineOptions.all &&
@@ -415,8 +417,8 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
         valueContainsPlurals(value)
       ) {
         const localeIdsByFlattenedKey = {};
-        relevantPluralFormsNotInTheDefaultLocale.forEach(pluralForm => {
-          localeIds.forEach(localeId => {
+        relevantPluralFormsNotInTheDefaultLocale.forEach((pluralForm) => {
+          localeIds.forEach((localeId) => {
             if (pluralsCldr.forms(localeId).indexOf(pluralForm) !== -1) {
               const valueByFlattenedKey = flattenKey(
                 key,
@@ -434,7 +436,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
                   ? flattenKey(key, allKeys[key][localeId])
                   : {};
 
-              Object.keys(valueByFlattenedKey).forEach(flattenedKey => {
+              Object.keys(valueByFlattenedKey).forEach((flattenedKey) => {
                 if (!(flattenedKey in existingTranslationByFlattenedKey)) {
                   (localeIdsByFlattenedKey[flattenedKey] =
                     localeIdsByFlattenedKey[flattenedKey] || []).push(localeId);
@@ -444,7 +446,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
           });
         });
         const flattenedKeysByJoinedLocaleIds = {};
-        Object.keys(localeIdsByFlattenedKey).forEach(flattenedKey => {
+        Object.keys(localeIdsByFlattenedKey).forEach((flattenedKey) => {
           const localeIds = localeIdsByFlattenedKey[flattenedKey];
           localeIds.sort();
           (flattenedKeysByJoinedLocaleIds[localeIds.join(',')] =
@@ -453,19 +455,24 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
           );
         });
 
-        Object.keys(flattenedKeysByJoinedLocaleIds).forEach(joinedLocaleIds => {
-          const flattenedKeys = flattenedKeysByJoinedLocaleIds[joinedLocaleIds];
-          const localeIds = joinedLocaleIds.split(',');
-          babelSrc += `# NOTE: The language${
-            localeIds.length > 1 ? 's ' : ' '
-          }${localeIds.join(', ')}${localeIds.length > 1 ? ' need' : ' needs'}${
-            flattenedKeys.length > 1
-              ? ' these additional keys'
-              : ' this additional key'
-          } to cover all plural forms:\n${flattenedKeys
-            .map(flattenedKey => `# ${flattenedKey}=\n`)
-            .join('')}`;
-        });
+        Object.keys(flattenedKeysByJoinedLocaleIds).forEach(
+          (joinedLocaleIds) => {
+            const flattenedKeys =
+              flattenedKeysByJoinedLocaleIds[joinedLocaleIds];
+            const localeIds = joinedLocaleIds.split(',');
+            babelSrc += `# NOTE: The language${
+              localeIds.length > 1 ? 's ' : ' '
+            }${localeIds.join(', ')}${
+              localeIds.length > 1 ? ' need' : ' needs'
+            }${
+              flattenedKeys.length > 1
+                ? ' these additional keys'
+                : ' this additional key'
+            } to cover all plural forms:\n${flattenedKeys
+              .map((flattenedKey) => `# ${flattenedKey}=\n`)
+              .join('')}`;
+          }
+        );
       }
 
       const i18nAssetForKey =
@@ -474,7 +481,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
           isLoaded: true,
           parseTree(parseTree) {
             return key in parseTree;
-          }
+          },
         })[0] || i18nAssetForAllKeys;
 
       if (i18nAssetForKey) {
