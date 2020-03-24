@@ -38,12 +38,12 @@ function createTr(localeData) {
         if (matchPlaceHolder) {
           tokens.push({
             type: 'placeHolder',
-            value: parseInt(matchPlaceHolder[1], 10)
+            value: parseInt(matchPlaceHolder[1], 10),
           });
         } else {
           tokens.push({
             type: 'text',
-            value: fragment
+            value: fragment,
           });
         }
       }
@@ -51,16 +51,16 @@ function createTr(localeData) {
     return tokens;
   }
 
-  var TR = function(key, defaultValue) {
+  var TR = function (key, defaultValue) {
     return localeData[key] || defaultValue || '[!' + key + '!]';
   };
 
   var tr = TR; // Avoid triggering "i18nTools.eachTrInAst: Invalid TR key name syntax: TR(key, defaultPattern)"
 
-  TR.PAT = function(key, defaultPattern) {
+  TR.PAT = function (key, defaultPattern) {
     var pattern = tr(key, defaultPattern);
     var tokens = tokenizePattern(pattern);
-    return function() {
+    return function () {
       // placeHolderValue, ...
       var placeHolderValues = arguments;
 
@@ -78,7 +78,7 @@ function createTr(localeData) {
     };
   };
 
-  TR.HTML = function(htmlString) {
+  TR.HTML = function (htmlString) {
     var div = document.createElement('div');
     div.innerHTML = htmlString;
     require('i18n/lib/eachI18nTagInHtmlDocument')(
@@ -86,7 +86,7 @@ function createTr(localeData) {
       require('i18n/lib/createI18nTagReplacer')({
         allKeysForLocale: localeData,
         keepI18nAttributes: true,
-        keepSpans: true
+        keepSpans: true,
       }),
       function nestedTemplateHandler(node) {
         if (node.firstChild && node.firstChild.nodeType === node.TEXT_NODE) {
@@ -103,7 +103,7 @@ function createTr(localeData) {
 
 function gatherKeysForLocale(source, locale) {
   var prioritizedLocale = expandLocaleIdToPrioritizedList(locale);
-  return Object.keys(source).reduce(function(data, key) {
+  return Object.keys(source).reduce(function (data, key) {
     for (var i = 0; i < prioritizedLocale.length; i += 1) {
       var value = source[key][prioritizedLocale[i]];
       if (typeof value !== 'undefined') {
@@ -117,18 +117,18 @@ function gatherKeysForLocale(source, locale) {
 
 module.exports = {
   // fetch: sideeffect: load relevant parts of i18n file filtered by locale
-  fetch: function(load, fetch) {
-    load.metadata.newAddress = load.address.replace(/\.([^.]+)\.i18n/, function(
-      str,
-      matchedLocale
-    ) {
-      load.metadata.locale = matchedLocale;
-      return '.i18n';
-    });
+  fetch: function (load, fetch) {
+    load.metadata.newAddress = load.address.replace(
+      /\.([^.]+)\.i18n/,
+      function (str, matchedLocale) {
+        load.metadata.locale = matchedLocale;
+        return '.i18n';
+      }
+    );
     return fetch({ address: load.metadata.newAddress, metadata: {} });
   },
 
-  translate: function(load) {
+  translate: function (load) {
     if (this.builder) {
       load.metadata.format = 'cjs';
       load.metadata.originalSource = load.source;
@@ -144,7 +144,7 @@ module.exports = {
     }
   },
 
-  instantiate: function(load) {
+  instantiate: function (load) {
     if (!this.builder) {
       return createTr(
         gatherKeysForLocale(JSON.parse(load.source), load.metadata.locale)
@@ -152,19 +152,19 @@ module.exports = {
     }
   },
 
-  listAssets: function(loads) {
+  listAssets: function (loads) {
     var isSeenByNewAddress = {};
     var i18nAssets = [];
-    loads.forEach(function(load) {
+    loads.forEach(function (load) {
       if (!isSeenByNewAddress[load.metadata.newAddress]) {
         isSeenByNewAddress[load.metadata.newAddress] = true;
         i18nAssets.push({
           url: load.metadata.newAddress,
           source: load.metadata.originalSource,
-          type: 'i18n'
+          type: 'i18n',
         });
       }
     });
     return i18nAssets;
-  }
+  },
 };

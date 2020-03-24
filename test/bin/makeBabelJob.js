@@ -5,14 +5,14 @@ const fs = require('fs');
 const Path = require('path');
 const temp = require('temp');
 
-describe('makeBabelJob', function() {
-  it('should extract a translation job and set null values in the correct places in the existing i18n files', function(done) {
+describe('makeBabelJob', function () {
+  it('should extract a translation job and set null values in the correct places in the existing i18n files', function (done) {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJob/complex/* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -32,22 +32,22 @@ describe('makeBabelJob', function() {
           '--defaultlocale',
           'en',
           '--locales',
-          'en,pl,da,de,cs'
+          'en,pl,da,de,cs',
         ]
       );
 
       const buffersByStreamName = {};
       const streamNames = ['stdout', 'stderr'];
-      streamNames.forEach(function(streamName) {
+      streamNames.forEach(function (streamName) {
         buffersByStreamName[streamName] = [];
-        makeBabelJobProcess[streamName].on('data', function(chunk) {
+        makeBabelJobProcess[streamName].on('data', function (chunk) {
           buffersByStreamName[streamName].push(chunk);
         });
       });
 
       function getStreamOutputText() {
         let outputText = '';
-        streamNames.forEach(function(streamName) {
+        streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
               buffersByStreamName[streamName]
@@ -57,7 +57,7 @@ describe('makeBabelJob', function() {
         return outputText;
       }
 
-      makeBabelJobProcess.on('exit', function(exitCode) {
+      makeBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           return done(
             new Error(
@@ -71,7 +71,7 @@ describe('makeBabelJob', function() {
           'da.txt',
           'de.txt',
           'en.txt',
-          'pl.txt'
+          'pl.txt',
         ]);
 
         expect(
@@ -96,7 +96,7 @@ describe('makeBabelJob', function() {
             '# NOTE: The languages cs, pl need these additional keys to cover all plural forms:',
             '# NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][few]=',
             '# NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
-            ''
+            '',
           ].join('\n')
         );
 
@@ -113,7 +113,7 @@ describe('makeBabelJob', function() {
             'NotYetTranslatedKeyWithPluralCases[other]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
-            ''
+            '',
           ].join('\n')
         );
 
@@ -130,7 +130,7 @@ describe('makeBabelJob', function() {
             'NotYetTranslatedKeyWithPluralCases[other]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
-            ''
+            '',
           ].join('\n')
         );
 
@@ -153,7 +153,7 @@ describe('makeBabelJob', function() {
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][few]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
-            ''
+            '',
           ].join('\n')
         );
 
@@ -176,7 +176,7 @@ describe('makeBabelJob', function() {
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][few]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
-            ''
+            '',
           ].join('\n')
         );
 
@@ -194,43 +194,43 @@ describe('makeBabelJob', function() {
               en: 'Key destined for index.i18n',
               de: null,
               da: null,
-              pl: null
+              pl: null,
             },
             KeyAlreadyPartiallyTranslatedInIndexI18n: {
               cs: null,
               en: 'Key already partially translated in index.i18n',
               de: 'Existing translation to German',
               da: null,
-              pl: null
+              pl: null,
             },
             NotYetTranslatedKeyWithPluralCases: {
               cs: { one: null, few: null, many: null, other: null },
               da: { one: null, other: null },
               de: { one: null, other: null },
               en: { one: 'one week', other: '{0} weeks' },
-              pl: { one: null, few: null, many: null, other: null }
+              pl: { one: null, few: null, many: null, other: null },
             },
             NotYetTranslatedKeyWithPluralCasesInNestedStructure: {
               cs: { foo: { one: null, few: null, many: null, other: null } },
               da: { foo: { one: null, other: null } },
               de: { foo: { one: null, other: null } },
               en: { foo: { one: 'one week', other: '{0} weeks' } },
-              pl: { foo: { few: null, many: null, one: null, other: null } }
+              pl: { foo: { few: null, many: null, one: null, other: null } },
             },
             KeyAlreadyTranslatedToAllLanguages: {
               cs: { one: 'fzd', few: 'fzd', many: 'fzd', other: 'fzd' },
               da: { one: 'føø', other: 'føø' },
               de: { one: 'voo', other: 'voo' },
               en: { one: 'foo', other: 'foo' },
-              pl: { one: 'fzz', few: 'fzz', many: 'fzz', other: 'fzz' }
+              pl: { one: 'fzz', few: 'fzz', many: 'fzz', other: 'fzz' },
             },
             KeyAlreadyTranslatedToCzech: {
               cs: { one: 'fzd', few: 'fzd', many: 'fzd', other: 'fzd' },
               da: { one: null, other: null },
               de: { one: null, other: null },
               en: { one: 'foo', other: 'foo' },
-              pl: { few: null, many: null, one: null, other: null }
-            }
+              pl: { few: null, many: null, one: null, other: null },
+            },
           }
         );
 
@@ -248,8 +248,8 @@ describe('makeBabelJob', function() {
               en: 'Key already partially translated in other.i18n',
               de: 'Existing translation to German',
               da: null,
-              pl: null
-            }
+              pl: null,
+            },
           }
         );
 
@@ -258,13 +258,13 @@ describe('makeBabelJob', function() {
     });
   });
 
-  it('should not do anything if the project is fully translated', function(done) {
+  it('should not do anything if the project is fully translated', function (done) {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJob/noTranslationsNecessary/* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -282,23 +282,23 @@ describe('makeBabelJob', function() {
           Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
           Path.resolve(tmpTestCaseCopyDir, 'index.html'),
           '--locales',
-          'en,cs'
+          'en,cs',
         ]
       );
 
       const buffersByStreamName = {};
       const streamNames = ['stdout', 'stderr'];
 
-      streamNames.forEach(function(streamName) {
+      streamNames.forEach(function (streamName) {
         buffersByStreamName[streamName] = [];
-        makeBabelJobProcess[streamName].on('data', function(chunk) {
+        makeBabelJobProcess[streamName].on('data', function (chunk) {
           buffersByStreamName[streamName].push(chunk);
         });
       });
 
       function getStreamOutputText() {
         let outputText = '';
-        streamNames.forEach(function(streamName) {
+        streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
               buffersByStreamName[streamName]
@@ -308,7 +308,7 @@ describe('makeBabelJob', function() {
         return outputText;
       }
 
-      makeBabelJobProcess.on('exit', function(exitCode) {
+      makeBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           return done(
             new Error(
@@ -323,13 +323,13 @@ describe('makeBabelJob', function() {
     });
   });
 
-  it('should extract all flattened keys for the default language when any language is missing at least one', function(done) {
+  it('should extract all flattened keys for the default language when any language is missing at least one', function (done) {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJob/includeAllFlattened/* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -347,23 +347,23 @@ describe('makeBabelJob', function() {
           Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
           Path.resolve(tmpTestCaseCopyDir, 'index.html'),
           '--locales',
-          'en,cs'
+          'en,cs',
         ]
       );
 
       const buffersByStreamName = {};
       const streamNames = ['stdout', 'stderr'];
 
-      streamNames.forEach(function(streamName) {
+      streamNames.forEach(function (streamName) {
         buffersByStreamName[streamName] = [];
-        makeBabelJobProcess[streamName].on('data', function(chunk) {
+        makeBabelJobProcess[streamName].on('data', function (chunk) {
           buffersByStreamName[streamName].push(chunk);
         });
       });
 
       function getStreamOutputText() {
         let outputText = '';
-        streamNames.forEach(function(streamName) {
+        streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
               buffersByStreamName[streamName]
@@ -373,7 +373,7 @@ describe('makeBabelJob', function() {
         return outputText;
       }
 
-      makeBabelJobProcess.on('exit', function(exitCode) {
+      makeBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           return done(
             new Error(
@@ -390,7 +390,7 @@ describe('makeBabelJob', function() {
 
         expect(fs.readdirSync(babelDir).sort(), 'to equal', [
           'cs.txt',
-          'en.txt'
+          'en.txt',
         ]);
 
         expect(
@@ -401,7 +401,7 @@ describe('makeBabelJob', function() {
             'KeyPartiallyTranslatedToCzech[other]=the other',
             '# NOTE: The language cs needs this additional key to cover all plural forms:',
             '# KeyPartiallyTranslatedToCzech[many]=',
-            ''
+            '',
           ].join('\n')
         );
 
@@ -416,8 +416,8 @@ describe('makeBabelJob', function() {
           {
             KeyPartiallyTranslatedToCzech: {
               en: { one: 'the one', other: 'the other' },
-              cs: { one: 'xxxx', other: 'yyyy', few: 'zzzz', many: null }
-            }
+              cs: { one: 'xxxx', other: 'yyyy', few: 'zzzz', many: null },
+            },
           }
         );
         done();
@@ -425,13 +425,13 @@ describe('makeBabelJob', function() {
     });
   });
 
-  it('should discover language keys imported via System.js', function(done) {
+  it('should discover language keys imported via System.js', function (done) {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJob/systemJs/* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -449,23 +449,23 @@ describe('makeBabelJob', function() {
           Path.resolve(tmpTestCaseCopyDir, 'index.i18n'),
           Path.resolve(tmpTestCaseCopyDir, 'index.html'),
           '--locales',
-          'en,cs'
+          'en,cs',
         ]
       );
 
       const buffersByStreamName = {};
       const streamNames = ['stdout', 'stderr'];
 
-      streamNames.forEach(function(streamName) {
+      streamNames.forEach(function (streamName) {
         buffersByStreamName[streamName] = [];
-        makeBabelJobProcess[streamName].on('data', function(chunk) {
+        makeBabelJobProcess[streamName].on('data', function (chunk) {
           buffersByStreamName[streamName].push(chunk);
         });
       });
 
       function getStreamOutputText() {
         let outputText = '';
-        streamNames.forEach(function(streamName) {
+        streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
               buffersByStreamName[streamName]
@@ -475,7 +475,7 @@ describe('makeBabelJob', function() {
         return outputText;
       }
 
-      makeBabelJobProcess.on('exit', function(exitCode) {
+      makeBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           return done(
             new Error(
@@ -492,7 +492,7 @@ describe('makeBabelJob', function() {
 
         expect(fs.readdirSync(babelDir).sort(), 'to equal', [
           'cs.txt',
-          'en.txt'
+          'en.txt',
         ]);
 
         expect(
@@ -512,8 +512,8 @@ describe('makeBabelJob', function() {
           {
             myAlert: {
               en: 'Hello',
-              cs: null
-            }
+              cs: null,
+            },
           }
         );
         done();

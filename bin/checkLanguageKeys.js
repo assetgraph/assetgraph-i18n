@@ -8,33 +8,33 @@ const commandLineOptions = optimist
   .options('locales', {
     describe: 'Comma-separated list of locales to check',
     type: 'string',
-    demand: true
+    demand: true,
   })
   .options('removeunused', {
     describe: 'Remove unused language keys from .i18n files',
-    type: 'boolean'
+    type: 'boolean',
   })
   .options('ignore', {
     describe:
       "Type(s) of messages to suppress (supported: 'missing', 'untranslated', 'defaultValueMismatch', 'whitespace', 'unused')",
-    type: 'string'
+    type: 'string',
   })
   .options('warn', {
     descrbe:
       "Type(s) of messages that should be emitted with 'warning' status (supported: 'missing', 'untranslated', 'defaultValueMismatch', 'whitespace', 'unused'). Intended for use with --stoponwarning",
-    type: 'string'
+    type: 'string',
   })
   .options('stoponwarning', {
     describe:
       'Whether to stop with a non-zero exit code when a warning is encountered',
     type: 'boolean',
-    default: false
+    default: false,
   })
   .options('defaultlocale', {
     describe:
       'The locale of the default value in TR statements and tags with a data-i18n attribute',
     type: 'string',
-    default: 'en'
+    default: 'en',
   })
   .wrap(72).argv;
 
@@ -55,7 +55,9 @@ let rootUrl =
 const localeIds =
   commandLineOptions.locales &&
   _.flatten(
-    _.flatten([commandLineOptions.locales]).map(localeId => localeId.split(','))
+    _.flatten([commandLineOptions.locales]).map((localeId) =>
+      localeId.split(',')
+    )
   ).map(i18nTools.normalizeLocaleId);
 
 const defaultLocaleId =
@@ -65,7 +67,7 @@ const defaultLocaleId =
 const ignoreMessageTypes =
   commandLineOptions.ignore &&
   _.flatten(
-    _.flatten([commandLineOptions.ignore]).map(ignoreMessageType =>
+    _.flatten([commandLineOptions.ignore]).map((ignoreMessageType) =>
       ignoreMessageType.split(',')
     )
   );
@@ -73,7 +75,7 @@ const ignoreMessageTypes =
 const warnMessageTypes =
   commandLineOptions.warn &&
   _.flatten(
-    _.flatten([commandLineOptions.warn]).map(warnMessageType =>
+    _.flatten([commandLineOptions.warn]).map((warnMessageType) =>
       warnMessageType.split(',')
     )
   );
@@ -81,7 +83,7 @@ const warnMessageTypes =
 const includeAttributeNames =
   commandLineOptions.includeattribute &&
   _.flatten(
-    _.flatten([commandLineOptions.includeattribute]).map(attributeName =>
+    _.flatten([commandLineOptions.includeattribute]).map((attributeName) =>
       attributeName.split(',')
     )
   );
@@ -89,7 +91,7 @@ const includeAttributeNames =
 const excludeAttributeNames =
   commandLineOptions.excludeattribute &&
   _.flatten(
-    _.flatten([commandLineOptions.excludeattribute]).map(attributeName =>
+    _.flatten([commandLineOptions.excludeattribute]).map((attributeName) =>
       attributeName.split(',')
     )
   );
@@ -97,12 +99,12 @@ const excludeAttributeNames =
 let inputUrls;
 
 if (commandLineOptions._.length > 0) {
-  inputUrls = commandLineOptions._.map(urlOrFsPath =>
+  inputUrls = commandLineOptions._.map((urlOrFsPath) =>
     urlTools.urlOrFsPathToUrl(urlOrFsPath, false)
   );
   if (!rootUrl) {
     rootUrl = urlTools.findCommonUrlPrefix(
-      inputUrls.filter(inputUrl => /^file:/.test(inputUrl))
+      inputUrls.filter((inputUrl) => /^file:/.test(inputUrl))
     );
     if (rootUrl) {
       console.warn(`Guessing --root from input files: ${rootUrl}`);
@@ -122,24 +124,24 @@ if (commandLineOptions._.length > 0) {
   await assetGraph.logEvents({
     repl: commandLineOptions.repl,
     stopOnWarning: commandLineOptions.stoponwarning,
-    suppressJavaScriptCommonJsRequireWarnings: true
+    suppressJavaScriptCommonJsRequireWarnings: true,
   });
   await assetGraph.loadAssets(inputUrls);
   await assetGraph.bundleWebpack();
   await assetGraph.populate({
     from: { type: 'Html' },
-    followRelations: { type: 'HtmlScript', to: { protocol: 'file:' } }
+    followRelations: { type: 'HtmlScript', to: { protocol: 'file:' } },
   });
   await assetGraph.bundleSystemJs({
     sourceMaps: true,
-    conditions: { locale: localeIds }
+    conditions: { locale: localeIds },
   });
   await assetGraph.bundleRequireJs({ sourceMaps: true });
   await assetGraph.populate({
     followRelations: {
       $or: [
         {
-          to: { type: 'I18n' }
+          to: { type: 'I18n' },
         },
         {
           type: {
@@ -148,13 +150,13 @@ if (commandLineOptions._.length > 0) {
               'HtmlMetaRefresh',
               'SvgAnchor',
               'JavaScriptSourceMappingUrl',
-              'JavaScriptSourceUrl'
-            ]
+              'JavaScriptSourceUrl',
+            ],
           },
-          to: { protocol: { $nin: ['http:', 'https:'] } }
-        }
-      ]
-    }
+          to: { protocol: { $nin: ['http:', 'https:'] } },
+        },
+      ],
+    },
   });
 
   require('../lib/transforms/checkLanguageKeys')({
@@ -164,13 +166,13 @@ if (commandLineOptions._.length > 0) {
     warnMessageTypes,
     removeUnused: commandLineOptions.removeunused,
     includeAttributeNames,
-    excludeAttributeNames
+    excludeAttributeNames,
   })(assetGraph);
 
   if (commandLineOptions.removeunused) {
     for (const asset of assetGraph.findAssets({
       type: 'I18n',
-      isDirty: true
+      isDirty: true,
     })) {
       asset.prettyPrint();
     }

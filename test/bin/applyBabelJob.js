@@ -6,8 +6,8 @@ const Path = require('path');
 const expect = require('unexpected');
 const temp = require('temp');
 
-describe('applyBabelJob', function() {
-  it('should handle a complex test case', function(done) {
+describe('applyBabelJob', function () {
+  it('should handle a complex test case', function (done) {
     const babelDir = Path.resolve(
       __dirname,
       '..',
@@ -23,7 +23,7 @@ describe('applyBabelJob', function() {
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob/complex'/index.* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -43,10 +43,10 @@ describe('applyBabelJob', function() {
           '--i18n',
           `${tmpTestCaseCopyDir}/index.i18n`,
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`
+          `${tmpTestCaseCopyDir}/index.html`,
         ]
       );
-      applyBabelJobProcess.on('exit', function(exitCode) {
+      applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
@@ -61,29 +61,29 @@ describe('applyBabelJob', function() {
               ComplexKey: {
                 da: {
                   that: 'også kommer',
-                  back: 'det samme'
+                  back: 'det samme',
                 },
                 en: {
                   that: 'also comes',
-                  back: 'the same'
-                }
+                  back: 'the same',
+                },
               },
               WeirdlyFormattedKey: {
                 da: 'der kommer uændret retur i oversættelsesjobbet',
-                en: 'that comes back the same in the translation job'
+                en: 'that comes back the same in the translation job',
               },
               bar: {
                 da: 'BarOversat',
-                en: 'BarProofRead'
+                en: 'BarProofRead',
               },
               foo: {
                 da: 'FooOversat',
-                en: 'FooProofRead'
+                en: 'FooProofRead',
               },
               placeholders: {
                 da: 'Denne oversatte nøgle har {0} pladsholdere',
-                en: 'This proofread key has {0} proofread placeholders'
-              }
+                en: 'This proofread key has {0} proofread placeholders',
+              },
             }
           );
           expect(
@@ -94,8 +94,8 @@ describe('applyBabelJob', function() {
             {
               KeyInSomeOtherI18nFile: {
                 en: 'Woop',
-                da: 'Jubii'
-              }
+                da: 'Jubii',
+              },
             }
           );
           expect(
@@ -134,7 +134,7 @@ describe('applyBabelJob', function() {
     });
   });
 
-  it('should warn about and discard plural cases not supported by a locale', function(done) {
+  it('should warn about and discard plural cases not supported by a locale', function (done) {
     const babelDir = Path.resolve(
       __dirname,
       '..',
@@ -150,7 +150,7 @@ describe('applyBabelJob', function() {
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -170,11 +170,11 @@ describe('applyBabelJob', function() {
           '--i18n',
           `${tmpTestCaseCopyDir}/index.i18n`,
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`
+          `${tmpTestCaseCopyDir}/index.html`,
         ]
       );
 
-      applyBabelJobProcess.on('exit', function(exitCode) {
+      applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
@@ -189,15 +189,15 @@ describe('applyBabelJob', function() {
               MyPlurals: {
                 en: {
                   one: 'The plural',
-                  other: 'The plurals'
+                  other: 'The plurals',
                 },
                 cs: {
                   one: 'xxxx',
                   other: 'yyyy',
                   few: 'zzzz',
-                  many: 'wwww'
-                }
-              }
+                  many: 'wwww',
+                },
+              },
             }
           );
           expect(
@@ -224,7 +224,7 @@ describe('applyBabelJob', function() {
     });
   });
 
-  it('should update the actual source files when importing into a project that uses system.js', function(done) {
+  it('should update the actual source files when importing into a project that uses system.js', function (done) {
     const babelDir = Path.resolve(
       __dirname,
       '..',
@@ -240,7 +240,7 @@ describe('applyBabelJob', function() {
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/systemJs/*.* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -260,11 +260,11 @@ describe('applyBabelJob', function() {
           '--i18n',
           `${tmpTestCaseCopyDir}/index.i18n`,
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`
+          `${tmpTestCaseCopyDir}/index.html`,
         ]
       );
 
-      applyBabelJobProcess.on('exit', function(exitCode) {
+      applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
@@ -278,8 +278,8 @@ describe('applyBabelJob', function() {
             {
               myAlert: {
                 en: 'HelloFoo',
-                cs: 'Ahoj'
-              }
+                cs: 'Ahoj',
+              },
             }
           );
           expect(
@@ -293,7 +293,7 @@ describe('applyBabelJob', function() {
     });
   });
 
-  it('should handle a partly retranslated set of nested keys', function(done) {
+  it('should handle a partly retranslated set of nested keys', function (done) {
     const babelDir = Path.resolve(
       __dirname,
       '..',
@@ -309,7 +309,7 @@ describe('applyBabelJob', function() {
 
     const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* ${tmpTestCaseCopyDir}`;
 
-    childProcess.exec(copyCommand, function(err, stdout, stderr) {
+    childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
           new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
@@ -329,11 +329,11 @@ describe('applyBabelJob', function() {
           '--i18n',
           `${tmpTestCaseCopyDir}/index.i18n`,
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`
+          `${tmpTestCaseCopyDir}/index.html`,
         ]
       );
 
-      applyBabelJobProcess.on('exit', function(exitCode) {
+      applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
@@ -348,13 +348,13 @@ describe('applyBabelJob', function() {
               MyObject: {
                 en: {
                   foo: 'New English foo',
-                  bar: 'English bar'
+                  bar: 'English bar',
                 },
                 cs: {
                   foo: 'New Czech foo',
-                  bar: 'Czech bar'
-                }
-              }
+                  bar: 'Czech bar',
+                },
+              },
             }
           );
           expect(

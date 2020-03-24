@@ -1,4 +1,4 @@
 System.config({
   paths: {},
-  meta: {}
+  meta: {},
 });
