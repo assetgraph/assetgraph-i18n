@@ -44,7 +44,7 @@
   "devDependencies": {
     "assetgraph": "^6.0.0",
     "coveralls": "^3.0.2",
-    "eslint": "^7.0.0",
+    "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-standard": "^15.0.0",
     "eslint-plugin-import": "^2.17.3",
