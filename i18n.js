@@ -10,7 +10,7 @@ function expandLocaleIdToPrioritizedList(localeId) {
     return [];
   }
   localeId = normalizeLocaleId(localeId);
-  var localeIds = [localeId];
+  const localeIds = [localeId];
   while (/_[^_]+$/.test(localeId)) {
     localeId = localeId.replace(/_[^_]+$/, '');
     localeIds.push(localeId);
@@ -21,7 +21,7 @@ function expandLocaleIdToPrioritizedList(localeId) {
 function createTr(localeData) {
   function tokenizePattern(pattern) {
     if (typeof pattern !== 'string') {
-      var valueString = pattern;
+      let valueString = pattern;
       try {
         valueString = JSON.stringify(pattern);
       } catch (e) {}
@@ -29,12 +29,12 @@ function createTr(localeData) {
         'i18nTools.tokenizePattern: Value must be a string: ' + valueString
       );
     }
-    var tokens = [];
-    var fragments = pattern.split(/(\{\d+\})/);
-    for (var i = 0; i < fragments.length; i += 1) {
-      var fragment = fragments[i];
+    const tokens = [];
+    const fragments = pattern.split(/(\{\d+\})/);
+    for (let i = 0; i < fragments.length; i += 1) {
+      const fragment = fragments[i];
       if (fragment.length > 0) {
-        var matchPlaceHolder = fragment.match(/^\{(\d+)\}$/);
+        const matchPlaceHolder = fragment.match(/^\{(\d+)\}$/);
         if (matchPlaceHolder) {
           tokens.push({
             type: 'placeHolder',
@@ -51,22 +51,22 @@ function createTr(localeData) {
     return tokens;
   }
 
-  var TR = function (key, defaultValue) {
+  const TR = function (key, defaultValue) {
     return localeData[key] || defaultValue || '[!' + key + '!]';
   };
 
-  var tr = TR; // Avoid triggering "i18nTools.eachTrInAst: Invalid TR key name syntax: TR(key, defaultPattern)"
+  const tr = TR; // Avoid triggering "i18nTools.eachTrInAst: Invalid TR key name syntax: TR(key, defaultPattern)"
 
   TR.PAT = function (key, defaultPattern) {
-    var pattern = tr(key, defaultPattern);
-    var tokens = tokenizePattern(pattern);
+    const pattern = tr(key, defaultPattern);
+    const tokens = tokenizePattern(pattern);
     return function () {
       // placeHolderValue, ...
-      var placeHolderValues = arguments;
+      const placeHolderValues = arguments;
 
-      var renderedString = '';
-      for (var i = 0; i < tokens.length; i += 1) {
-        var token = tokens[i];
+      let renderedString = '';
+      for (let i = 0; i < tokens.length; i += 1) {
+        const token = tokens[i];
         if (token.type === 'placeHolder') {
           renderedString += placeHolderValues[token.value];
         } else {
@@ -79,7 +79,7 @@ function createTr(localeData) {
   };
 
   TR.HTML = function (htmlString) {
-    var div = document.createElement('div');
+    const div = document.createElement('div');
     div.innerHTML = htmlString;
     require('i18n/lib/eachI18nTagInHtmlDocument')(
       div,
@@ -102,10 +102,10 @@ function createTr(localeData) {
 }
 
 function gatherKeysForLocale(source, locale) {
-  var prioritizedLocale = expandLocaleIdToPrioritizedList(locale);
+  const prioritizedLocale = expandLocaleIdToPrioritizedList(locale);
   return Object.keys(source).reduce(function (data, key) {
-    for (var i = 0; i < prioritizedLocale.length; i += 1) {
-      var value = source[key][prioritizedLocale[i]];
+    for (let i = 0; i < prioritizedLocale.length; i += 1) {
+      const value = source[key][prioritizedLocale[i]];
       if (typeof value !== 'undefined') {
         data[key] = value;
         break;
@@ -153,8 +153,8 @@ module.exports = {
   },
 
   listAssets: function (loads) {
-    var isSeenByNewAddress = {};
-    var i18nAssets = [];
+    const isSeenByNewAddress = {};
+    const i18nAssets = [];
     loads.forEach(function (load) {
       if (!isSeenByNewAddress[load.metadata.newAddress]) {
         isSeenByNewAddress[load.metadata.newAddress] = true;
