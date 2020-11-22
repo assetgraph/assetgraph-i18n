@@ -1,3 +1,34 @@
+### v1.0.0 (2020-11-22)
+
+#### Pull requests
+
+- [#51](https://github.com/assetgraph/assetgraph-i18n/pull/51) Upgrade unexpected to version 12.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#49](https://github.com/assetgraph/assetgraph-i18n/pull/49) Upgrade temp to version 0.9.4 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#45](https://github.com/assetgraph/assetgraph-i18n/pull/45) Upgrade temp to version 0.9.2 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#43](https://github.com/assetgraph/assetgraph-i18n/pull/43) Upgrade prettier to version 2.1.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#42](https://github.com/assetgraph/assetgraph-i18n/pull/42) Upgrade eslint-plugin-mocha to version 8.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#41](https://github.com/assetgraph/assetgraph-i18n/pull/41) Upgrade escodegen to version 2.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#39](https://github.com/assetgraph/assetgraph-i18n/pull/39) Upgrade eslint-plugin-mocha to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#38](https://github.com/assetgraph/assetgraph-i18n/pull/38) Upgrade eslint to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#37](https://github.com/assetgraph/assetgraph-i18n/pull/37) Upgrade estraverse to version 5.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#35](https://github.com/assetgraph/assetgraph-i18n/pull/35) Upgrade mocha to version 7.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#34](https://github.com/assetgraph/assetgraph-i18n/pull/34) Upgrade eslint-plugin-node to version 11.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#33](https://github.com/assetgraph/assetgraph-i18n/pull/33) Upgrade nyc to version 15.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#32](https://github.com/assetgraph/assetgraph-i18n/pull/32) Upgrade prettier to version 1.19.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#31](https://github.com/assetgraph/assetgraph-i18n/pull/31) Upgrade temp to version 0.9.1 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#30](https://github.com/assetgraph/assetgraph-i18n/pull/30) Upgrade eslint-plugin-node to version 10.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#29](https://github.com/assetgraph/assetgraph-i18n/pull/29) Upgrade eslint-config-standard to version 14.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+- [#28](https://github.com/assetgraph/assetgraph-i18n/pull/28) Upgrade assetgraph to version 6.0.0 ([depfu[bot]](mailto:23717796+depfu[bot]@users.noreply.github.com))
+
+#### Commits to master
+
+- [Switch to ^ dep ranges](https://github.com/assetgraph/assetgraph-i18n/commit/898a0bb1f7f6a495185868dd55cca6850a9de852) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Update mocha to ^8.2.1, switch to .mocharc.json](https://github.com/assetgraph/assetgraph-i18n/commit/0bbbf0ddb8722b37d53fb6d763a31b68e0c1cfb1) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Add .editorconfig](https://github.com/assetgraph/assetgraph-i18n/commit/9fb3741a8a1e55f90823923fb64eb7a26a1910ed) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Fix assetgraph peer dep](https://github.com/assetgraph/assetgraph-i18n/commit/d30ad2b17bf10b3e6f9efafae9f4f017d93b2342) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Drop node.js &lt;10 support, add 14, lint with 14 \(semver-major\)](https://github.com/assetgraph/assetgraph-i18n/commit/1a852f4710e77953f2fbd5cf4f5d2c779823bb82) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [+5 more](https://github.com/assetgraph/assetgraph-i18n/compare/v0.7.3...v1.0.0)
+
 ### v0.7.3 (2019-08-06)
 
 #### Pull requests
@@ -167,4 +198,3 @@
 - [Fixed a ton of issues.](https://github.com/assetgraph/assetgraph-i18n/commit/acc41bcf6d0c832c3659960b49ec3f577a81398c) ([Andreas Lind](mailto:andreas@one.com))
 - [Added lodash dep.](https://github.com/assetgraph/assetgraph-i18n/commit/f761661ab2a77882a34283d13e5639e5fddc39b4) ([Andreas Lind](mailto:andreas@one.com))
 - [Extracted a bunch of stuff from assetgraph-builder.](https://github.com/assetgraph/assetgraph-i18n/commit/38ed128c423302d70769d41b633299f12d14449a) ([Andreas Lind](mailto:andreas@one.com))
-
