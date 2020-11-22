@@ -2,13 +2,13 @@
 const childProcess = require('child_process');
 
 const fs = require('fs');
-const Path = require('path');
+const pathModule = require('path');
 const expect = require('unexpected');
 const temp = require('temp');
 
 describe('applyBabelJob', function () {
   it('should handle a complex test case', function (done) {
-    const babelDir = Path.resolve(
+    const babelDir = pathModule.resolve(
       __dirname,
       '..',
       '..',
@@ -21,7 +21,15 @@ describe('applyBabelJob', function () {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob/complex'/index.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${pathModule.join(
+      __dirname,
+      '..',
+      '..',
+      'testdata',
+      'bin',
+      'applyBabelJob',
+      'complex'
+    )}'/index.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
@@ -30,7 +38,7 @@ describe('applyBabelJob', function () {
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob.js`,
+        `${pathModule.join(__dirname, '..', '..', 'bin', 'applyBabelJob.js')}`,
         [
           '--babeldir',
           babelDir,
@@ -41,9 +49,9 @@ describe('applyBabelJob', function () {
           '--locales',
           'en,da',
           '--i18n',
-          `${tmpTestCaseCopyDir}/index.i18n`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.html'),
         ]
       );
       applyBabelJobProcess.on('exit', function (exitCode) {
@@ -55,7 +63,9 @@ describe('applyBabelJob', function () {
           );
         } else {
           expect(
-            JSON.parse(fs.readFileSync(`${tmpTestCaseCopyDir}/index.i18n`)),
+            JSON.parse(
+              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+            ),
             'to equal',
             {
               ComplexKey: {
@@ -99,7 +109,10 @@ describe('applyBabelJob', function () {
             }
           );
           expect(
-            fs.readFileSync(`${tmpTestCaseCopyDir}/index.html`, 'utf-8'),
+            fs.readFileSync(
+              pathModule.join(tmpTestCaseCopyDir, 'index.html'),
+              'utf-8'
+            ),
             'to equal',
             '<!DOCTYPE html><html><head>\n' +
               '        <title data-i18n="foo">FooProofRead</title>\n' +
@@ -135,7 +148,7 @@ describe('applyBabelJob', function () {
   });
 
   it('should warn about and discard plural cases not supported by a locale', function (done) {
-    const babelDir = Path.resolve(
+    const babelDir = pathModule.resolve(
       __dirname,
       '..',
       '..',
@@ -148,7 +161,15 @@ describe('applyBabelJob', function () {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/invalidPlurals/index.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${pathModule.join(
+      __dirname,
+      '..',
+      '..',
+      'testdata',
+      'bin',
+      'applyBabelJob',
+      'invalidPlurals'
+    )}'/index.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
@@ -157,7 +178,7 @@ describe('applyBabelJob', function () {
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob.js`,
+        pathModule.join(__dirname, '..', '..', 'bin', 'applyBabelJob.js'),
         [
           '--babeldir',
           babelDir,
@@ -168,9 +189,9 @@ describe('applyBabelJob', function () {
           '--locales',
           'en,cs',
           '--i18n',
-          `${tmpTestCaseCopyDir}/index.i18n`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.html'),
         ]
       );
 
@@ -183,7 +204,9 @@ describe('applyBabelJob', function () {
           );
         } else {
           expect(
-            JSON.parse(fs.readFileSync(`${tmpTestCaseCopyDir}/index.i18n`)),
+            JSON.parse(
+              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+            ),
             'to equal',
             {
               MyPlurals: {
@@ -201,7 +224,10 @@ describe('applyBabelJob', function () {
             }
           );
           expect(
-            fs.readFileSync(`${tmpTestCaseCopyDir}/index.html`, 'utf-8'),
+            fs.readFileSync(
+              pathModule.join(tmpTestCaseCopyDir, 'index.html'),
+              'utf-8'
+            ),
             'to equal',
             '<!DOCTYPE html>\n' +
               '<html>\n' +
@@ -225,7 +251,7 @@ describe('applyBabelJob', function () {
   });
 
   it('should update the actual source files when importing into a project that uses system.js', function (done) {
-    const babelDir = Path.resolve(
+    const babelDir = pathModule.resolve(
       __dirname,
       '..',
       '..',
@@ -238,7 +264,14 @@ describe('applyBabelJob', function () {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/systemJs/*.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${pathModule.join(
+      __dirname,
+      '..',
+      '..',
+      'testdata',
+      'bin',
+      'applyBabelJob'
+    )}'/systemJs/*.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
@@ -247,7 +280,7 @@ describe('applyBabelJob', function () {
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob.js`,
+        pathModule.join(__dirname, '..', '..', 'bin', 'applyBabelJob.js'),
         [
           '--babeldir',
           babelDir,
@@ -258,9 +291,9 @@ describe('applyBabelJob', function () {
           '--locales',
           'en,cs',
           '--i18n',
-          `${tmpTestCaseCopyDir}/index.i18n`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.html'),
         ]
       );
 
@@ -273,7 +306,9 @@ describe('applyBabelJob', function () {
           );
         } else {
           expect(
-            JSON.parse(fs.readFileSync(`${tmpTestCaseCopyDir}/index.i18n`)),
+            JSON.parse(
+              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+            ),
             'to equal',
             {
               myAlert: {
@@ -294,7 +329,7 @@ describe('applyBabelJob', function () {
   });
 
   it('should handle a partly retranslated set of nested keys', function (done) {
-    const babelDir = Path.resolve(
+    const babelDir = pathModule.resolve(
       __dirname,
       '..',
       '..',
@@ -307,7 +342,14 @@ describe('applyBabelJob', function () {
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand = `cp '${__dirname}/../../testdata/bin/applyBabelJob'/retranslationOfSomeNestedKeys/*.* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${pathModule.join(
+      __dirname,
+      '..',
+      '..',
+      'testdata',
+      'bin',
+      'applyBabelJob'
+    )}'/retranslationOfSomeNestedKeys/*.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
@@ -316,7 +358,7 @@ describe('applyBabelJob', function () {
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
-        `${__dirname}/../../bin/applyBabelJob.js`,
+        pathModule.join(__dirname, '..', '..', 'bin', 'applyBabelJob.js'),
         [
           '--babeldir',
           babelDir,
@@ -327,9 +369,9 @@ describe('applyBabelJob', function () {
           '--locales',
           'en,cs',
           '--i18n',
-          `${tmpTestCaseCopyDir}/index.i18n`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
-          `${tmpTestCaseCopyDir}/index.html`,
+          pathModule.join(tmpTestCaseCopyDir, 'index.html'),
         ]
       );
 
@@ -342,7 +384,9 @@ describe('applyBabelJob', function () {
           );
         } else {
           expect(
-            JSON.parse(fs.readFileSync(`${tmpTestCaseCopyDir}/index.i18n`)),
+            JSON.parse(
+              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+            ),
             'to equal',
             {
               MyObject: {
@@ -358,7 +402,10 @@ describe('applyBabelJob', function () {
             }
           );
           expect(
-            fs.readFileSync(`${tmpTestCaseCopyDir}/index.html`, 'utf-8'),
+            fs.readFileSync(
+              pathModule.join(tmpTestCaseCopyDir, 'index.html'),
+              'utf-8'
+            ),
             'to contain',
             "alert(TR('MyObject', { foo: 'New English foo', bar: 'English bar' }));\n"
           );

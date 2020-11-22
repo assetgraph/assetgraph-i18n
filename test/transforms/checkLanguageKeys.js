@@ -1,3 +1,5 @@
+const pathModule = require('path');
+
 const expect = require('../unexpected-with-plugins');
 
 const AssetGraph = require('assetgraph');
@@ -6,7 +8,15 @@ describe('checkLanguageKeys', function () {
   it('should handle a combo test case', function () {
     const infos = [];
     return new AssetGraph({
-      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/combo/`,
+      root: pathModule.resolve(
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'transforms',
+        'checkLanguageKeys',
+        'combo'
+      ),
     })
       .on('info', function (err) {
         infos.push(err);
@@ -37,7 +47,15 @@ describe('checkLanguageKeys', function () {
   it('a space at the end of a TR original text', function () {
     const infos = [];
     return new AssetGraph({
-      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/neverEndingSpaceLoop/`,
+      root: pathModule.resolve(
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'transforms',
+        'checkLanguageKeys',
+        'neverEndingSpaceLoop'
+      ),
     })
       .on('info', function (err) {
         infos.push(err);
@@ -58,7 +76,15 @@ describe('checkLanguageKeys', function () {
   it('warns when a structured value with plural rule keys is non-exhaustive for a given locale', function () {
     const infos = [];
     return new AssetGraph({
-      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/pluralRule/`,
+      root: pathModule.resolve(
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'transforms',
+        'checkLanguageKeys',
+        'pluralRule'
+      ),
     })
       .on('info', function (err) {
         infos.push(err);
@@ -92,7 +118,15 @@ describe('checkLanguageKeys', function () {
   it('emits info events when multiple language keys have the same translation in the default locale', function () {
     const infos = [];
     return new AssetGraph({
-      root: `${__dirname}/../../testdata/transforms/checkLanguageKeys/duplicateLanguageKeys/`,
+      root: pathModule.resolve(
+        __dirname,
+        '..',
+        '..',
+        'testdata',
+        'transforms',
+        'checkLanguageKeys',
+        'duplicateLanguageKeys'
+      ),
     })
       .on('info', function (err) {
         infos.push(err);

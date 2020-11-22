@@ -361,6 +361,8 @@ if (commandLineOptions.i18n) {
             allKeysInDefaultLocale[key] =
               translationsByKeyAndLocaleId[key][localeId];
             return true;
+          } else {
+            return false;
           }
         });
     });

@@ -2,7 +2,7 @@ const expect = require('../unexpected-with-plugins');
 
 const childProcess = require('child_process');
 const fs = require('fs');
-const Path = require('path');
+const pathModule = require('path');
 const temp = require('temp');
 
 describe('makeBabelJob and applyBabelJob', function () {
@@ -10,7 +10,13 @@ describe('makeBabelJob and applyBabelJob', function () {
     const babelDir = temp.mkdirSync();
     const tmpTestCaseCopyDir = temp.mkdirSync();
 
-    const copyCommand = `cp '${__dirname}/../../testdata/bin'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
+    const copyCommand = `cp '${pathModule.resolve(
+      __dirname,
+      '..',
+      '..',
+      'testdata',
+      'bin'
+    )}'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
@@ -20,7 +26,7 @@ describe('makeBabelJob and applyBabelJob', function () {
       }
 
       const makeBabelJobProcess = childProcess.spawn(
-        Path.resolve(__dirname, '..', '..', 'bin', 'makeBabelJob.js'),
+        pathModule.resolve(__dirname, '..', '..', 'bin', 'makeBabelJob.js'),
         [
           '--babeldir',
           babelDir,
@@ -29,8 +35,8 @@ describe('makeBabelJob and applyBabelJob', function () {
           '--locales',
           'en,da,de',
           '--i18n',
-          Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
-          Path.resolve(tmpTestCaseCopyDir, 'index.html'),
+          pathModule.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
+          pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
         ]
       );
 
@@ -73,7 +79,7 @@ describe('makeBabelJob and applyBabelJob', function () {
 
         expect(
           fs
-            .readFileSync(Path.resolve(babelDir, 'en.txt'), 'utf-8')
+            .readFileSync(pathModule.resolve(babelDir, 'en.txt'), 'utf-8')
             .split(/\n/),
           'to equal',
           [
@@ -99,7 +105,7 @@ describe('makeBabelJob and applyBabelJob', function () {
 
         expect(
           fs
-            .readFileSync(Path.resolve(babelDir, 'da.txt'), 'utf-8')
+            .readFileSync(pathModule.resolve(babelDir, 'da.txt'), 'utf-8')
             .split(/\n/),
           'to equal',
           [
@@ -125,7 +131,7 @@ describe('makeBabelJob and applyBabelJob', function () {
 
         expect(
           fs
-            .readFileSync(Path.resolve(babelDir, 'de.txt'), 'utf-8')
+            .readFileSync(pathModule.resolve(babelDir, 'de.txt'), 'utf-8')
             .split(/\n/),
           'to equal',
           [
@@ -152,7 +158,7 @@ describe('makeBabelJob and applyBabelJob', function () {
         // Add translations to da.txt, duplicate the test case and run applyBabelJob on it:
 
         fs.writeFileSync(
-          Path.resolve(babelDir, 'da.txt'),
+          pathModule.resolve(babelDir, 'da.txt'),
           [
             'alreadyPartiallyTranslatedKey[theNotYetTranslatedOne]=nowItIsTranslated',
             'simplekeyinknockoutjstemplate=Simpel nøgle i en Knockout.js-skabelon',
@@ -175,7 +181,7 @@ describe('makeBabelJob and applyBabelJob', function () {
         );
 
         const applyBabelJobProcess = childProcess.spawn(
-          Path.resolve(__dirname, '..', '..', 'bin', 'applyBabelJob.js'),
+          pathModule.resolve(__dirname, '..', '..', 'bin', 'applyBabelJob.js'),
           [
             '--babeldir',
             babelDir,
@@ -184,8 +190,8 @@ describe('makeBabelJob and applyBabelJob', function () {
             '--locales',
             'en,da,de',
             '--i18n',
-            Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
-            Path.resolve(tmpTestCaseCopyDir, 'index.html'),
+            pathModule.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
+            pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
           ]
         );
         applyBabelJobProcess.on('exit', function (exitCode) {
@@ -200,7 +206,7 @@ describe('makeBabelJob and applyBabelJob', function () {
           expect(
             JSON.parse(
               fs.readFileSync(
-                Path.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
+                pathModule.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
                 'utf-8'
               )
             ),
