@@ -57,7 +57,7 @@
     "prettier": "~2.1.0",
     "systemjs-builder": "0.16.15",
     "temp": "0.9.4",
-    "unexpected": "^11.0.1"
+    "unexpected": "^12.0.0"
   },
   "peerDependencies": {
     "assetgraph": "^4.0.0"
