@@ -2159,17 +2159,18 @@ function logloads(loads) {
 
           // exact meta or meta with any content after the last wildcard skips extension
           if (!skipExtension && pkg.modules)
-            getMetaMatches(pkg.modules, pkgName, subPath, function (
-              metaPattern,
-              matchMeta,
-              matchDepth
-            ) {
-              if (
-                matchDepth == 0 ||
-                metaPattern.lastIndexOf('*') != metaPattern.length - 1
-              )
-                skipExtension = true;
-            });
+            getMetaMatches(
+              pkg.modules,
+              pkgName,
+              subPath,
+              function (metaPattern, matchMeta, matchDepth) {
+                if (
+                  matchDepth == 0 ||
+                  metaPattern.lastIndexOf('*') != metaPattern.length - 1
+                )
+                  skipExtension = true;
+              }
+            );
 
           var normalized =
             pkgName +
@@ -2662,18 +2663,19 @@ function logloads(loads) {
                 var meta = {};
                 if (pkg.modules) {
                   var bestDepth = 0;
-                  getMetaMatches(pkg.modules, pkgName, subPath, function (
-                    metaPattern,
-                    matchMeta,
-                    matchDepth
-                  ) {
-                    if (matchDepth > bestDepth) bestDepth = matchDepth;
-                    extendMeta(
-                      meta,
-                      matchMeta,
-                      matchDepth && bestDepth > matchDepth
-                    );
-                  });
+                  getMetaMatches(
+                    pkg.modules,
+                    pkgName,
+                    subPath,
+                    function (metaPattern, matchMeta, matchDepth) {
+                      if (matchDepth > bestDepth) bestDepth = matchDepth;
+                      extendMeta(
+                        meta,
+                        matchMeta,
+                        matchDepth && bestDepth > matchDepth
+                      );
+                    }
+                  );
 
                   // allow alias and loader to be package-relative
                   if (meta.alias && meta.alias.substr(0, 2) == './')
@@ -3183,32 +3185,32 @@ function logloads(loads) {
           ));
           var exports = entry.module.exports;
 
-          var declaration = entry.declare.call(__global, function (
-            name,
-            value
-          ) {
-            module.locked = true;
+          var declaration = entry.declare.call(
+            __global,
+            function (name, value) {
+              module.locked = true;
 
-            if (typeof name == 'object') {
-              for (var p in name) exports[p] = name[p];
-            } else {
-              exports[name] = value;
-            }
-
-            for (var i = 0, l = module.importers.length; i < l; i++) {
-              var importerModule = module.importers[i];
-              if (!importerModule.locked) {
-                var importerIndex = indexOf.call(
-                  importerModule.dependencies,
-                  module
-                );
-                importerModule.setters[importerIndex](exports);
+              if (typeof name == 'object') {
+                for (var p in name) exports[p] = name[p];
+              } else {
+                exports[name] = value;
               }
-            }
 
-            module.locked = false;
-            return value;
-          });
+              for (var i = 0, l = module.importers.length; i < l; i++) {
+                var importerModule = module.importers[i];
+                if (!importerModule.locked) {
+                  var importerIndex = indexOf.call(
+                    importerModule.dependencies,
+                    module
+                  );
+                  importerModule.setters[importerIndex](exports);
+                }
+              }
+
+              module.locked = false;
+              return value;
+            }
+          );
 
           module.setters = declaration.setters;
           module.execute = declaration.execute;
