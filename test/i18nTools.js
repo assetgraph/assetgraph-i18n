@@ -5,9 +5,12 @@ const i18nTools = require('../lib/i18nTools');
 describe('i18nTools', function () {
   const expect = unexpected
     .clone()
-    .addAssertion('to tokenize as', function (expect, subject, value) {
-      expect(i18nTools.tokenizePattern(subject), 'to equal', value);
-    });
+    .addAssertion(
+      '<string> to tokenize as <array>',
+      function (expect, subject, value) {
+        expect(i18nTools.tokenizePattern(subject), 'to equal', value);
+      }
+    );
 
   describe('#tokenizePattern()', function () {
     it('should recognize a simple text as one text token', function () {
