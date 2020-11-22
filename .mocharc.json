@@ -3,5 +3,20 @@
   "timeout": 60000,
   "recursive": true,
   "checkLeaks": true,
-  "globals": ["Promise", "requirejsVars", "curPart", "i", "out", "_requirejsCssData", "$__curScript", "URLPolyfill", "SystemJS", "System", "$traceurRuntime", "traceur", "Reflect", "__cjsWrapper"]
+  "globals": [
+    "Promise",
+    "requirejsVars",
+    "curPart",
+    "i",
+    "out",
+    "_requirejsCssData",
+    "$__curScript",
+    "URLPolyfill",
+    "SystemJS",
+    "System",
+    "$traceurRuntime",
+    "traceur",
+    "Reflect",
+    "__cjsWrapper"
+  ]
 }
