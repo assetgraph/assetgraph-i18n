@@ -29,7 +29,7 @@
     "makeBabelJob": "bin/makeBabelJob.js"
   },
   "dependencies": {
-    "esanimate": "^1.1.0",
+    "esanimate": "^2.0.0",
     "escodegen": "^2.0.0",
     "esmangle": "^1.0.1",
     "esprima": "^4.0.0",
