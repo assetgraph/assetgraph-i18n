@@ -38,7 +38,7 @@
     "lodash": "^4.16.1",
     "memoizesync": "^1.1.1",
     "optimist": "^0.6.1",
-    "plurals-cldr": "^1.0.2",
+    "plurals-cldr": "^2.0.1",
     "urltools": "^0.4.1"
   },
   "devDependencies": {
