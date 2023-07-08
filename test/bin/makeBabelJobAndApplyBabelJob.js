@@ -15,13 +15,15 @@ describe('makeBabelJob and applyBabelJob', function () {
       '..',
       '..',
       'testdata',
-      'bin'
+      'bin',
     )}'/makeBabelJobAndApplyBabelJob/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
 
@@ -37,7 +39,7 @@ describe('makeBabelJob and applyBabelJob', function () {
           '--i18n',
           pathModule.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
           pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
-        ]
+        ],
       );
 
       const buffersByStreamName = {};
@@ -55,7 +57,7 @@ describe('makeBabelJob and applyBabelJob', function () {
         streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
-              buffersByStreamName[streamName]
+              buffersByStreamName[streamName],
             ).toString('utf-8')}\n`;
           }
         });
@@ -66,8 +68,8 @@ describe('makeBabelJob and applyBabelJob', function () {
         if (exitCode) {
           return done(
             new Error(
-              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
-            )
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`,
+            ),
           );
         }
 
@@ -100,7 +102,7 @@ describe('makeBabelJob and applyBabelJob', function () {
             'stringvalue=value',
             'withexistingkeys=the English value',
             '',
-          ]
+          ],
         );
 
         expect(
@@ -126,7 +128,7 @@ describe('makeBabelJob and applyBabelJob', function () {
             'stringvalue=',
             'withexistingkeys=the Danish value',
             '',
-          ]
+          ],
         );
 
         expect(
@@ -152,7 +154,7 @@ describe('makeBabelJob and applyBabelJob', function () {
             'stringvalue=',
             'withexistingkeys=',
             '',
-          ]
+          ],
         );
 
         // Add translations to da.txt, duplicate the test case and run applyBabelJob on it:
@@ -177,7 +179,7 @@ describe('makeBabelJob and applyBabelJob', function () {
             'simplekeyinhtmlattribute=Simpel nøgle i HTML-attribut på dansk',
             'keywithplaceholdersinhtml=Nøgle med pladsholdere på dansk',
           ].join('\n'),
-          'utf-8'
+          'utf-8',
         );
 
         const applyBabelJobProcess = childProcess.spawn(
@@ -192,14 +194,14 @@ describe('makeBabelJob and applyBabelJob', function () {
             '--i18n',
             pathModule.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
             pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
-          ]
+          ],
         );
         applyBabelJobProcess.on('exit', function (exitCode) {
           if (exitCode) {
             return done(
               new Error(
-                `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`
-              )
+                `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`,
+              ),
             );
           }
 
@@ -207,8 +209,8 @@ describe('makeBabelJob and applyBabelJob', function () {
             JSON.parse(
               fs.readFileSync(
                 pathModule.resolve(tmpTestCaseCopyDir, 'thething.i18n'),
-                'utf-8'
-              )
+                'utf-8',
+              ),
             ),
             'to equal',
             {
@@ -286,7 +288,7 @@ describe('makeBabelJob and applyBabelJob', function () {
                   theNotYetTranslatedOne: '',
                 },
               },
-            }
+            },
           );
           done();
         });

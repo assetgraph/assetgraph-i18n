@@ -15,7 +15,7 @@ describe('checkLanguageKeys', function () {
         'testdata',
         'transforms',
         'checkLanguageKeys',
-        'combo'
+        'combo',
       ),
     })
       .on('info', function (err) {
@@ -27,7 +27,7 @@ describe('checkLanguageKeys', function () {
         require('../../lib/transforms/checkLanguageKeys')({
           supportedLocaleIds: ['en_us', 'da'],
           defaultLocaleId: 'en_us',
-        })
+        }),
       )
       .queue(function (assetGraph) {
         expect(infos, 'to satisfy', [
@@ -54,7 +54,7 @@ describe('checkLanguageKeys', function () {
         'testdata',
         'transforms',
         'checkLanguageKeys',
-        'neverEndingSpaceLoop'
+        'neverEndingSpaceLoop',
       ),
     })
       .on('info', function (err) {
@@ -66,7 +66,7 @@ describe('checkLanguageKeys', function () {
         require('../../lib/transforms/checkLanguageKeys')({
           supportedLocaleIds: ['en_us', 'da'],
           defaultLocaleId: 'en_us',
-        })
+        }),
       )
       .queue(function (assetGraph) {
         expect(infos, 'to have length', 2);
@@ -83,7 +83,7 @@ describe('checkLanguageKeys', function () {
         'testdata',
         'transforms',
         'checkLanguageKeys',
-        'pluralRule'
+        'pluralRule',
       ),
     })
       .on('info', function (err) {
@@ -95,21 +95,21 @@ describe('checkLanguageKeys', function () {
         require('../../lib/transforms/checkLanguageKeys')({
           supportedLocaleIds: ['en_us', 'cs', 'da'],
           defaultLocaleId: 'en_us',
-        })
+        }),
       )
       .queue(function (assetGraph) {
         expect(infos, 'to equal', [
           new Error('cs is missing EveryNWeeks[few]'),
           new Error('cs is missing EveryNWeeks[many]'),
           new Error(
-            "da should not have EveryNWeeks[many]='I should not be here'"
+            "da should not have EveryNWeeks[many]='I should not be here'",
           ),
           new Error('en is missing DeeplyStructured[bar]'),
           new Error('da is missing DeeplyStructured[bar]'),
           new Error('cs is missing DeeplyStructured[foo][few]'),
           new Error('cs is missing DeeplyStructured[foo][many]'),
           new Error(
-            "da should not have DeeplyStructured[foo][many]='I should not be here'"
+            "da should not have DeeplyStructured[foo][many]='I should not be here'",
           ),
         ]);
       });
@@ -125,7 +125,7 @@ describe('checkLanguageKeys', function () {
         'testdata',
         'transforms',
         'checkLanguageKeys',
-        'duplicateLanguageKeys'
+        'duplicateLanguageKeys',
       ),
     })
       .on('info', function (err) {
@@ -138,7 +138,7 @@ describe('checkLanguageKeys', function () {
           supportedLocaleIds: ['en_us', 'cs', 'da'],
           ignoreMessageTypes: 'missing',
           defaultLocaleId: 'en_us',
-        })
+        }),
       )
       .queue(function (assetGraph) {
         expect(infos, 'to satisfy', [

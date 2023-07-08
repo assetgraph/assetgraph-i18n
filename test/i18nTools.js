@@ -9,7 +9,7 @@ describe('i18nTools', function () {
       '<string> to tokenize as <array>',
       function (expect, subject, value) {
         expect(i18nTools.tokenizePattern(subject), 'to equal', value);
-      }
+      },
     );
 
   describe('#tokenizePattern()', function () {

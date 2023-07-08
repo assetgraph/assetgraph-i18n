@@ -11,7 +11,7 @@ const pluralsCldr = require('plurals-cldr');
 
 const commandLineOptions = require('optimist')
   .usage(
-    '$0 --i18n <pathToI18nFile> [--all] [--defaultlocale <localeId>] --babeldir=<dirForBabelFiles> --root <inputRootDirectory> --locales <localeId>,... <htmlFile>...'
+    '$0 --i18n <pathToI18nFile> [--all] [--defaultlocale <localeId>] --babeldir=<dirForBabelFiles> --root <inputRootDirectory> --locales <localeId>,... <htmlFile>...',
   )
   .boolean('all')
   .demand(['root', 'locales', 'babeldir', 'i18n']).argv;
@@ -20,8 +20,8 @@ const localeIds =
   commandLineOptions.locales &&
   _.flatten(
     _.flatten([commandLineOptions.locales]).map((localeId) =>
-      localeId.split(',')
-    )
+      localeId.split(','),
+    ),
   ).map(i18nTools.normalizeLocaleId);
 
 const initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
@@ -30,13 +30,13 @@ let i18nUrl;
 
 if (commandLineOptions.defaultlocale) {
   defaultLocaleId = i18nTools.normalizeLocaleId(
-    commandLineOptions.defaultlocale
+    commandLineOptions.defaultlocale,
   );
   if (localeIds && localeIds.indexOf(defaultLocaleId) === -1) {
     throw new Error(
       `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(
-        ', '
-      )})`
+        ', ',
+      )})`,
     );
   }
 } else if (localeIds) {
@@ -61,7 +61,7 @@ function coalescePluralsToLocale(value, localeId, pluralFormsToInclude) {
         keys.length > 0 &&
         keys.every(
           (key) =>
-            ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1
+            ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1,
         )
       ) {
         keys = [];
@@ -96,7 +96,7 @@ function valueContainsPlurals(obj) {
       keys.length > 0 &&
       keys.every(
         (key) =>
-          ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1
+          ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !== -1,
       )
     ) {
       return true;
@@ -139,8 +139,8 @@ function getLeavesFrom(obj, otherObject) {
         item,
         Array.isArray(otherObject)
           ? nullIfNullOrUndefined(otherObject[i])
-          : null
-      )
+          : null,
+      ),
     );
   } else if (typeof obj === 'object' && obj !== null) {
     const resultObj = {};
@@ -149,7 +149,7 @@ function getLeavesFrom(obj, otherObject) {
         obj[propertyName],
         otherObject && typeof otherObject === 'object'
           ? nullIfNullOrUndefined(otherObject[propertyName])
-          : null
+          : null,
       );
     });
     return resultObj;
@@ -188,7 +188,7 @@ const pluralFormsInTheDefaultLocale = pluralsCldr.forms(defaultLocaleId);
 
 const relevantPluralFormsNotInTheDefaultLocale = _.difference(
   _.union(...localeIds.map((localeId) => pluralsCldr.forms(localeId))),
-  pluralFormsInTheDefaultLocale
+  pluralFormsInTheDefaultLocale,
 );
 
 (async () => {
@@ -240,7 +240,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       assetGraph.addAsset(i18nAssetForAllKeys);
       assetGraph.emit(
         'info',
-        `--i18n ${commandLineOptions.i18n} not found, creating it`
+        `--i18n ${commandLineOptions.i18n} not found, creating it`,
       );
     } else if (!i18nAssetForAllKeys.isLoaded) {
       i18nAssetForAllKeys.parseTree = {};
@@ -285,7 +285,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
         isTranslatedByFlattenedKeyByLocaleId[localeId] || {};
       const flattenedAndCoalesced = flattenKey(
         key,
-        coalescePluralsToLocale(value, localeId)
+        coalescePluralsToLocale(value, localeId),
       );
 
       Object.keys(flattenedAndCoalesced).forEach((flattenedKey) => {
@@ -306,7 +306,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
     alreadyTranslatedByFlattenedKey[flattenedKey] = localeIds.every(
       (localeId) =>
         !isRelevantInLocaleByFlattenedKeyByLocaleId[localeId][flattenedKey] ||
-        isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey]
+        isTranslatedByFlattenedKeyByLocaleId[localeId][flattenedKey],
     );
   });
 
@@ -370,15 +370,15 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
       if (typeof defaultValueInTheOccurrence !== 'undefined') {
         defaultValueInTheOccurrence = coalescePluralsToLocale(
           defaultValueInTheOccurrence,
-          localeId
+          localeId,
         );
         defaultValueInTheOccurrenceByFlattenedKey = flattenKey(
           key,
-          defaultValueInTheOccurrence
+          defaultValueInTheOccurrence,
         );
         flattenedKeysThatMustBePresent = _.union(
           Object.keys(defaultValueInTheOccurrenceByFlattenedKey),
-          flattenedKeysThatMustBePresent
+          flattenedKeysThatMustBePresent,
         );
       }
 
@@ -426,9 +426,9 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
                   coalescePluralsToLocale(
                     defaultValueInTheOccurrence,
                     localeId,
-                    pluralForm
-                  )
-                )
+                    pluralForm,
+                  ),
+                ),
               );
 
               const existingTranslationByFlattenedKey =
@@ -451,7 +451,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
           localeIds.sort();
           (flattenedKeysByJoinedLocaleIds[localeIds.join(',')] =
             flattenedKeysByJoinedLocaleIds[localeIds.join(',')] || []).push(
-            flattenedKey
+            flattenedKey,
           );
         });
 
@@ -471,7 +471,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
             } to cover all plural forms:\n${flattenedKeys
               .map((flattenedKey) => `# ${flattenedKey}=\n`)
               .join('')}`;
-          }
+          },
         );
       }
 
@@ -497,12 +497,12 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
           } else {
             if (omitExistingValues) {
               newValue = nullOutLeaves(
-                coalescePluralsToLocale(value, localeId)
+                coalescePluralsToLocale(value, localeId),
               );
             } else {
               newValue = getLeavesFrom(
                 coalescePluralsToLocale(defaultValue, localeId),
-                value
+                value,
               );
             }
             i18nAssetForKey.parseTree[key][localeId] = newValue;
@@ -512,7 +512,7 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
           const existingValue = i18nAssetForKey.parseTree[key][localeId];
           newValue = nullOutLeaves(
             coalescePluralsToLocale(existingValue, localeId),
-            true
+            true,
           );
           i18nAssetForKey.parseTree[key][localeId] = newValue;
           i18nAssetForKey.markDirty();
@@ -521,14 +521,14 @@ const relevantPluralFormsNotInTheDefaultLocale = _.difference(
     });
     const targetBabelFileName = path.resolve(
       commandLineOptions.babeldir,
-      `${localeId}.txt`
+      `${localeId}.txt`,
     );
     if (babelSrc.length) {
       console.warn(`Writing ${targetBabelFileName}`);
       fs.writeFileSync(targetBabelFileName, babelSrc, 'utf-8');
     } else {
       console.warn(
-        `No existing keys for ${localeId}, not writing ${targetBabelFileName}`
+        `No existing keys for ${localeId}, not writing ${targetBabelFileName}`,
       );
     }
   });

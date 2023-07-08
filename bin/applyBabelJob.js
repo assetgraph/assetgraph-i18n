@@ -13,7 +13,7 @@ const urlTools = require('urltools');
 
 const commandLineOptions = require('optimist')
   .usage(
-    '$0 --i18n <pathToI18nFile> [--locales <localeId>[,<localeId>...]] [--defaultlocale <localeId>] --babeldir=<dirContainingTheBabelFilesToApply> --root <inputRootDirectory> <htmlFile>...'
+    '$0 --i18n <pathToI18nFile> [--locales <localeId>[,<localeId>...]] [--defaultlocale <localeId>] --babeldir=<dirContainingTheBabelFilesToApply> --root <inputRootDirectory> <htmlFile>...',
   )
   .options('defaultlocale', {
     describe:
@@ -33,8 +33,8 @@ const localeIds =
   commandLineOptions.locales &&
   _.flatten(
     _.flatten([commandLineOptions.locales]).map((localeId) =>
-      localeId.split(',')
-    )
+      localeId.split(','),
+    ),
   ).map(i18nTools.normalizeLocaleId);
 
 const initialAssetUrls = commandLineOptions._.map(urlTools.fsFilePathToFileUrl);
@@ -44,13 +44,13 @@ let i18nUrl;
 
 if (commandLineOptions.defaultlocale) {
   defaultLocaleId = i18nTools.normalizeLocaleId(
-    commandLineOptions.defaultlocale
+    commandLineOptions.defaultlocale,
   );
   if (localeIds && localeIds.indexOf(defaultLocaleId) === -1) {
     throw new Error(
       `The default locale id (${defaultLocaleId}) is not among the locales listed with the --locales switch (${localeIds.join(
-        ', '
-      )})`
+        ', ',
+      )})`,
     );
   }
 } else if (localeIds) {
@@ -108,7 +108,7 @@ if (commandLineOptions.i18n) {
 
   const occurrencesByKey = i18nTools.findOccurrences(
     assetGraph,
-    assetGraph.findAssets({ type: 'Html', isInitial: true })
+    assetGraph.findAssets({ type: 'Html', isInitial: true }),
   );
 
   let i18nAssetForAllKeys;
@@ -124,7 +124,7 @@ if (commandLineOptions.i18n) {
       assetGraph.addAsset(i18nAssetForAllKeys);
       assetGraph.emit(
         'info',
-        `--i18n ${commandLineOptions.i18n} not found, creating it`
+        `--i18n ${commandLineOptions.i18n} not found, creating it`,
       );
     } else if (!i18nAssetForAllKeys.isLoaded) {
       i18nAssetForAllKeys.parseTree = {};
@@ -143,14 +143,14 @@ if (commandLineOptions.i18n) {
 
         const babelBody = fs.readFileSync(
           path.resolve(commandLineOptions.babeldir, fileName),
-          'utf-8'
+          'utf-8',
         );
 
         isSeenByLocaleId[localeId] = true;
 
         if (localeIds && localeIds.indexOf(localeId) === -1) {
           console.warn(
-            `Skipping ${fileName} because ${localeId} was not mentioned in --locales`
+            `Skipping ${fileName} because ${localeId} was not mentioned in --locales`,
           );
           return;
         }
@@ -192,7 +192,7 @@ if (commandLineOptions.i18n) {
                     throw new Error(
                       `Error: Expected ${JSON.stringify(cursor)}['${
                         path[0]
-                      }'] to be undefined or an array while processing line ${lineNumber} of ${fileName}:\n${line}`
+                      }'] to be undefined or an array while processing line ${lineNumber} of ${fileName}:\n${line}`,
                     );
                   }
                 } else {
@@ -206,7 +206,7 @@ if (commandLineOptions.i18n) {
                     throw new Error(
                       `Error: Expected ${JSON.stringify(cursor)}['${
                         path[0]
-                      }'] to be undefined or an object while processing line ${lineNumber} of ${fileName}:\n${line}`
+                      }'] to be undefined or an object while processing line ${lineNumber} of ${fileName}:\n${line}`,
                     );
                   }
                 }
@@ -214,7 +214,7 @@ if (commandLineOptions.i18n) {
               }
               if (path[0] in cursor) {
                 throw new Error(
-                  `Error: Found double declaration of key in line ${lineNumber} of ${fileName}:\n${line}`
+                  `Error: Found double declaration of key in line ${lineNumber} of ${fileName}:\n${line}`,
                 );
               }
               cursor[path[0]] = value;
@@ -222,14 +222,14 @@ if (commandLineOptions.i18n) {
               console.warn(
                 `Couldn't parse line ${
                   lineNumber + 1
-                } of the ${localeId} file: ${line}`
+                } of the ${localeId} file: ${line}`,
               );
             }
           }
         });
       } else {
         console.warn(
-          `Skipping file whose basename does not look like a locale id: ${fileName}`
+          `Skipping file whose basename does not look like a locale id: ${fileName}`,
         );
       }
     }
@@ -238,7 +238,7 @@ if (commandLineOptions.i18n) {
     localeIds.forEach((localeId) => {
       if (!isSeenByLocaleId[localeId]) {
         console.warn(
-          `${localeId}.txt was not found although --locales ${localeId} was specified`
+          `${localeId}.txt was not found although --locales ${localeId} was specified`,
         );
       }
     });
@@ -266,7 +266,7 @@ if (commandLineOptions.i18n) {
             keys.every(
               (key) =>
                 ['zero', 'one', 'two', 'few', 'many', 'other'].indexOf(key) !==
-                -1
+                -1,
             )
           ) {
             keys = [];
@@ -279,7 +279,7 @@ if (commandLineOptions.i18n) {
                 `${key}: Discarding plural forms not used in ${localeId}:`,
                 obj,
                 '=>',
-                coalescedObj
+                coalescedObj,
               );
             }
             obj = coalescedObj;
@@ -336,8 +336,8 @@ if (commandLineOptions.i18n) {
           _.merge(
             Array.isArray(newTranslation) ? [] : {},
             existingTranslation,
-            newTranslation
-          )
+            newTranslation,
+          ),
         );
       } else if (
         typeof existingTranslation === 'undefined' ||
@@ -404,7 +404,7 @@ if (commandLineOptions.i18n) {
           if (
             !_.isEqual(
               occurrence.defaultValue,
-              allKeysInDefaultLocale[occurrence.key]
+              allKeysInDefaultLocale[occurrence.key],
             )
           ) {
             if (occurrence.type === 'TR' || occurrence.type === 'TRPAT') {
@@ -413,9 +413,9 @@ if (commandLineOptions.i18n) {
               const replaceRegExp = new RegExp(
                 `(TR(?:PAT)?\\((['"])${key.replace(
                   /[.[\]*+?{}()^$]/g,
-                  '\\$&'
+                  '\\$&',
                 )}\\2\\s*,\\s*)(?:[^)'"]*|"[^"]*"|'[^']*')*?\\)`,
-                'g'
+                'g',
               );
 
               replacedTextByAssetId[asset.id] = (
@@ -425,8 +425,8 @@ if (commandLineOptions.i18n) {
               ).replace(
                 replaceRegExp,
                 `$1${util.inspect(
-                  translationsByKeyAndLocaleId[key][defaultLocaleId]
-                )})`
+                  translationsByKeyAndLocaleId[key][defaultLocaleId],
+                )})`,
               );
             }
           }
@@ -446,7 +446,7 @@ if (commandLineOptions.i18n) {
             $0
               .replace(/&lt;/g, '<')
               .replace(/&gt;/g, '>')
-              .replace(/&amp;/g, '&')
+              .replace(/&amp;/g, '&'),
         );
       }
       asset._rawSrc = replacedText.toString('utf-8');
