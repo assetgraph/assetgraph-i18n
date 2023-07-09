@@ -26,7 +26,7 @@ function createTr(localeData) {
         valueString = JSON.stringify(pattern);
       } catch (e) {}
       throw new Error(
-        'i18nTools.tokenizePattern: Value must be a string: ' + valueString
+        'i18nTools.tokenizePattern: Value must be a string: ' + valueString,
       );
     }
     const tokens = [];
@@ -93,7 +93,7 @@ function createTr(localeData) {
           // Use window.TRHTML instead of TRHTML to prevent the recursive call from being recognized as a relation:
           node.firstChild.nodeValue = window.TR.HTML(node.firstChild.nodeValue);
         }
-      }
+      },
     );
     return div.innerHTML;
   };
@@ -123,7 +123,7 @@ module.exports = {
       function (str, matchedLocale) {
         load.metadata.locale = matchedLocale;
         return '.i18n';
-      }
+      },
     );
     return fetch({ address: load.metadata.newAddress, metadata: {} });
   },
@@ -137,7 +137,7 @@ module.exports = {
         createTr.toString() +
         ')(' +
         JSON.stringify(
-          gatherKeysForLocale(JSON.parse(load.source), load.metadata.locale)
+          gatherKeysForLocale(JSON.parse(load.source), load.metadata.locale),
         ) +
         ');'
       );
@@ -147,7 +147,7 @@ module.exports = {
   instantiate: function (load) {
     if (!this.builder) {
       return createTr(
-        gatherKeysForLocale(JSON.parse(load.source), load.metadata.locale)
+        gatherKeysForLocale(JSON.parse(load.source), load.metadata.locale),
       );
     }
   },

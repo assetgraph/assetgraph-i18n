@@ -16,7 +16,7 @@ describe('applyBabelJob', function () {
       'bin',
       'applyBabelJob',
       'complex',
-      'translationjob'
+      'translationjob',
     );
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
@@ -28,13 +28,15 @@ describe('applyBabelJob', function () {
       'testdata',
       'bin',
       'applyBabelJob',
-      'complex'
+      'complex',
     )}'/index.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
@@ -52,19 +54,21 @@ describe('applyBabelJob', function () {
           pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
           pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-        ]
+        ],
       );
       applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
-              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`
-            )
+              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`,
+            ),
           );
         } else {
           expect(
             JSON.parse(
-              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+              fs.readFileSync(
+                pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
+              ),
             ),
             'to equal',
             {
@@ -94,11 +98,11 @@ describe('applyBabelJob', function () {
                 da: 'Denne oversatte nøgle har {0} pladsholdere',
                 en: 'This proofread key has {0} proofread placeholders',
               },
-            }
+            },
           );
           expect(
             JSON.parse(
-              fs.readFileSync(`${tmpTestCaseCopyDir}/index.someother.i18n`)
+              fs.readFileSync(`${tmpTestCaseCopyDir}/index.someother.i18n`),
             ),
             'to equal',
             {
@@ -106,12 +110,12 @@ describe('applyBabelJob', function () {
                 en: 'Woop',
                 da: 'Jubii',
               },
-            }
+            },
           );
           expect(
             fs.readFileSync(
               pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-              'utf-8'
+              'utf-8',
             ),
             'to equal',
             '<!DOCTYPE html><html><head>\n' +
@@ -139,7 +143,7 @@ describe('applyBabelJob', function () {
               '        <span data-i18n="attr: {title: null}" title="data-i18n specifiying that the title attribute should not be translated"></span>\n' +
               '    \n' +
               '\n' +
-              '</body></html>'
+              '</body></html>',
           );
           done();
         }
@@ -156,7 +160,7 @@ describe('applyBabelJob', function () {
       'bin',
       'applyBabelJob',
       'invalidPlurals',
-      'translationjob'
+      'translationjob',
     );
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
@@ -168,13 +172,15 @@ describe('applyBabelJob', function () {
       'testdata',
       'bin',
       'applyBabelJob',
-      'invalidPlurals'
+      'invalidPlurals',
     )}'/index.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
@@ -192,20 +198,22 @@ describe('applyBabelJob', function () {
           pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
           pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-        ]
+        ],
       );
 
       applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
-              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`
-            )
+              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`,
+            ),
           );
         } else {
           expect(
             JSON.parse(
-              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+              fs.readFileSync(
+                pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
+              ),
             ),
             'to equal',
             {
@@ -221,12 +229,12 @@ describe('applyBabelJob', function () {
                   many: 'wwww',
                 },
               },
-            }
+            },
           );
           expect(
             fs.readFileSync(
               pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-              'utf-8'
+              'utf-8',
             ),
             'to equal',
             '<!DOCTYPE html>\n' +
@@ -242,7 +250,7 @@ describe('applyBabelJob', function () {
               '            }));\n' +
               '        </script>\n' +
               '    </body>\n' +
-              '</html>\n'
+              '</html>\n',
           );
           done();
         }
@@ -259,7 +267,7 @@ describe('applyBabelJob', function () {
       'bin',
       'applyBabelJob',
       'systemJs',
-      'translationjob'
+      'translationjob',
     );
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
@@ -270,13 +278,15 @@ describe('applyBabelJob', function () {
       '..',
       'testdata',
       'bin',
-      'applyBabelJob'
+      'applyBabelJob',
     )}'/systemJs/*.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
@@ -294,20 +304,22 @@ describe('applyBabelJob', function () {
           pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
           pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-        ]
+        ],
       );
 
       applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
-              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`
-            )
+              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`,
+            ),
           );
         } else {
           expect(
             JSON.parse(
-              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+              fs.readFileSync(
+                pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
+              ),
             ),
             'to equal',
             {
@@ -315,12 +327,12 @@ describe('applyBabelJob', function () {
                 en: 'HelloFoo',
                 cs: 'Ahoj',
               },
-            }
+            },
           );
           expect(
             fs.readFileSync(`${tmpTestCaseCopyDir}/main.js`, 'utf-8'),
             'to equal',
-            "alert(TR('myAlert', 'HelloFoo'));\n"
+            "alert(TR('myAlert', 'HelloFoo'));\n",
           );
           done();
         }
@@ -337,7 +349,7 @@ describe('applyBabelJob', function () {
       'bin',
       'applyBabelJob',
       'retranslationOfSomeNestedKeys',
-      'translationjob'
+      'translationjob',
     );
 
     const tmpTestCaseCopyDir = temp.mkdirSync();
@@ -348,13 +360,15 @@ describe('applyBabelJob', function () {
       '..',
       'testdata',
       'bin',
-      'applyBabelJob'
+      'applyBabelJob',
     )}'/retranslationOfSomeNestedKeys/*.* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
       const applyBabelJobProcess = childProcess.spawn(
@@ -372,20 +386,22 @@ describe('applyBabelJob', function () {
           pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
           '--replace',
           pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-        ]
+        ],
       );
 
       applyBabelJobProcess.on('exit', function (exitCode) {
         if (exitCode) {
           done(
             new Error(
-              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`
-            )
+              `The applyBabelJob process ended with a non-zero exit code: ${exitCode}`,
+            ),
           );
         } else {
           expect(
             JSON.parse(
-              fs.readFileSync(pathModule.join(tmpTestCaseCopyDir, 'index.i18n'))
+              fs.readFileSync(
+                pathModule.join(tmpTestCaseCopyDir, 'index.i18n'),
+              ),
             ),
             'to equal',
             {
@@ -399,15 +415,15 @@ describe('applyBabelJob', function () {
                   bar: 'Czech bar',
                 },
               },
-            }
+            },
           );
           expect(
             fs.readFileSync(
               pathModule.join(tmpTestCaseCopyDir, 'index.html'),
-              'utf-8'
+              'utf-8',
             ),
             'to contain',
-            "alert(TR('MyObject', { foo: 'New English foo', bar: 'English bar' }));\n"
+            "alert(TR('MyObject', { foo: 'New English foo', bar: 'English bar' }));\n",
           );
           done();
         }

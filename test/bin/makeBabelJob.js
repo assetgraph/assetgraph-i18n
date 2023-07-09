@@ -15,13 +15,15 @@ describe('makeBabelJob', function () {
       '..',
       '..',
       'testdata',
-      'bin'
+      'bin',
     )}'/makeBabelJob/complex/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
 
@@ -39,7 +41,7 @@ describe('makeBabelJob', function () {
           'en',
           '--locales',
           'en,pl,da,de,cs',
-        ]
+        ],
       );
 
       const buffersByStreamName = {};
@@ -56,7 +58,7 @@ describe('makeBabelJob', function () {
         streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
-              buffersByStreamName[streamName]
+              buffersByStreamName[streamName],
             ).toString('utf-8')}\n`;
           }
         });
@@ -67,8 +69,8 @@ describe('makeBabelJob', function () {
         if (exitCode) {
           return done(
             new Error(
-              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
-            )
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`,
+            ),
           );
         }
 
@@ -103,7 +105,7 @@ describe('makeBabelJob', function () {
             '# NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][few]=',
             '# NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
             '',
-          ].join('\n')
+          ].join('\n'),
         );
 
         expect(
@@ -120,7 +122,7 @@ describe('makeBabelJob', function () {
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
             '',
-          ].join('\n')
+          ].join('\n'),
         );
 
         expect(
@@ -137,7 +139,7 @@ describe('makeBabelJob', function () {
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][one]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
             '',
-          ].join('\n')
+          ].join('\n'),
         );
 
         expect(
@@ -160,7 +162,7 @@ describe('makeBabelJob', function () {
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
             '',
-          ].join('\n')
+          ].join('\n'),
         );
 
         expect(
@@ -183,15 +185,15 @@ describe('makeBabelJob', function () {
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][many]=',
             'NotYetTranslatedKeyWithPluralCasesInNestedStructure[foo][other]=',
             '',
-          ].join('\n')
+          ].join('\n'),
         );
 
         expect(
           JSON.parse(
             fs.readFileSync(
               pathModule.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-              'utf-8'
-            )
+              'utf-8',
+            ),
           ),
           'to equal',
           {
@@ -237,15 +239,15 @@ describe('makeBabelJob', function () {
               en: { one: 'foo', other: 'foo' },
               pl: { few: null, many: null, one: null, other: null },
             },
-          }
+          },
         );
 
         expect(
           JSON.parse(
             fs.readFileSync(
               pathModule.resolve(tmpTestCaseCopyDir, 'other.i18n'),
-              'utf-8'
-            )
+              'utf-8',
+            ),
           ),
           'to equal',
           {
@@ -256,7 +258,7 @@ describe('makeBabelJob', function () {
               da: null,
               pl: null,
             },
-          }
+          },
         );
 
         done();
@@ -273,13 +275,15 @@ describe('makeBabelJob', function () {
       '..',
       '..',
       'testdata',
-      'bin'
+      'bin',
     )}'/makeBabelJob/noTranslationsNecessary/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
 
@@ -295,7 +299,7 @@ describe('makeBabelJob', function () {
           pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
           '--locales',
           'en,cs',
-        ]
+        ],
       );
 
       const buffersByStreamName = {};
@@ -313,7 +317,7 @@ describe('makeBabelJob', function () {
         streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
-              buffersByStreamName[streamName]
+              buffersByStreamName[streamName],
             ).toString('utf-8')}\n`;
           }
         });
@@ -324,8 +328,8 @@ describe('makeBabelJob', function () {
         if (exitCode) {
           return done(
             new Error(
-              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
-            )
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`,
+            ),
           );
         }
 
@@ -344,13 +348,15 @@ describe('makeBabelJob', function () {
       '..',
       '..',
       'testdata',
-      'bin'
+      'bin',
     )}'/makeBabelJob/includeAllFlattened/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
 
@@ -366,7 +372,7 @@ describe('makeBabelJob', function () {
           pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
           '--locales',
           'en,cs',
-        ]
+        ],
       );
 
       const buffersByStreamName = {};
@@ -384,7 +390,7 @@ describe('makeBabelJob', function () {
         streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
-              buffersByStreamName[streamName]
+              buffersByStreamName[streamName],
             ).toString('utf-8')}\n`;
           }
         });
@@ -395,15 +401,15 @@ describe('makeBabelJob', function () {
         if (exitCode) {
           return done(
             new Error(
-              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
-            )
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`,
+            ),
           );
         }
 
         expect(
           fs.readFileSync(pathModule.resolve(babelDir, 'cs.txt'), 'utf-8'),
           'to equal',
-          ['KeyPartiallyTranslatedToCzech[many]=', ''].join('\n')
+          ['KeyPartiallyTranslatedToCzech[many]=', ''].join('\n'),
         );
 
         expect(fs.readdirSync(babelDir).sort(), 'to equal', [
@@ -420,15 +426,15 @@ describe('makeBabelJob', function () {
             '# NOTE: The language cs needs this additional key to cover all plural forms:',
             '# KeyPartiallyTranslatedToCzech[many]=',
             '',
-          ].join('\n')
+          ].join('\n'),
         );
 
         expect(
           JSON.parse(
             fs.readFileSync(
               pathModule.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-              'utf-8'
-            )
+              'utf-8',
+            ),
           ),
           'to equal',
           {
@@ -436,7 +442,7 @@ describe('makeBabelJob', function () {
               en: { one: 'the one', other: 'the other' },
               cs: { one: 'xxxx', other: 'yyyy', few: 'zzzz', many: null },
             },
-          }
+          },
         );
         done();
       });
@@ -452,13 +458,15 @@ describe('makeBabelJob', function () {
       '..',
       '..',
       'testdata',
-      'bin'
+      'bin',
     )}'/makeBabelJob/systemJs/* ${tmpTestCaseCopyDir}`;
 
     childProcess.exec(copyCommand, function (err, stdout, stderr) {
       if (err) {
         return done(
-          new Error(`${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`)
+          new Error(
+            `${copyCommand} failed: STDERR:${stderr}\nSTDOUT:${stdout}`,
+          ),
         );
       }
 
@@ -474,7 +482,7 @@ describe('makeBabelJob', function () {
           pathModule.resolve(tmpTestCaseCopyDir, 'index.html'),
           '--locales',
           'en,cs',
-        ]
+        ],
       );
 
       const buffersByStreamName = {};
@@ -492,7 +500,7 @@ describe('makeBabelJob', function () {
         streamNames.forEach(function (streamName) {
           if (buffersByStreamName[streamName].length > 0) {
             outputText += `\n${streamName.toUpperCase()}: ${Buffer.concat(
-              buffersByStreamName[streamName]
+              buffersByStreamName[streamName],
             ).toString('utf-8')}\n`;
           }
         });
@@ -503,15 +511,15 @@ describe('makeBabelJob', function () {
         if (exitCode) {
           return done(
             new Error(
-              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`
-            )
+              `The makeBabelJob process ended with a non-zero exit code: ${exitCode}${getStreamOutputText()}`,
+            ),
           );
         }
 
         expect(
           fs.readFileSync(pathModule.resolve(babelDir, 'cs.txt'), 'utf-8'),
           'to equal',
-          ['myAlert=', ''].join('\n')
+          ['myAlert=', ''].join('\n'),
         );
 
         expect(fs.readdirSync(babelDir).sort(), 'to equal', [
@@ -522,15 +530,15 @@ describe('makeBabelJob', function () {
         expect(
           fs.readFileSync(pathModule.resolve(babelDir, 'en.txt'), 'utf-8'),
           'to equal',
-          ['myAlert=Hello', ''].join('\n')
+          ['myAlert=Hello', ''].join('\n'),
         );
 
         expect(
           JSON.parse(
             fs.readFileSync(
               pathModule.resolve(tmpTestCaseCopyDir, 'index.i18n'),
-              'utf-8'
-            )
+              'utf-8',
+            ),
           ),
           'to equal',
           {
@@ -538,7 +546,7 @@ describe('makeBabelJob', function () {
               en: 'Hello',
               cs: null,
             },
-          }
+          },
         );
         done();
       });
