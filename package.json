@@ -56,7 +56,7 @@
     "mocha": "^8.2.1",
     "nyc": "^15.0.0",
     "offline-github-changelog": "^3.0.0",
-    "prettier": "~3.0.0",
+    "prettier": "~3.2.2",
     "systemjs-builder": "0.16.15",
     "temp": "^0.9.4",
     "unexpected": "^13.0.0"
